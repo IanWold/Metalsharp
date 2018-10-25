@@ -2,6 +2,8 @@
 
 A [Metalsmith](http://www.metalsmith.io/)-inspired *"pluggable"* directory manipulator, intended for static website generation, written in C#. It's very small and easy to extend.
 
+This project is brand-new - like, 0.0.1 new - so things will be added fast. I hope. Probably not. The good thing, though, is that it's so simple that very significant changes are unlikely to happen. That said, if you have a suggestion or want to contribute, now's probably the easiest time for it ;)
+
 Generating a website from a directory is as simple as the following (from [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1)):
 
 ```c#
