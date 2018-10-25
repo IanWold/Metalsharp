@@ -12,7 +12,7 @@ new Metalsharp("Site")
     .Build();
 ```
 
-This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and Layout will fit each of the HTML files into a simple template file.
+This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file.
 
 # Setting up a Directory for Metalsharp
 
