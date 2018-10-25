@@ -2,7 +2,7 @@
 
 A [Metalsmith](http://www.metalsmith.io/)-inspired *"pluggable"* directory manipulator, intended for static website generation, written in C#. It's very small and easy to extend.
 
-Generating a website from a directory is as simple as the following (from [Examples/Example1]()):
+Generating a website from a directory is as simple as the following (from [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1)):
 
 ```c#
 new Metalsharp("Site")
@@ -16,7 +16,7 @@ This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they de
 
 # Setting up a Directory for Metalsharp
 
-See [Examples/Example1]() for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
+See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
 
 ```
 .
@@ -66,7 +66,7 @@ new Metalsharp("Site")
 	.Use<Drafts>()
 ```
 
-5. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](), you can use that extension method:
+5. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
 
 ```c#
 new Metalsharp("Site")
@@ -115,7 +115,7 @@ And with that all your output files should be in your output directory.
 
 # Creating a Custom Plugin
 
-Any plugin just needs to inherit from [`IMetalsharpPlugin`](). Below is the code for the Markdown plugin:
+Any plugin just needs to inherit from [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/IMetalsharpPlugin.cs). Below is the code for the Markdown plugin:
 
 ```c#
 public class Markdown : IMetalsharpPlugin
