@@ -22,14 +22,14 @@ See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Exampl
 
 ```
 .
-|-- Site
-|   |-- SomeFile.md
-|   |-- SomeOtherFile.md
-|-- bin
-|   |-- SomeFile.html
-|   |-- SomeOtherFile.html
-|-- layout.template
-|-- README.md
+├── Site
+│   ├── SomeFile.md
+│   └── SomeOtherFile.md
+├── bin
+│   ├── SomeFile.html
+│   └── SomeOtherFile.html
+├── layout.template
+└── README.md
 ```
 
 Within a root directory is a good place for any files needed to configure plugins, such as `layout.template` for the `Layout` plugin. Putting all the site files in a site folder keeps them separated from config files or other project files. The default behavior for Metalsharp is to put output files in a `bin` directory, but you can configure that differently. An output folder separate and outside the folder with site files is best practice.
