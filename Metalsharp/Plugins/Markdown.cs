@@ -12,7 +12,7 @@ namespace Metal.Sharp
         {
             foreach (var file in directory.InputFiles)
             {
-                var name = Path.GetFileNameWithoutExtension(file.Path);
+                var name = Path.GetFileNameWithoutExtension(file.FilePath);
                 var text = Markdig.Markdown.ToHtml(file.Text);
                 directory.OutputFiles.Add(new OutputFile(name + ".html", text) { Metadata = file.Metadata });
             }

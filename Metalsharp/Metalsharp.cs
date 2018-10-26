@@ -6,12 +6,14 @@ namespace Metal.Sharp
 {
     public class Metalsharp
     {
-        public Metalsharp(string path) =>
-            Add(path);
+        public Metalsharp(string path)
+        {
+            AddInput(path, true);
+        }
 
         #region Methods
 
-        public Metalsharp Add(string path)
+        public Metalsharp AddInput(string path, bool enforceDirectory = false)
         {
             if (Directory.Exists(path))
             {
@@ -22,33 +24,36 @@ namespace Metal.Sharp
 
                 return this;
             }
-            else if (File.Exists(path))
+            else if (File.Exists(path) && !enforceDirectory)
             {
                 InputFiles.Add(new InputFile(path));
 
                 return this;
             }
-            else throw new ArgumentException(path + " does not exist.");
+            else if (enforceDirectory) throw new ArgumentException("Directory " + path + " does not exist.");
+            else throw new ArgumentException("File " + path + " does not exist.");
         }
 
-        public Metalsharp Meta(params (string key, object value)[] pairs)
+        public Metalsharp AddOutput(string path, bool enforceDirectory = false)
         {
-            foreach (var pair in pairs)
+            if (Directory.Exists(path))
             {
-                Metadata.Add(pair.key, pair.value);
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    OutputFiles.Add(new OutputFile(path));
+                }
+
+                return this;
             }
+            else if (File.Exists(path) && !enforceDirectory)
+            {
+                OutputFiles.Add(new OutputFile(path));
 
-            return this;
+                return this;
+            }
+            else if (enforceDirectory) throw new ArgumentException("Directory " + path + " does not exist.");
+            else throw new ArgumentException("File " + path + " does not exist.");
         }
-
-        public Metalsharp Use(Func<Metalsharp, Metalsharp> func) =>
-            func(this);
-
-        public Metalsharp Use(IMetalsharpPlugin plugin) =>
-            plugin.Execute(this);
-
-        public Metalsharp Use<T>() where T : IMetalsharpPlugin, new() =>
-            new T().Execute(this);
 
         public void Build(BuildOptions options = null)
         {
@@ -69,7 +74,7 @@ namespace Metal.Sharp
 
             foreach (var file in OutputFiles)
             {
-                var path = Path.Combine(options.OutputDirectory, file.OutputPath);
+                var path = Path.Combine(options.OutputDirectory, file.FilePath);
                 File.WriteAllText(path, file.Text);
             }
         }
@@ -79,6 +84,37 @@ namespace Metal.Sharp
             func(this);
             Build(options);
         }
+
+        public Metalsharp Meta(params (string key, object value)[] pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                Metadata.Add(pair.key, pair.value);
+            }
+
+            return this;
+        }
+
+        public Metalsharp RemoveInput(string path)
+        {
+            InputFiles.RemoveAll(file => file.FilePath == path);
+            return this;
+        }
+
+        public Metalsharp RemoveOutput(string path)
+        {
+            OutputFiles.RemoveAll(file => file.FilePath == path);
+            return this;
+        }
+
+        public Metalsharp Use(Func<Metalsharp, Metalsharp> func) =>
+            func(this);
+
+        public Metalsharp Use(IMetalsharpPlugin plugin) =>
+            plugin.Execute(this);
+
+        public Metalsharp Use<T>() where T : IMetalsharpPlugin, new() =>
+            new T().Execute(this);
 
         #endregion
 

@@ -14,7 +14,7 @@ namespace Metal.Sharp
                 if (File.GetAttributes(filePath) != FileAttributes.Directory)
                 {
                     OriginalText = File.ReadAllText(filePath);
-                    Path = filePath;
+                    FilePath = filePath;
                 }
                 else throw new ArgumentException("File " + filePath + " is a directory.");
             }
@@ -55,8 +55,6 @@ namespace Metal.Sharp
         }
 
         public string JsonText { get; private set; }
-
-        public string Path { get; private set; }
 
         #endregion
     }

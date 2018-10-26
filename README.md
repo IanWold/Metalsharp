@@ -44,43 +44,50 @@ Full docs are on their way, in the meantime, here's (basically) how you use this
 new Metalsharp("Site")
 ```
 
-2. If you want to add all the files from another directory, you can do that:
+2. If you want to add a file to the input, you can do that:
 
 ```c#
-.Add("MoreSite")
+.AddInput("C:/SomeDir/myFile.md")
 ```
 
-3. If you want to add a single file from another directory, that's OK too:
+3. You can add a file directly to the output:
 
 ```c#
-.Add("C:/SomeDir/myFile.md")
+.AddOutput("C:/SomeDir/ForOutput.css")
 ```
 
-4. You can add a plugin by referencing its type if it has an empty constructor, like the `Drafts` plugin:
+4. And if you have a change of heart you can remove them again too:
+
+```c#
+.RemoveInput("C:/SomeDir/myFile.md")
+.RemoveOutput("ForOutput.css")
+```
+
+5. You can add a plugin by referencing its type if it has an empty constructor, like the `Drafts` plugin:
 
 ```c#
 .Use<Drafts>()
 ```
 
-5. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
+6. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
 
 ```c#
 .UseMarkdown()
 ```
 
-6. If a plugin does not have an empty constructor, like the `Layout` plugin, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
+7. If a plugin does not have an empty constructor, like the `Layout` plugin, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
 
 ```c#
 .Use(new Layout("layout.template"))
 ```
 
-7. When you've configured your plugin pipeline, call `Build` to execute the stack:
+8. When you've configured your plugin pipeline, call `Build` to execute the stack:
 
 ```c#
 .Build();
 ```
 
-8. If you need to configure your output directory or other options, you can pass those into `Build` using `BuildOptions`:
+9. If you need to configure your output directory or other options, you can pass those into `Build` using `BuildOptions`:
 
 ```c#
 .Build(new BuildOptions() { OutputDirectory = "C:/Output" });
@@ -90,8 +97,10 @@ And with that all your output files should be in your output directory. Here's a
 
 ```c#
 new Metalsharp("Site")
-	.Add("MoreSite")
-	.Add("C:/SomeDir/myFile.md")
+	.AddInput("C:/SomeDir/myFile.md")
+	.AddOutput("C:/SomeDir/ForOutput.css")
+	.RemoveInput("C:/SomeDir/myFile.md")
+	.RemoveOutput("ForOutput.css")
 	.Use<Drafts>()
 	.UseMarkdown()
 	.Use(new Layout("layout.template"))

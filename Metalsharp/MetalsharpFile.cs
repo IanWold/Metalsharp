@@ -8,6 +8,8 @@ namespace Metal.Sharp
     {
         public string Text { get; set; }
 
+        public string FilePath { get; set; }
+
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
