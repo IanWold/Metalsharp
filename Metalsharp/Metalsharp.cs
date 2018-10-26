@@ -9,6 +9,7 @@ namespace Metal.Sharp
         public Metalsharp(string path)
         {
             AddInput(path, true);
+            RootDirectory = path;
         }
 
         #region Methods
@@ -89,21 +90,34 @@ namespace Metal.Sharp
         {
             foreach (var pair in pairs)
             {
-                Metadata.Add(pair.key, pair.value);
+                if (Metadata.ContainsKey(pair.key))
+                {
+                    Metadata[pair.key] = pair.value;
+                }
+                else
+                {
+                    Metadata.Add(pair.key, pair.value);
+                }
             }
 
             return this;
         }
 
-        public Metalsharp RemoveInput(string path)
+        public Metalsharp RemoveInput(string path) =>
+            RemoveInput(file => file.FilePath == path);
+
+        public Metalsharp RemoveInput(Func<InputFile, bool> predicate)
         {
-            InputFiles.RemoveAll(file => file.FilePath == path);
+            InputFiles.RemoveAll(file => predicate(file));
             return this;
         }
 
-        public Metalsharp RemoveOutput(string path)
+        public Metalsharp RemoveOutput(string path) =>
+            RemoveOutput(file => file.FilePath == path);
+
+        public Metalsharp RemoveOutput(Func<OutputFile, bool> predicate)
         {
-            OutputFiles.RemoveAll(file => file.FilePath == path);
+            OutputFiles.RemoveAll(file => predicate(file));
             return this;
         }
 
@@ -119,6 +133,8 @@ namespace Metal.Sharp
         #endregion
 
         #region Properties
+
+        public string RootDirectory { get; set; }
 
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 

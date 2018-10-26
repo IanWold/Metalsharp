@@ -1,7 +1,12 @@
-﻿namespace Metal.Sharp
+﻿using System;
+
+namespace Metal.Sharp
 {
     public static class MetalsharpExtensions
     {
+        public static Metalsharp Branch(this Metalsharp directory, params Action<Metalsharp>[] branches) =>
+            directory.Use(new Branch(branches));
+
         public static Metalsharp UseDrafts(this Metalsharp directory) =>
             directory.Use(new Drafts());
 
