@@ -5,8 +5,16 @@ using System.Text.RegularExpressions;
 
 namespace Metal.Sharp
 {
+    /// <summary>
+    /// The Layout plugin
+    /// 
+    /// Applies an HTML layout to every HTML page in the output
+    /// </summary>
     public class Layout : IMetalsharpPlugin
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="filePath">The path to the layout file</param>
         public Layout(string filePath)
         {
             if (File.Exists(filePath))
@@ -16,8 +24,16 @@ namespace Metal.Sharp
             else throw new ArgumentException("File: " + filePath + " does not exist.");
         }
 
+        /// <summary>
+        /// The full text from the layout file
+        /// </summary>
         public string LayoutText { get; set; }
 
+        /// <summary>
+        /// Invokes the plugin
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
         public Metalsharp Execute(Metalsharp directory)
         {
             foreach (var file in directory.OutputFiles.Where(i => i.Extension == "html"))

@@ -5,8 +5,15 @@ using System.IO;
 
 namespace Metal.Sharp
 {
+    /// <summary>
+    /// Represents a file input to Metalsharp
+    /// </summary>
     public class InputFile : MetalsharpFile
     {
+        /// <summary>
+        /// Create a new InputFile
+        /// </summary>
+        /// <param name="filePath">The path to the file to open</param>
         public InputFile(string filePath)
         {
             if (File.Exists(filePath))
@@ -23,7 +30,9 @@ namespace Metal.Sharp
 
         #region Properties
 
-        private string _originalText;
+        /// <summary>
+        /// The original text of a file before metadata was parsed out of it
+        /// </summary>
         public string OriginalText
         {
             get => _originalText;
@@ -53,7 +62,11 @@ namespace Metal.Sharp
                 }
             }
         }
+        private string _originalText;
 
+        /// <summary>
+        /// The text of the JSON metadata before it was parsed into Metadata
+        /// </summary>
         public string JsonText { get; private set; }
 
         #endregion

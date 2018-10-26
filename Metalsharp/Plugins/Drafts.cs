@@ -1,9 +1,17 @@
 ﻿namespace Metal.Sharp
 {
+    /// <summary>
+    /// The Drafts plugin
+    /// 
+    /// Removes any input or output file with ("draft", true) in its metadata
+    /// </summary>
     public class Drafts : IMetalsharpPlugin
     {
-        public Drafts() { }
-
+        /// <summary>
+        /// Invokes the plugin
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
         public Metalsharp Execute(Metalsharp directory)
         {
             directory.InputFiles.RemoveAll(file =>
