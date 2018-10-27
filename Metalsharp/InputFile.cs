@@ -64,7 +64,8 @@ namespace Metal.Sharp
 
                         return;
                     }
-                    catch (Exception) { }
+                    catch (Exception) // Metalsharp errantly assumed the pre-; text was JSON metadata
+                    { }
                 }
             }
         }

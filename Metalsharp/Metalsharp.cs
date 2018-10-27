@@ -48,8 +48,14 @@ namespace Metal.Sharp
 
                 return this;
             }
-            else if (enforceDirectory) throw new ArgumentException("Directory " + path + " does not exist.");
-            else throw new ArgumentException("File " + path + " does not exist.");
+            else if (enforceDirectory)
+            {
+                throw new ArgumentException("Directory " + path + " does not exist.");
+            }
+            else
+            {
+                throw new ArgumentException("File " + path + " does not exist.");
+            }
         }
 
         /// <summary>
