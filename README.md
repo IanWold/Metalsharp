@@ -1,5 +1,8 @@
 # ![logo](Metalsharp.png)
 
+[![Build Status](https://travis-ci.org/IanWold/Metalsharp.svg?branch=master)](https://travis-ci.org/IanWold/Metalsharp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/29c18f6bc08146e884e173ad1262cead)](https://www.codacy.com/app/IanWold/Metalsharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IanWold/Metalsharp&amp;utm_campaign=Badge_Grade)
+
 A [Metalsmith](http://www.metalsmith.io/)-inspired *"pluggable"* directory manipulator, intended for static website generation, written in C#. It's very small and easy to extend.
 
 This project is brand-new - like, 0.0.1 new - so things will be added fast. I hope. Probably not. The good thing, though, is that it's so simple that very significant changes are unlikely to happen. That said, if you have a suggestion or want to contribute, now's probably the easiest time for it ;)
