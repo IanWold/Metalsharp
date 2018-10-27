@@ -21,9 +21,17 @@ namespace Metal.Sharp
         /// Add a file or all the files in a directory to the input
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
+        /// <returns></returns>
+        public Metalsharp AddInput(string path) =>
+            AddInput(path, false);
+
+        /// <summary>
+        /// Add a file or all the files in a directory to the input
+        /// </summary>
+        /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddInput(string path, bool enforceDirectory = false)
+        public Metalsharp AddInput(string path, bool enforceDirectory)
         {
             if (Directory.Exists(path))
             {
@@ -50,9 +58,19 @@ namespace Metal.Sharp
         /// The file(s) will not be added to the input and JSON metadata in the file(s) will not be parsed
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
+        /// <returns></returns>
+        public Metalsharp AddOutput(string path) =>
+            AddOutput(path, false);
+
+        /// <summary>
+        /// Add a file or all the files in a directory directly to the output
+        /// 
+        /// The file(s) will not be added to the input and JSON metadata in the file(s) will not be parsed
+        /// </summary>
+        /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddOutput(string path, bool enforceDirectory = false)
+        public Metalsharp AddOutput(string path, bool enforceDirectory)
         {
             if (Directory.Exists(path))
             {
@@ -74,10 +92,17 @@ namespace Metal.Sharp
         }
 
         /// <summary>
+        /// Write all the output files to the default output directory
+        /// with default build options
+        /// </summary>
+        public void Build() =>
+            Build(new BuildOptions());
+
+        /// <summary>
         /// Write all the output files to the output directory
         /// </summary>
         /// <param name="options">Metalsmith build configuration options</param>
-        public void Build(BuildOptions options = null)
+        public void Build(BuildOptions options)
         {
             options = options ?? new BuildOptions();
 
@@ -102,11 +127,19 @@ namespace Metal.Sharp
         }
 
         /// <summary>
+        /// Write all the output files to the default output directory after performing a function
+        /// with default build options
+        /// </summary>
+        /// <param name="func">The function to perform</param>
+        public void Build(Action<Metalsharp> func) =>
+            Build(func, new BuildOptions());
+
+        /// <summary>
         /// Write all the output files to the output directory after performing a function
         /// </summary>
         /// <param name="func">The function to perform</param>
         /// <param name="options">Metalsmith build configuration options</param>
-        public void Build(Action<Metalsharp> func, BuildOptions options = null)
+        public void Build(Action<Metalsharp> func, BuildOptions options)
         {
             func(this);
             Build(options);
@@ -119,15 +152,15 @@ namespace Metal.Sharp
         /// <returns></returns>
         public Metalsharp Meta(params (string key, object value)[] pairs)
         {
-            foreach (var pair in pairs)
+            foreach (var (key, value) in pairs)
             {
-                if (Metadata.ContainsKey(pair.key))
+                if (Metadata.ContainsKey(key))
                 {
-                    Metadata[pair.key] = pair.value;
+                    Metadata[key] = value;
                 }
                 else
                 {
-                    Metadata.Add(pair.key, pair.value);
+                    Metadata.Add(key, value);
                 }
             }
 

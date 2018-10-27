@@ -23,9 +23,15 @@ namespace Metal.Sharp
                     OriginalText = File.ReadAllText(filePath);
                     FilePath = filePath;
                 }
-                else throw new ArgumentException("File " + filePath + " is a directory.");
+                else
+                {
+                    throw new ArgumentException("File " + filePath + " is a directory.");
+                }
             }
-            else throw new ArgumentException("File " + filePath + " does not exist.");
+            else
+            {
+                throw new ArgumentException("File " + filePath + " does not exist.");
+            }
         }
 
         #region Properties
@@ -58,7 +64,7 @@ namespace Metal.Sharp
 
                         return;
                     }
-                    catch (Exception ex) { var a = ex.Message; }
+                    catch (Exception) { }
                 }
             }
         }

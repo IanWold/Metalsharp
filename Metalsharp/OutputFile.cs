@@ -32,7 +32,10 @@ namespace Metal.Sharp
                     ? new OutputFile(Path.GetFileName(filePath), File.ReadAllText(filePath))
                     : throw new ArgumentException("File " + filePath + " is a directory.");
             }
-            else throw new ArgumentException("File " + filePath + " does not exist.");
+            else
+            {
+                throw new ArgumentException("File " + filePath + " does not exist.");
+            }
         }
     }
 }

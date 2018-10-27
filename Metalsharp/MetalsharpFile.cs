@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Metal.Sharp
 {
@@ -15,7 +16,7 @@ namespace Metal.Sharp
             get
             {
                 var splitString = FilePath.Split('.');
-                return splitString[splitString.Length - 1].ToLower();
+                return splitString[splitString.Length - 1].ToLower(CultureInfo.InvariantCulture);
             }
         }
 
