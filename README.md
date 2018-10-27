@@ -10,11 +10,11 @@ Generating a website from a directory is as simple as the following (from [Examp
 new Metalsharp("Site")
     .UseDrafts()
     .Use<Markdown>()
-    .Use(new Layout("layout.template"))
+    .Use(new Layout())
     .Build();
 ```
 
-This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file.
+This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file specified in that HTML file's metadata.
 
 # Setting up a Directory for Metalsharp
 
@@ -75,10 +75,10 @@ new Metalsharp("Site")
 .UseMarkdown()
 ```
 
-7. If a plugin does not have an empty constructor, like the `Layout` plugin, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
+7. If a plugin does not have an empty constructor, or if you prefer this syntax, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
 
 ```c#
-.Use(new Layout("layout.template"))
+.Use(new Layout())
 ```
 
 8. When you've configured your plugin pipeline, call `Build` to execute the stack:
@@ -103,7 +103,7 @@ new Metalsharp("Site")
 	.RemoveOutput("ForOutput.css")
 	.Use<Drafts>()
 	.UseMarkdown()
-	.Use(new Layout("layout.template"))
+	.Use(new Layout())
 	.Build(new BuildOptions() { OutputDirectory = "C:/Output" });
 ```
 

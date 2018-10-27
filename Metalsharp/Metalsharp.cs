@@ -58,14 +58,14 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    OutputFiles.Add(new OutputFile(path));
+                    OutputFiles.Add(OutputFile.FromExisting(path));
                 }
 
                 return this;
             }
             else if (File.Exists(path) && !enforceDirectory)
             {
-                OutputFiles.Add(new OutputFile(path));
+                OutputFiles.Add(OutputFile.FromExisting(path));
 
                 return this;
             }

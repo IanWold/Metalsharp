@@ -9,7 +9,7 @@ namespace Example1
             new Metalsharp("Site")
                 .UseDrafts()
                 .Use<Markdown>()
-                .Use(new Layout("layout.template"))
+                .Use(new Layout())
                 .Build();
         }
     }

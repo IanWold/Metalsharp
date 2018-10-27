@@ -1,5 +1,6 @@
 ﻿{
-	"title": "Index"
+	"title": "Index",
+	"layout": "layout.template"
 };
 
 # Hello!

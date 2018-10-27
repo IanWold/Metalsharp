@@ -28,7 +28,7 @@ namespace Metal.Sharp
         /// <returns></returns>
         /// <param name="filePath">The path to the layout file</param>
         public static Metalsharp UseLayout(this Metalsharp directory, string filePath) =>
-            directory.Use(new Layout(filePath));
+            directory.Use(new Layout());
 
         /// <summary>
         /// Invoke the Merkdown plugin
