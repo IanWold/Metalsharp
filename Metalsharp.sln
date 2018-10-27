@@ -7,9 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp", "Metalsharp\Me
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B3C1270-CEE2-4A3C-ABB0-3861215D80B6}"
 	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-		Metalsharp.png = Metalsharp.png
+		.travis.yml = .travis.yml
 		LICENSE = LICENSE
+		Metalsharp.png = Metalsharp.png
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{945D79AE-689D-40AB-9895-25216E7DCFFD}"
