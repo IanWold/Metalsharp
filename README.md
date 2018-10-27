@@ -1,4 +1,4 @@
-# Metalsharp
+# ![logo][Metalsharp.png]
 
 A [Metalsmith](http://www.metalsmith.io/)-inspired *"pluggable"* directory manipulator, intended for static website generation, written in C#. It's very small and easy to extend.
 

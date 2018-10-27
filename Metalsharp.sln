@@ -3,16 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metalsharp", "Metalsharp\Metalsharp.csproj", "{BC5A2CC9-9F50-4061-8A1A-B7AB8D131251}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp", "Metalsharp\Metalsharp.csproj", "{BC5A2CC9-9F50-4061-8A1A-B7AB8D131251}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B3C1270-CEE2-4A3C-ABB0-3861215D80B6}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\..\Pictures\Metalsharp\Metalsharp.png = ..\..\..\Pictures\Metalsharp\Metalsharp.png
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{945D79AE-689D-40AB-9895-25216E7DCFFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example1", "Examples\Example1\Example1.csproj", "{CDAA157E-5E7C-4321-BE1B-6B3AEA206EE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example1", "Examples\Example1\Example1.csproj", "{CDAA157E-5E7C-4321-BE1B-6B3AEA206EE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
