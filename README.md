@@ -1,7 +1,7 @@
 # ![logo](Metalsharp.png)
 
-[![Build Status](https://travis-ci.org/IanWold/Metalsharp.svg?branch=master)](https://travis-ci.org/IanWold/Metalsharp)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/29c18f6bc08146e884e173ad1262cead)](https://www.codacy.com/app/IanWold/Metalsharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IanWold/Metalsharp&amp;utm_campaign=Badge_Grade)
+[![Travis (.org)](https://img.shields.io/travis/IanWold/Metalsharp.svg?style=flat-square)](https://travis-ci.org/IanWold/Metalsharp)
+[![Codacy grade](https://img.shields.io/codacy/grade/29c18f6bc08146e884e173ad1262cead.svg?style=flat-square)](https://app.codacy.com/project/IanWold/Metalsharp/dashboard)
 
 A [Metalsmith](http://www.metalsmith.io/)-inspired *"pluggable"* directory manipulator, intended for static website generation, written in C#. It's very small and easy to extend.
 
