@@ -1,4 +1,4 @@
-# ![logo](Metalsharp.png)
+<h1><img src="Metalsharp.png" height="70"/></h1>
 
 [![Travis (.org)](https://img.shields.io/travis/IanWold/Metalsharp.svg?style=flat-square)](https://travis-ci.org/IanWold/Metalsharp)
 [![Codacy grade](https://img.shields.io/codacy/grade/29c18f6bc08146e884e173ad1262cead.svg?style=flat-square)](https://app.codacy.com/project/IanWold/Metalsharp/dashboard)
