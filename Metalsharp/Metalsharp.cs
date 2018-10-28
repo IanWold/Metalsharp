@@ -9,11 +9,50 @@ namespace Metal.Sharp
     /// </summary>
     public class Metalsharp
     {
+        /// <summary>
+        /// Used by Metalsharp.From to pass an empty Metalsharp to a plugin
+        /// </summary>
+        private Metalsharp() { }
+
+        /// <summary>
+        /// Instantiate Metalsharp from an existing directory
+        /// </summary>
+        /// <param name="path">The path to the directory</param>
         public Metalsharp(string path)
         {
             AddInput(path, true);
             RootDirectory = path;
         }
+
+        #region Static Methods
+
+        /// <summary>
+        /// Instantiate Metalsharp by invoking a function as a plugin
+        /// </summary>
+        /// <param name="func">The function to invoke</param>
+        /// <returns></returns>
+        public static Metalsharp From(Func<Metalsharp, Metalsharp> func) =>
+            func(new Metalsharp());
+
+        /// <summary>
+        /// Instantiate Metalsharp by invoking a plugin
+        /// </summary>
+        /// <param name="plugin">The plugin to invoke</param>
+        /// <returns></returns>
+        public static Metalsharp From(IMetalsharpPlugin plugin) =>
+            plugin.Execute(new Metalsharp());
+
+        /// <summary>
+        /// Instantiate Metalsharp by invoking a plugin by type
+        /// 
+        /// The plugin type must have an empty constructor
+        /// </summary>
+        /// <typeparam name="T">The type of the plugin to invoke</typeparam>
+        /// <returns></returns>
+        public static Metalsharp From<T>() where T : IMetalsharpPlugin, new() =>
+            new T().Execute(new Metalsharp());
+
+        #endregion
 
         #region Methods
 
