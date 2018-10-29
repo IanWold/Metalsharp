@@ -231,9 +231,9 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveInput(Func<InputFile, bool> predicate)
+        public Metalsharp RemoveInput(Predicate<InputFile> match)
         {
-            InputFiles.RemoveAll(file => predicate(file));
+            InputFiles.RemoveAll(match);
             return this;
         }
 
@@ -250,9 +250,9 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveOutput(Func<OutputFile, bool> predicate)
+        public Metalsharp RemoveOutput(Predicate<OutputFile> match)
         {
-            OutputFiles.RemoveAll(file => predicate(file));
+            OutputFiles.RemoveAll(match);
             return this;
         }
 
@@ -299,12 +299,13 @@ namespace Metal.Sharp
         /// <summary>
         /// The input files
         /// </summary>
-        public List<InputFile> InputFiles { get; set; } = new List<InputFile>();
+        public IMetalsharpFileCollection<InputFile> InputFiles { get; set; } = new MetalsharpFileCollection<InputFile>();
+        //public List<InputFile> InputFiles { get; set; } = new List<InputFile>();
 
         /// <summary>
         /// The files to output
         /// </summary>
-        public List<OutputFile> OutputFiles { get; set; } = new List<OutputFile>();
+        public IMetalsharpFileCollection<OutputFile> OutputFiles { get; set; } = new MetalsharpFileCollection<OutputFile>();
 
         #endregion
     }
