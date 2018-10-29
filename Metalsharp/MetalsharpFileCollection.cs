@@ -142,8 +142,17 @@ namespace Metal.Sharp
             items.RemoveAll(match);
     }
 
+    /// <summary>
+    /// MetalsharpFileCollection extensions for IEnumerable
+    /// </summary>
     public static class IEnumerableExtensions
     {
+        /// <summary>
+        /// Mimic IEnumerable.ToList
+        /// </summary>
+        /// <typeparam name="T">The type of the collection</typeparam>
+        /// <param name="list">The IEnumerable to convert to an IMetalsharpFileCollection</param>
+        /// <returns></returns>
         public static IMetalsharpFileCollection<T> ToMetalsharpFileCollection<T>(this IEnumerable<T> list) where T : IMetalsharpFile =>
             new MetalsharpFileCollection<T>(list);
     }
