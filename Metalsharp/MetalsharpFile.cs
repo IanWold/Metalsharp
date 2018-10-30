@@ -48,7 +48,7 @@ namespace Metal.Sharp
         /// <param name="directory">The directory in question</param>
         /// <returns></returns>
         public bool IsDescendantOf(string directory) =>
-            FilePath.ToLower().StartsWith(directory.ToLower());
+            FilePath.ToLower(CultureInfo.InvariantCulture).StartsWith(directory.ToLower(CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Returns true if the directory is the parent of the file
@@ -56,7 +56,7 @@ namespace Metal.Sharp
         /// <param name="directory">The directory in question</param>
         /// <returns></returns>
         public bool IsChildOf(string directory) =>
-            FilePath.ToLower().StartsWith(directory.ToLower())
+            FilePath.ToLower(CultureInfo.InvariantCulture).StartsWith(directory.ToLower(CultureInfo.InvariantCulture))
             && ! FilePath.Substring(directory.Length).Contains("/");
 
         #endregion
