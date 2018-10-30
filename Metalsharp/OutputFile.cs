@@ -37,5 +37,18 @@ namespace Metal.Sharp
                 throw new ArgumentException("File " + filePath + " does not exist.");
             }
         }
+
+        /// <summary>
+        /// Createa  new OutputFile from an existing file and overwrite the FilePath
+        /// </summary>
+        /// <param name="pathToRead">The path to the file to read in</param>
+        /// <param name="pathToSave">The path to store in OutputFile.</param>
+        /// <returns></returns>
+        public static OutputFile FromExisting(string pathToRead, string pathToSave)
+        {
+            var toReturn = FromExisting(pathToRead);
+            toReturn.FilePath = pathToSave;
+            return toReturn;
+        }
     }
 }

@@ -76,7 +76,7 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    InputFiles.Add(new InputFile(file));
+                    InputFiles.Add(new InputFile(file, Path.Combine(path, Path.DirectorySeparatorChar.ToString())));
                 }
 
                 return this;
@@ -121,7 +121,7 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    OutputFiles.Add(OutputFile.FromExisting(path));
+                    OutputFiles.Add(OutputFile.FromExisting(path, Path.Combine(path, Path.DirectorySeparatorChar.ToString())));
                 }
 
                 return this;
@@ -300,7 +300,6 @@ namespace Metal.Sharp
         /// The input files
         /// </summary>
         public IMetalsharpFileCollection<InputFile> InputFiles { get; set; } = new MetalsharpFileCollection<InputFile>();
-        //public List<InputFile> InputFiles { get; set; } = new List<InputFile>();
 
         /// <summary>
         /// The files to output

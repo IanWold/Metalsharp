@@ -34,6 +34,15 @@ namespace Metal.Sharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pathToRead"></param>
+        /// <param name="pathToSave"></param>
+        public InputFile(string pathToRead, string pathToSave)
+            : this(pathToRead) =>
+            FilePath = pathToSave;
+
         #region Properties
 
         /// <summary>
