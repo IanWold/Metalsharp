@@ -1,5 +1,6 @@
 <h1><img src="Metalsharp.png" height="70"/></h1>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6452c091d20b4909a9c4356234db3a2a)](https://app.codacy.com/app/IanWold/Metalsharp?utm_source=github.com&utm_medium=referral&utm_content=IanWold/Metalsharp&utm_campaign=Badge_Grade_Settings)
 [![Travis (.org)](https://img.shields.io/travis/IanWold/Metalsharp.svg?style=flat-square)](https://travis-ci.org/IanWold/Metalsharp)
 [![Codacy grade](https://img.shields.io/codacy/grade/29c18f6bc08146e884e173ad1262cead.svg?style=flat-square)](https://app.codacy.com/project/IanWold/Metalsharp/dashboard)
 
