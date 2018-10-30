@@ -20,8 +20,8 @@ namespace Metal.Sharp
         /// <param name="path">The path to the directory</param>
         public Metalsharp(string path)
         {
+            RootDirectory = Path.Combine(path, Path.DirectorySeparatorChar.ToString());
             AddInput(path, true);
-            RootDirectory = path;
         }
 
         #region Static Methods
@@ -76,7 +76,16 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    InputFiles.Add(new InputFile(file, Path.Combine(path, Path.DirectorySeparatorChar.ToString())));
+                    var pathToSave = path.StartsWith(RootDirectory)
+                        ? path.Substring(RootDirectory.Length)
+                        : path;
+
+                    InputFiles.Add(new InputFile(file, pathToSave));
+                }
+
+                foreach (var dir in Directory.GetDirectories(path))
+                {
+                    AddInput(dir);
                 }
 
                 return this;
@@ -121,7 +130,16 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    OutputFiles.Add(OutputFile.FromExisting(path, Path.Combine(path, Path.DirectorySeparatorChar.ToString())));
+                    var pathToSave = path.StartsWith(RootDirectory)
+                        ? path.Substring(RootDirectory.Length)
+                        : path;
+
+                    OutputFiles.Add(OutputFile.FromExisting(path, pathToSave));
+                }
+
+                foreach (var dir in Directory.GetDirectories(path))
+                {
+                    AddOutput(dir);
                 }
 
                 return this;
