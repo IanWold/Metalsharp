@@ -23,6 +23,14 @@ namespace Metal.Sharp
             directory.Use(new Drafts());
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public static Metalsharp UseFrontmatter(this Metalsharp directory) =>
+            directory.Use(new Frontmatter());
+
+        /// <summary>
         /// Invoke the Layout plugin
         /// </summary>
         /// <returns></returns>
