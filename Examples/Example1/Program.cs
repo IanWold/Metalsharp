@@ -6,6 +6,8 @@ namespace Example1
     {
         static void Main(string[] args)
         {
+            var a = new Metalsharp("Site");
+
             new Metalsharp("Site")
                 .UseDrafts()
                 .Use<Markdown>()
