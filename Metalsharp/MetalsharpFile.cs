@@ -9,6 +9,28 @@ namespace Metal.Sharp
     /// </summary>
     public class MetalsharpFile : IMetalsharpFile
     {
+        /// <summary>
+        /// Instantiate a new MetalsharpFile with no metadata
+        /// </summary>
+        /// <param name="text">The text of the file</param>
+        /// <param name="filePath">The path of the file</param>
+        public MetalsharpFile(string text, string filePath)
+            : this(text, filePath, new Dictionary<string, object>())
+        { }
+
+        /// <summary>
+        /// Instantiate a new MetalsharpFile with the specified metadata
+        /// </summary>
+        /// <param name="text">The text of the file</param>
+        /// <param name="filePath">The path of the file</param>
+        /// <param name="metadata">The metadata of the file</param>
+        public MetalsharpFile(string text, string filePath, Dictionary<string, object> metadata)
+        {
+            Text = text;
+            FilePath = filePath;
+            Metadata = metadata;
+        }
+
         #region Properties
 
         /// <summary>

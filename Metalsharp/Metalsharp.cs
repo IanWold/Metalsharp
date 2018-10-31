@@ -57,6 +57,44 @@ namespace Metal.Sharp
         #region Methods
 
         /// <summary>
+        /// Add an existing file to the input or output
+        /// </summary>
+        /// <param name="path">The path to the file or directory</param>
+        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
+        /// <param name="add">The function to add the file</param>
+        /// <returns></returns>
+        Metalsharp AddExisting(string path, bool enforceDirectory, Action<MetalsharpFile> add)
+        {
+            if (Directory.Exists(path))
+            {
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    add(GetFileWithNormalizedDirectory(path));
+                }
+
+                foreach (var dir in Directory.GetDirectories(path))
+                {
+                    AddExisting(dir, false, add);
+                }
+
+                return this;
+            }
+            else if (File.Exists(path) && !enforceDirectory)
+            {
+                add(GetFileWithNormalizedDirectory(path));
+                return this;
+            }
+            else if (enforceDirectory)
+            {
+                throw new ArgumentException("Directory " + path + " does not exist.");
+            }
+            else
+            {
+                throw new ArgumentException("File " + path + " does not exist.");
+            }
+        }
+
+        /// <summary>
         /// Add a file or all the files in a directory to the input
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
@@ -70,41 +108,8 @@ namespace Metal.Sharp
         /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddInput(string path, bool enforceDirectory)
-        {
-            if (Directory.Exists(path))
-            {
-                foreach (var file in Directory.GetFiles(path))
-                {
-                    var pathToSave = path.StartsWith(RootDirectory)
-                        ? path.Substring(RootDirectory.Length)
-                        : path;
-
-                    InputFiles.Add(new InputFile(file, pathToSave));
-                }
-
-                foreach (var dir in Directory.GetDirectories(path))
-                {
-                    AddInput(dir);
-                }
-
-                return this;
-            }
-            else if (File.Exists(path) && !enforceDirectory)
-            {
-                InputFiles.Add(new InputFile(path));
-
-                return this;
-            }
-            else if (enforceDirectory)
-            {
-                throw new ArgumentException("Directory " + path + " does not exist.");
-            }
-            else
-            {
-                throw new ArgumentException("File " + path + " does not exist.");
-            }
-        }
+        public Metalsharp AddInput(string path, bool enforceDirectory) =>
+            AddExisting(path, enforceDirectory, InputFiles.Add);
 
         /// <summary>
         /// Add a file or all the files in a directory directly to the output
@@ -124,41 +129,8 @@ namespace Metal.Sharp
         /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddOutput(string path, bool enforceDirectory)
-        {
-            if (Directory.Exists(path))
-            {
-                foreach (var file in Directory.GetFiles(path))
-                {
-                    var pathToSave = path.StartsWith(RootDirectory)
-                        ? path.Substring(RootDirectory.Length)
-                        : path;
-
-                    OutputFiles.Add(OutputFile.FromExisting(path, pathToSave));
-                }
-
-                foreach (var dir in Directory.GetDirectories(path))
-                {
-                    AddOutput(dir);
-                }
-
-                return this;
-            }
-            else if (File.Exists(path) && !enforceDirectory)
-            {
-                OutputFiles.Add(OutputFile.FromExisting(path));
-
-                return this;
-            }
-            else if (enforceDirectory)
-            {
-                throw new ArgumentException("Directory " + path + " does not exist.");
-            }
-            else
-            {
-                throw new ArgumentException("File " + path + " does not exist.");
-            }
-        }
+        public Metalsharp AddOutput(string path, bool enforceDirectory) =>
+            AddExisting(path, enforceDirectory, OutputFiles.Add);
 
         /// <summary>
         /// Write all the output files to the default output directory
@@ -215,6 +187,19 @@ namespace Metal.Sharp
         }
 
         /// <summary>
+        /// Gets a MetalsharpFile with the RootDirectory removed from its path
+        /// </summary>
+        /// <param name="path">The path to the file to read</param>
+        /// <returns></returns>
+        MetalsharpFile GetFileWithNormalizedDirectory(string path) =>
+            new MetalsharpFile(
+                File.ReadAllText(path),
+                path.StartsWith(RootDirectory)
+                    ? path.Substring(RootDirectory.Length)
+                    : path
+            );
+
+        /// <summary>
         /// Add or alter directory-level metadata
         /// </summary>
         /// <param name="pairs">The key-value pairs to add/update</param>
@@ -249,7 +234,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveInput(Predicate<InputFile> match)
+        public Metalsharp RemoveInput(Predicate<MetalsharpFile> match)
         {
             InputFiles.RemoveAll(match);
             return this;
@@ -268,7 +253,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveOutput(Predicate<OutputFile> match)
+        public Metalsharp RemoveOutput(Predicate<MetalsharpFile> match)
         {
             OutputFiles.RemoveAll(match);
             return this;
@@ -317,12 +302,12 @@ namespace Metal.Sharp
         /// <summary>
         /// The input files
         /// </summary>
-        public IMetalsharpFileCollection<InputFile> InputFiles { get; set; } = new MetalsharpFileCollection<InputFile>();
+        public IMetalsharpFileCollection<MetalsharpFile> InputFiles { get; set; } = new MetalsharpFileCollection<MetalsharpFile>();
 
         /// <summary>
         /// The files to output
         /// </summary>
-        public IMetalsharpFileCollection<OutputFile> OutputFiles { get; set; } = new MetalsharpFileCollection<OutputFile>();
+        public IMetalsharpFileCollection<MetalsharpFile> OutputFiles { get; set; } = new MetalsharpFileCollection<MetalsharpFile>();
 
         #endregion
     }

@@ -22,7 +22,7 @@ namespace Metal.Sharp
                 {
                     var name = Path.GetFileNameWithoutExtension(file.FilePath);
                     var text = Markdig.Markdown.ToHtml(file.Text);
-                    directory.OutputFiles.Add(new OutputFile(name + ".html", text) { Metadata = file.Metadata });
+                    directory.OutputFiles.Add(new MetalsharpFile(text, name + ".html") { Metadata = file.Metadata });
                 }
             }
 
