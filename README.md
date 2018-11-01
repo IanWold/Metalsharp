@@ -179,3 +179,7 @@ Full documentation right around the corner...
 ## Contributing
 
 If you'd like to contribute, please do! Open an Issue, submit a PR, I'm happy however you want to contribute.
+
+## But why is this necessary?
+
+Fun

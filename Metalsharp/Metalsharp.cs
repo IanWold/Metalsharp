@@ -200,6 +200,15 @@ namespace Metal.Sharp
             );
 
         /// <summary>
+        /// Add or alter a single item of metadata
+        /// </summary>
+        /// <param name="key">The key to add/update</param>
+        /// <param name="value">The value to store with the key</param>
+        /// <returns></returns>
+        public Metalsharp Meta(string key, object value) =>
+            Meta((key, value));
+
+        /// <summary>
         /// Add or alter directory-level metadata
         /// </summary>
         /// <param name="pairs">The key-value pairs to add/update</param>
