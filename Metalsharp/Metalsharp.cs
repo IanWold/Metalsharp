@@ -69,7 +69,7 @@ namespace Metal.Sharp
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    add(GetFileWithNormalizedDirectory(path));
+                    add(GetFileWithNormalizedDirectory(file));
                 }
 
                 foreach (var dir in Directory.GetDirectories(path))

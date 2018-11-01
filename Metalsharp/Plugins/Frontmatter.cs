@@ -23,6 +23,7 @@ namespace Metal.Sharp
             {
                 if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
                 {
+                    file.Text = text;
                     foreach (var pair in metadata)
                     {
                         if (file.Metadata.ContainsKey(pair.Key))
