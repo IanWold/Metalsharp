@@ -80,7 +80,7 @@ namespace Metal.Sharp
         /// <returns></returns>
         static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
         {
-            var split = document.Split(new string[] { "---" }, StringSplitOptions.None);
+            var split = document.Split(new [] { "---" }, StringSplitOptions.None);
 
             frontmatter = null;
             remainder = null;
@@ -102,7 +102,10 @@ namespace Metal.Sharp
                     return false;
                 }
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -114,7 +117,7 @@ namespace Metal.Sharp
         /// <returns></returns>
         static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
         {
-            var split = document.Split(new string[] { ";;;" }, StringSplitOptions.None);
+            var split = document.Split(new [] { ";;;" }, StringSplitOptions.None);
 
             frontmatter = null;
             remainder = null;
@@ -136,7 +139,10 @@ namespace Metal.Sharp
                     return false;
                 }
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
     }
 }
