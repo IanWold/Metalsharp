@@ -17,8 +17,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        /// <returns></returns>
-        public Metalsharp Execute(Metalsharp directory)
+        public void Execute(Metalsharp directory)
         {
             foreach (var file in directory.OutputFiles.Where(i => i.Extension == "html"))
             {
@@ -41,8 +40,6 @@ namespace Metal.Sharp
                     file.Text = res;
                 }
             }
-
-            return directory;
         }
     }
 }

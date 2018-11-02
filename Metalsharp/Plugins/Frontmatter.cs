@@ -16,8 +16,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        /// <returns></returns>
-        public Metalsharp Execute(Metalsharp directory)
+        public void Execute(Metalsharp directory)
         {
             foreach (var file in directory.InputFiles)
             {
@@ -37,8 +36,6 @@ namespace Metal.Sharp
                     }
                 }
             }
-
-            return directory;
         }
 
         /// <summary>

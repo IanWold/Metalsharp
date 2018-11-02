@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="directory">The directory to alter</param>
         /// <returns>The same directory as was input</returns>
-        Metalsharp Execute(Metalsharp directory);
+        void Execute(Metalsharp directory);
     }
 }

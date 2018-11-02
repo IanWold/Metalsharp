@@ -27,11 +27,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        /// <returns></returns>
-        public Metalsharp Execute(Metalsharp directory)
-        {
+        public void Execute(Metalsharp directory) =>
             Branches.ForEach(b => b(DeserializeObject<Metalsharp>(SerializeObject(directory))));
-            return directory;
-        }
     }
 }

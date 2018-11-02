@@ -40,7 +40,7 @@ namespace Metal.Sharp
         /// <param name="plugin">The plugin to invoke</param>
         /// <returns></returns>
         public static Metalsharp From(IMetalsharpPlugin plugin) =>
-            plugin.Execute(new Metalsharp());
+            new Metalsharp().Use(i => plugin.Execute(i));
 
         /// <summary>
         /// Instantiate Metalsharp by invoking a plugin by type
@@ -50,7 +50,7 @@ namespace Metal.Sharp
         /// <typeparam name="T">The type of the plugin to invoke</typeparam>
         /// <returns></returns>
         public static Metalsharp From<T>() where T : IMetalsharpPlugin, new() =>
-            new T().Execute(new Metalsharp());
+            new Metalsharp().Use<T>();
 
         #endregion
 
@@ -273,8 +273,11 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="func">The function to invoke</param>
         /// <returns></returns>
-        public Metalsharp Use(Func<Metalsharp, Metalsharp> func) =>
+        public Metalsharp Use(Action<Metalsharp> func)
+        {
             func(this);
+            return this;
+        }
 
         /// <summary>
         /// Invoke a plugin
@@ -282,7 +285,7 @@ namespace Metal.Sharp
         /// <param name="plugin">The plugin to invoke</param>
         /// <returns></returns>
         public Metalsharp Use(IMetalsharpPlugin plugin) =>
-            plugin.Execute(this);
+            Use(i => plugin.Execute(i));
 
         /// <summary>
         /// Invoke a plugin by type
@@ -292,7 +295,7 @@ namespace Metal.Sharp
         /// <typeparam name="T">The type of the plugin to invoke</typeparam>
         /// <returns></returns>
         public Metalsharp Use<T>() where T : IMetalsharpPlugin, new() =>
-            new T().Execute(this);
+            Use(new T());
 
         #endregion
 

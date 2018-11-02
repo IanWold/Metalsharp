@@ -11,8 +11,7 @@
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        /// <returns></returns>
-        public Metalsharp Execute(Metalsharp directory)
+        public void Execute(Metalsharp directory)
         {
             directory.InputFiles.RemoveAll(file =>
                 file.Metadata.TryGetValue("draft", out var _isDraft)
@@ -25,8 +24,6 @@
                 && _isDraft is bool isDraft
                 && isDraft
             );
-
-            return directory;
         }
     }
 }
