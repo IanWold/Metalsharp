@@ -139,7 +139,7 @@ Your `Execute` funtion should always return `directory` at the end, or throw an 
 
 ### With a Function (err... "Action")
 
-If you don't plan on packaging your plugin for others to use, or you need a "quick and dirty" solution, you can just use any `Metalsharp -> Metalsharp` function with `Use`. First, implement a function:
+If you don't plan on packaging your plugin for others to use, or you need a "quick and dirty" solution, you can just use any `Action<Metalsharp>` with `Use`. First, implement a function:
 
 ```c#
 void DeleteEverything(Metalsharp directory)
@@ -165,7 +165,6 @@ new Metalsharp("Site")
 	.Use(directory => {
 		directory.InputFiles.Clear();
 		directory.OutputFiles.Clear();
-		return directory;
 	})
 	...
 ```
