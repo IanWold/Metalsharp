@@ -182,7 +182,9 @@ namespace Metal.Sharp
         /// <param name="options">Metalsmith build configuration options</param>
         public void Build(Action<Metalsharp> func, BuildOptions options)
         {
+            BeforeBuild(this, new EventArgs());
             func(this);
+            AfterBuild(this, new EventArgs());
             Build(options);
         }
 
@@ -275,7 +277,9 @@ namespace Metal.Sharp
         /// <returns></returns>
         public Metalsharp Use(Action<Metalsharp> func)
         {
+            BeforeUse(this, new EventArgs());
             func(this);
+            AfterUse(this, new EventArgs());
             return this;
         }
 
@@ -296,6 +300,18 @@ namespace Metal.Sharp
         /// <returns></returns>
         public Metalsharp Use<T>() where T : IMetalsharpPlugin, new() =>
             Use(new T());
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler BeforeUse;
+
+        public event EventHandler AfterUse;
+
+        public event EventHandler BeforeBuild;
+
+        public event EventHandler AfterBuild;
 
         #endregion
 
