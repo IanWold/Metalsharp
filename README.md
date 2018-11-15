@@ -19,7 +19,9 @@ new Metalsharp("Site")
 
 This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file specified in that HTML file's metadata.
 
-## Setting up a Directory for Metalsharp
+## Getting Started
+
+### Configuring a Metalsharp Project Directory
 
 See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
 
@@ -37,7 +39,7 @@ See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Exampl
 
 Within a root directory is a good place for any files needed to configure plugins, such as `layout.template` for the `Layout` plugin. Putting all the site files in a site folder keeps them separated from config files or other project files. The default behavior for Metalsharp is to put output files in a `bin` directory, but you can configure that differently. An output folder separate and outside the folder with site files is best practice.
 
-## Using Metalsharp
+### Using Metalsharp
 
 Full docs are on their way, in the meantime, here's (basically) how you use this tiny library:
 
