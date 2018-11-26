@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Represents a directory to be manipulated by Metalsharp plugins
     /// </summary>
-    public class Metalsharp
+    public class MetalsharpDirectory
     {
         /// <summary>
         /// Used by Metalsharp.From to pass an empty Metalsharp to a plugin
         /// </summary>
-        private Metalsharp() { }
+        private MetalsharpDirectory() { }
 
         /// <summary>
         /// Instantiate Metalsharp from an existing directory
         /// </summary>
         /// <param name="path">The path to the directory</param>
-        public Metalsharp(string path)
+        public MetalsharpDirectory(string path)
         {
             RootDirectory = Path.Combine(path, Path.DirectorySeparatorChar.ToString());
             AddInput(path, true);
@@ -31,16 +31,16 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="func">The function to invoke</param>
         /// <returns></returns>
-        public static Metalsharp From(Func<Metalsharp, Metalsharp> func) =>
-            func(new Metalsharp());
+        public static MetalsharpDirectory From(Func<MetalsharpDirectory, MetalsharpDirectory> func) =>
+            func(new MetalsharpDirectory());
 
         /// <summary>
         /// Instantiate Metalsharp by invoking a plugin
         /// </summary>
         /// <param name="plugin">The plugin to invoke</param>
         /// <returns></returns>
-        public static Metalsharp From(IMetalsharpPlugin plugin) =>
-            new Metalsharp().Use(i => plugin.Execute(i));
+        public static MetalsharpDirectory From(IMetalsharpPlugin plugin) =>
+            new MetalsharpDirectory().Use(i => plugin.Execute(i));
 
         /// <summary>
         /// Instantiate Metalsharp by invoking a plugin by type
@@ -49,8 +49,8 @@ namespace Metal.Sharp
         /// </summary>
         /// <typeparam name="T">The type of the plugin to invoke</typeparam>
         /// <returns></returns>
-        public static Metalsharp From<T>() where T : IMetalsharpPlugin, new() =>
-            new Metalsharp().Use<T>();
+        public static MetalsharpDirectory From<T>() where T : IMetalsharpPlugin, new() =>
+            new MetalsharpDirectory().Use<T>();
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace Metal.Sharp
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <param name="add">The function to add the file</param>
         /// <returns></returns>
-        Metalsharp AddExisting(string path, bool enforceDirectory, Action<MetalsharpFile> add)
+        MetalsharpDirectory AddExisting(string path, bool enforceDirectory, Action<MetalsharpFile> add)
         {
             if (Directory.Exists(path))
             {
@@ -99,7 +99,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
         /// <returns></returns>
-        public Metalsharp AddInput(string path) =>
+        public MetalsharpDirectory AddInput(string path) =>
             AddInput(path, false);
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Metal.Sharp
         /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddInput(string path, bool enforceDirectory) =>
+        public MetalsharpDirectory AddInput(string path, bool enforceDirectory) =>
             AddExisting(path, enforceDirectory, InputFiles.Add);
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
         /// <returns></returns>
-        public Metalsharp AddOutput(string path) =>
+        public MetalsharpDirectory AddOutput(string path) =>
             AddOutput(path, false);
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Metal.Sharp
         /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public Metalsharp AddOutput(string path, bool enforceDirectory) =>
+        public MetalsharpDirectory AddOutput(string path, bool enforceDirectory) =>
             AddExisting(path, enforceDirectory, OutputFiles.Add);
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Metal.Sharp
         /// with default build options
         /// </summary>
         /// <param name="func">The function to perform</param>
-        public void Build(Action<Metalsharp> func) =>
+        public void Build(Action<MetalsharpDirectory> func) =>
             Build(func, new BuildOptions());
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="func">The function to perform</param>
         /// <param name="options">Metalsmith build configuration options</param>
-        public void Build(Action<Metalsharp> func, BuildOptions options)
+        public void Build(Action<MetalsharpDirectory> func, BuildOptions options)
         {
             BeforeBuild(this, new EventArgs());
             func(this);
@@ -207,7 +207,7 @@ namespace Metal.Sharp
         /// <param name="key">The key to add/update</param>
         /// <param name="value">The value to store with the key</param>
         /// <returns></returns>
-        public Metalsharp Meta(string key, object value) =>
+        public MetalsharpDirectory Meta(string key, object value) =>
             Meta((key, value));
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="pairs">The key-value pairs to add/update</param>
         /// <returns></returns>
-        public Metalsharp Meta(params (string key, object value)[] pairs)
+        public MetalsharpDirectory Meta(params (string key, object value)[] pairs)
         {
             foreach (var (key, value) in pairs)
             {
@@ -237,7 +237,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="path">The path of the file to remove</param>
         /// <returns></returns>
-        public Metalsharp RemoveInput(string path) =>
+        public MetalsharpDirectory RemoveInput(string path) =>
             RemoveInput(file => file.FilePath == path);
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveInput(Predicate<MetalsharpFile> match)
+        public MetalsharpDirectory RemoveInput(Predicate<MetalsharpFile> match)
         {
             InputFiles.RemoveAll(match);
             return this;
@@ -256,7 +256,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="path">The path of the file to remove</param>
         /// <returns></returns>
-        public Metalsharp RemoveOutput(string path) =>
+        public MetalsharpDirectory RemoveOutput(string path) =>
             RemoveOutput(file => file.FilePath == path);
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public Metalsharp RemoveOutput(Predicate<MetalsharpFile> match)
+        public MetalsharpDirectory RemoveOutput(Predicate<MetalsharpFile> match)
         {
             OutputFiles.RemoveAll(match);
             return this;
@@ -275,7 +275,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="func">The function to invoke</param>
         /// <returns></returns>
-        public Metalsharp Use(Action<Metalsharp> func)
+        public MetalsharpDirectory Use(Action<MetalsharpDirectory> func)
         {
             BeforeUse(this, new EventArgs());
             func(this);
@@ -288,7 +288,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="plugin">The plugin to invoke</param>
         /// <returns></returns>
-        public Metalsharp Use(IMetalsharpPlugin plugin) =>
+        public MetalsharpDirectory Use(IMetalsharpPlugin plugin) =>
             Use(i => plugin.Execute(i));
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <typeparam name="T">The type of the plugin to invoke</typeparam>
         /// <returns></returns>
-        public Metalsharp Use<T>() where T : IMetalsharpPlugin, new() =>
+        public MetalsharpDirectory Use<T>() where T : IMetalsharpPlugin, new() =>
             Use(new T());
 
         #endregion

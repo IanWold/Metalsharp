@@ -1,4 +1,4 @@
-﻿using Metal.Sharp;
+﻿using Metalsharp;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ namespace ExamplePlugin
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory)
+        public void Execute(MetalsharpDirectory directory)
         {
             foreach (var file in directory.OutputFiles.Where(i => i.Extension == "html"))
             {

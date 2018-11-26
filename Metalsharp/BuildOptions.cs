@@ -1,4 +1,4 @@
-﻿namespace Metal.Sharp
+﻿namespace Metalsharp
 {
     /// <summary>
     /// Represents the options when Metalsharp outputs a directory

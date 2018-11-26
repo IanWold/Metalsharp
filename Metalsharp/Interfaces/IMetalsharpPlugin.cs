@@ -1,4 +1,4 @@
-﻿namespace Metal.Sharp
+﻿namespace Metalsharp
 {
     /// <summary>
     /// Represents a Metalsharp plugin
@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="directory">The directory to alter</param>
         /// <returns>The same directory as was input</returns>
-        void Execute(Metalsharp directory);
+        void Execute(MetalsharpDirectory directory);
     }
 }

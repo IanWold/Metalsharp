@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Represents the interface for a collection of Metalsharp files

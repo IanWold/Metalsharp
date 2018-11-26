@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Represents the interface for a Metalsharp file

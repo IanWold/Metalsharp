@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Represents a collection of Metalsharp files

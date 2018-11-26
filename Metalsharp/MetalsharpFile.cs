@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Represents a file

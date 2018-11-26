@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// Extensions to Metalsharp for invoking included plugins
@@ -12,7 +12,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <returns></returns>
         /// <param name="branches">The functions to handle each of the branches</param>
-        public static Metalsharp Branch(this Metalsharp directory, params Action<Metalsharp>[] branches) =>
+        public static MetalsharpDirectory Branch(this MetalsharpDirectory directory, params Action<MetalsharpDirectory>[] branches) =>
             directory.Use(new Branch(branches));
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static Metalsharp UseDebug(this Metalsharp directory) =>
+        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory) =>
             directory.Use(new Debug());
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Metal.Sharp
         /// <param name="directory"></param>
         /// <param name="logPath">The path to the log file</param>
         /// <returns></returns>
-        public static Metalsharp UseDebug(this Metalsharp directory, string logPath) =>
+        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory, string logPath) =>
             directory.Use(new Debug(logPath));
 
         /// <summary>
@@ -38,14 +38,14 @@ namespace Metal.Sharp
         /// <param name="directory"></param>
         /// <param name="onLog">The action to execute to log a debug line</param>
         /// <returns></returns>
-        public static Metalsharp UseDebug(this Metalsharp directory, Action<string> onLog) =>
+        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory, Action<string> onLog) =>
             directory.Use(new Debug(onLog));
 
         /// <summary>
         /// Invoke the Drafts plugin
         /// </summary>
         /// <returns></returns>
-        public static Metalsharp UseDrafts(this Metalsharp directory) =>
+        public static MetalsharpDirectory UseDrafts(this MetalsharpDirectory directory) =>
             directory.Use(new Drafts());
 
         /// <summary>
@@ -53,14 +53,14 @@ namespace Metal.Sharp
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static Metalsharp UseFrontmatter(this Metalsharp directory) =>
+        public static MetalsharpDirectory UseFrontmatter(this MetalsharpDirectory directory) =>
             directory.Use(new Frontmatter());
 
         /// <summary>
         /// Invoke the Merkdown plugin
         /// </summary>
         /// <returns></returns>
-        public static Metalsharp UseMarkdown(this Metalsharp directory) =>
+        public static MetalsharpDirectory UseMarkdown(this MetalsharpDirectory directory) =>
             directory.Use(new Markdown());
     }
 }

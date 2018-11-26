@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// The Markdown plugin
@@ -13,7 +13,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory)
+        public void Execute(MetalsharpDirectory directory)
         {
             foreach (var file in directory.InputFiles)
             {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// The Debug plugin
@@ -51,7 +51,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory) =>
+        public void Execute(MetalsharpDirectory directory) =>
             directory.AfterUse += (sender, e) =>
                 OnLog("Step " + ++Uses + "." +
                     "\r\n" +

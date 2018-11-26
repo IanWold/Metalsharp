@@ -1,4 +1,4 @@
-﻿using Metal.Sharp;
+﻿using Metalsharp;
 using ExamplePlugin;
 
 namespace ExampleWebsite
@@ -7,7 +7,7 @@ namespace ExampleWebsite
     {
         static void Main(string[] args)
         {
-            new Metalsharp("Site")
+            new MetalsharpDirectory("Site")
                 .Use<Frontmatter>()
                 .UseDrafts()
                 .Use<Markdown>()

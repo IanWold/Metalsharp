@@ -1,4 +1,4 @@
-﻿namespace Metal.Sharp
+﻿namespace Metalsharp
 {
     /// <summary>
     /// The Drafts plugin
@@ -11,7 +11,7 @@
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory)
+        public void Execute(MetalsharpDirectory directory)
         {
             directory.InputFiles.RemoveAll(file =>
                 file.Metadata.TryGetValue("draft", out var _isDraft)

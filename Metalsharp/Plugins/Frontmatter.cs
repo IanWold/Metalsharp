@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// The Frontmatter plugin
@@ -16,7 +16,7 @@ namespace Metal.Sharp
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory)
+        public void Execute(MetalsharpDirectory directory)
         {
             foreach (var file in directory.InputFiles)
             {

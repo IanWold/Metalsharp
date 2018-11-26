@@ -10,7 +10,7 @@ This project is brand-new - like, 0.0.1 new - so things will be added fast. I ho
 Generating a website from a directory is as simple as the following (from [Examples/ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite)):
 
 ```c#
-new Metalsharp("Site")
+new MetalsharpDirectory("Site")
     .UseDrafts()
     .Use<Frontmatter>()
     .Use(new Markdown())
@@ -46,7 +46,7 @@ Full docs are on their way, in the meantime, here's (basically) how you use this
 1. Instantiate a new Metalsharp object with the directory containing the files you want to manipulate:
 
 ```c#
-new Metalsharp("Site")
+new MetalsharpDirectory("Site")
 ```
 
 2. If you want to add a file to the input, you can do that:
@@ -101,7 +101,7 @@ new Metalsharp("Site")
 And with that all your output files should be in your output directory. Here's all the code together:
 
 ```c#
-new Metalsharp("Site")
+new MetalsharpDirectory("Site")
 	.AddInput("C:/SomeDir/myFile.md")
 	.AddOutput("C:/SomeDir/ForOutput.css")
 	.RemoveInput("C:/SomeDir/myFile.md")
@@ -121,7 +121,7 @@ Any plugin just needs to inherit from [`IMetalsharpPlugin`](https://github.com/I
 ```c#
 public class Markdown : IMetalsharpPlugin
 {
-    public void Execute(Metalsharp directory)
+    public void Execute(MetalsharpDirectory directory)
     {
         foreach (var file in directory.InputFiles)
         {
@@ -144,7 +144,7 @@ Your `Execute` funtion should always return `directory` at the end, or throw an 
 If you don't plan on packaging your plugin for others to use, or you need a "quick and dirty" solution, you can just use any `Action<Metalsharp>` with `Use`. First, implement a function:
 
 ```c#
-void DeleteEverything(Metalsharp directory)
+void DeleteEverything(MetalsharpDirectory directory)
 {
 	directory.InputFiles.Clear();
 	directory.OutputFiles.Clear();
@@ -155,7 +155,7 @@ void DeleteEverything(Metalsharp directory)
 Then add it to the stack with `Use`:
 
 ```c#
-new Metalsharp("Site")
+new MetalsharpDirectory("Site")
 	.Use(DeleteEverything)
 	...
 ```
@@ -163,7 +163,7 @@ new Metalsharp("Site")
 You can also use a lambda, if you wish:
 
 ```c#
-new Metalsharp("Site")
+new MetalsharpDirectory("Site")
 	.Use(directory => {
 		directory.InputFiles.Clear();
 		directory.OutputFiles.Clear();

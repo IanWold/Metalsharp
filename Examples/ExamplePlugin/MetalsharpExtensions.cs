@@ -1,4 +1,4 @@
-﻿using Metal.Sharp;
+﻿using Metalsharp;
 
 namespace ExamplePlugin
 {
@@ -9,7 +9,7 @@ namespace ExamplePlugin
         /// </summary>
         /// <returns></returns>
         /// <param name="filePath">The path to the layout file</param>
-        public static Metalsharp UseLayout(this Metalsharp directory, string filePath) =>
+        public static MetalsharpDirectory UseLayout(this MetalsharpDirectory directory, string filePath) =>
             directory.Use(new Layout());
     }
 }

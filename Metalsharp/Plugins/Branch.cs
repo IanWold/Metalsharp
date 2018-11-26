@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static Newtonsoft.Json.JsonConvert;
 
-namespace Metal.Sharp
+namespace Metalsharp
 {
     /// <summary>
     /// The Branch plugin
@@ -15,19 +15,19 @@ namespace Metal.Sharp
         /// <summary>
         /// </summary>
         /// <param name="branches">The functions defining each branch</param>
-        public Branch(params Action<Metalsharp>[] branches) =>
+        public Branch(params Action<MetalsharpDirectory>[] branches) =>
             Branches = branches.ToList();
 
         /// <summary>
         /// The function-branches
         /// </summary>
-        public List<Action<Metalsharp>> Branches { get; set; }
+        public List<Action<MetalsharpDirectory>> Branches { get; set; }
 
         /// <summary>
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
-        public void Execute(Metalsharp directory) =>
-            Branches.ForEach(b => b(DeserializeObject<Metalsharp>(SerializeObject(directory))));
+        public void Execute(MetalsharpDirectory directory) =>
+            Branches.ForEach(b => b(DeserializeObject<MetalsharpDirectory>(SerializeObject(directory))));
     }
 }
