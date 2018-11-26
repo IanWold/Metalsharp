@@ -1,6 +1,7 @@
 ﻿using Metal.Sharp;
+using ExamplePlugin;
 
-namespace Example1
+namespace ExampleWebsite
 {
     class Program
     {

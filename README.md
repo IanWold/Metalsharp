@@ -7,23 +7,23 @@ A tiny and extendable C# library for generating static sites, inspired by [Metal
 
 This project is brand-new - like, 0.0.1 new - so things will be added fast. I hope. Probably not. The good thing, though, is that it's so simple that very significant changes are unlikely to happen. That said, if you have a suggestion or want to contribute, now's probably the easiest time for it ;)
 
-Generating a website from a directory is as simple as the following (from [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1)):
+Generating a website from a directory is as simple as the following (from [Examples/ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite)):
 
 ```c#
 new Metalsharp("Site")
     .UseDrafts()
-    .Use<Markdown>()
-    .Use(new Layout())
+    .Use<Frontmatter>()
+    .Use(new Markdown())
     .Build();
 ```
 
-This example uses three plugins: `Drafts`, `Markdown`, and `Layout`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file specified in that HTML file's metadata.
+This example uses three plugins: `Drafts`, `Frontmatter`, and `Markdown`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file specified in that HTML file's metadata.
 
 ## Getting Started
 
 ### Configuring a Metalsharp Project Directory
 
-See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/Example1) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
+See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
 
 ```text
 .
@@ -37,7 +37,7 @@ See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Exampl
 └── README.md
 ```
 
-Within a root directory is a good place for any files needed to configure plugins, such as `layout.template` for the `Layout` plugin. Putting all the site files in a site folder keeps them separated from config files or other project files. The default behavior for Metalsharp is to put output files in a `bin` directory, but you can configure that differently. An output folder separate and outside the folder with site files is best practice.
+Within a root directory is a good place for any files needed to configure plugins, such as `layout.template` for the [example `Layout` plugin](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExamplePlugin). Putting all the site files in a site folder keeps them separated from config files or other project files. The default behavior for Metalsharp is to put output files in a `bin` directory, but you can configure that differently. An output folder separate and outside the folder with site files is best practice.
 
 ### Using Metalsharp
 
@@ -77,13 +77,13 @@ new Metalsharp("Site")
 6. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
 
 ```c#
-.UseMarkdown()
+.UseFrontmatter()
 ```
 
 7. If a plugin does not have an empty constructor, or if you prefer this syntax, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
 
 ```c#
-.Use(new Layout())
+.Use(new Markdown())
 ```
 
 8. When you've configured your plugin pipeline, call `Build` to execute the stack:
@@ -107,8 +107,8 @@ new Metalsharp("Site")
 	.RemoveInput("C:/SomeDir/myFile.md")
 	.RemoveOutput("ForOutput.css")
 	.Use<Drafts>()
-	.UseMarkdown()
-	.Use(new Layout())
+	.UseFrontmatter()
+	.Use(new Markdown())
 	.Build(new BuildOptions() { OutputDirectory = "C:/Output" });
 ```
 
@@ -116,7 +116,7 @@ new Metalsharp("Site")
 
 ### By Implementing `IMetalsharpPlugin`
 
-Any plugin just needs to inherit from [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/IMetalsharpPlugin.cs). Below is the code for the Markdown plugin:
+Any plugin just needs to inherit from [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Interfaces/IMetalsharpPlugin.cs). Below is the code for the `Markdown` plugin:
 
 ```c#
 public class Markdown : IMetalsharpPlugin
