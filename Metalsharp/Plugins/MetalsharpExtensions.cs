@@ -11,9 +11,19 @@ namespace Metalsharp
         /// Invoke the Branch plugin
         /// </summary>
         /// <returns></returns>
+        /// <param name="directory"></param>
         /// <param name="branches">The functions to handle each of the branches</param>
         public static MetalsharpDirectory Branch(this MetalsharpDirectory directory, params Action<MetalsharpDirectory>[] branches) =>
             directory.Use(new Branch(branches));
+
+        /// <summary>
+        /// Invoke the Collections plugin
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="definitions">The definitions of each collection</param>
+        /// <returns></returns>
+        public static MetalsharpDirectory UseCollections(this MetalsharpDirectory directory, params (string name, Predicate<IMetalsharpFile> predicate)[] definitions) =>
+            directory.Use(new Collections(definitions));
 
         /// <summary>
         /// Invoke the default Debug plugin
