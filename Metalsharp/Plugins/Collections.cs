@@ -39,7 +39,7 @@ namespace Metalsharp
                 directory.InputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => inputCollection.Add(i.FilePath));
                 directory.OutputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => outputCollection.Add(i.FilePath));
 
-                collections.Add(definition.name, new Dictionary<string, string[]>()
+                collections.Add(definition.name, new Dictionary<string, string[]>
                 {
                     ["input"] = inputCollection.ToArray(),
                     ["output"] = outputCollection.ToArray()

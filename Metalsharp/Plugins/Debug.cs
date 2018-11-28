@@ -45,7 +45,7 @@ namespace Metalsharp
         /// <summary>
         /// A count of the number of "Uses" against the directory
         /// </summary>
-        private int Uses = 0;
+        private int Uses;
 
         /// <summary>
         /// Invokes the plugin

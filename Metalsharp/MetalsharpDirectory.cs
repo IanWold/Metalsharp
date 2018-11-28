@@ -6,7 +6,7 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    /// Represents a directory to be manipulated by Metalsharp plugins
+    /// Represents a root directory to be manipulated by Metalsharp plugins
     /// </summary>
     public class MetalsharpDirectory
     {
@@ -169,16 +169,16 @@ namespace Metalsharp
         /// <param name="options">Metalsmith build configuration options</param>
         public void Build(BuildOptions options)
         {
-            options = options ?? new BuildOptions();
+            var buildOptions = options ?? new BuildOptions();
 
-            if (!Directory.Exists(options.OutputDirectory))
+            if (!Directory.Exists(buildOptions.OutputDirectory))
             {
-                Directory.CreateDirectory(options.OutputDirectory);
+                Directory.CreateDirectory(buildOptions.OutputDirectory);
             }
 
-            if (options.ClearOutputDirectory)
+            if (buildOptions.ClearOutputDirectory)
             {
-                foreach (var file in Directory.GetFiles(options.OutputDirectory))
+                foreach (var file in Directory.GetFiles(buildOptions.OutputDirectory))
                 {
                     File.Delete(file);
                 }
@@ -186,7 +186,7 @@ namespace Metalsharp
 
             foreach (var file in OutputFiles)
             {
-                var path = Path.Combine(options.OutputDirectory, file.FilePath);
+                var path = Path.Combine(buildOptions.OutputDirectory, file.FilePath);
                 File.WriteAllText(path, file.Text);
             }
         }
