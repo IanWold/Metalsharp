@@ -233,6 +233,30 @@ namespace Metalsharp
         }
 
         /// <summary>
+        /// Remove a file from the input and output
+        /// </summary>
+        /// <param name="path">The path of the file to remove</param>
+        /// <returns></returns>
+        public MetalsharpDirectory RemoveFiles(string path)
+        {
+            RemoveInput(path);
+            RemoveOutput(path);
+            return this;
+        }
+
+        /// <summary>
+        /// Remove all the files matching a predicate from the input and output
+        /// </summary>
+        /// <param name="predicate">The predicate function to identify files to delete</param>
+        /// <returns></returns>
+        public MetalsharpDirectory RemoveFiles(Predicate<IMetalsharpFile> predicate)
+        {
+            RemoveInput(predicate);
+            RemoveOutput(predicate);
+            return this;
+        }
+
+        /// <summary>
         /// Remove a file from the input
         /// </summary>
         /// <param name="path">The path of the file to remove</param>
@@ -245,9 +269,9 @@ namespace Metalsharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public MetalsharpDirectory RemoveInput(Predicate<MetalsharpFile> match)
+        public MetalsharpDirectory RemoveInput(Predicate<IMetalsharpFile> predicate)
         {
-            InputFiles.RemoveAll(match);
+            InputFiles.RemoveAll(predicate);
             return this;
         }
 
@@ -264,9 +288,9 @@ namespace Metalsharp
         /// </summary>
         /// <param name="predicate">The predicate function to identify files to delete</param>
         /// <returns></returns>
-        public MetalsharpDirectory RemoveOutput(Predicate<MetalsharpFile> match)
+        public MetalsharpDirectory RemoveOutput(Predicate<IMetalsharpFile> predicate)
         {
-            OutputFiles.RemoveAll(match);
+            OutputFiles.RemoveAll(predicate);
             return this;
         }
 
