@@ -12,19 +12,19 @@ Generating a website from a directory is as simple as the following (from [Examp
 
 ```c#
 new MetalsharpDirectory("Site")
-    .UseDrafts()
-    .Use<Frontmatter>()
+    .UseFrontmatter()
+    .Use<Drafts>()
     .Use(new Markdown())
     .Build();
 ```
 
-This example uses three plugins: `Drafts`, `Frontmatter`, and `Markdown`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Drafts` will remove any files marked as a draft, `Markdown` will convert Markdown files to HTML, and `Layout` will fit each of the HTML files into a simple template file specified in that HTML file's metadata.
+This example uses three plugins: `Frontmatter`, `Drafts`, and `Markdown`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Frontmatter` parses JSON or YAML frontmatter into the metadata of each file, `Drafts` will remove any files marked as a draft, and `Markdown` will convert Markdown files to HTML.
 
 ## Getting Started
 
 ### Configuring a Metalsharp Project Directory
 
-See [Examples/Example1](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
+See [Examples/ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
 
 ```text
 .
@@ -69,16 +69,16 @@ new MetalsharpDirectory("Site")
 .RemoveOutput("ForOutput.css")
 ```
 
-5. You can add a plugin by referencing its type if it has an empty constructor, like the `Drafts` plugin:
+5. You can add a plugin by referencing its type if it has an empty constructor, like the `Frontmatter` plugin:
 
 ```c#
-.Use<Drafts>()
+.Use<Frontmatter>()
 ```
 
 6. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
 
 ```c#
-.UseFrontmatter()
+.UseDrafts()
 ```
 
 7. If a plugin does not have an empty constructor, or if you prefer this syntax, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
@@ -107,8 +107,8 @@ new MetalsharpDirectory("Site")
 	.AddOutput("C:/SomeDir/ForOutput.css")
 	.RemoveInput("C:/SomeDir/myFile.md")
 	.RemoveOutput("ForOutput.css")
-	.Use<Drafts>()
-	.UseFrontmatter()
+	.Use<Frontmatter>()
+	.UseDrafts()
 	.Use(new Markdown())
 	.Build(new BuildOptions() { OutputDirectory = "C:/Output" });
 ```
