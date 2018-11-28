@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Metalsharp
 {
@@ -9,6 +10,8 @@ namespace Metalsharp
     /// </summary>
     public class MetalsharpDirectory
     {
+        #region Constructors
+
         /// <summary>
         /// Used by Metalsharp.From to pass an empty Metalsharp to a plugin
         /// </summary>
@@ -23,6 +26,8 @@ namespace Metalsharp
             RootDirectory = Path.Combine(path, Path.DirectorySeparatorChar.ToString());
             AddInput(path, true);
         }
+
+        #endregion
 
         #region Static Methods
 
@@ -55,6 +60,8 @@ namespace Metalsharp
         #endregion
 
         #region Methods
+
+        #region Add Files
 
         /// <summary>
         /// Add an existing file to the input or output
@@ -131,6 +138,23 @@ namespace Metalsharp
         /// <returns></returns>
         public MetalsharpDirectory AddOutput(string path, bool enforceDirectory) =>
             AddExisting(path, enforceDirectory, OutputFiles.Add);
+        
+        /// <summary>
+        /// Gets a MetalsharpFile with the RootDirectory removed from its path
+        /// </summary>
+        /// <param name="path">The path to the file to read</param>
+        /// <returns></returns>
+        MetalsharpFile GetFileWithNormalizedDirectory(string path) =>
+            new MetalsharpFile(
+                File.ReadAllText(path),
+                path.StartsWith(RootDirectory)
+                    ? path.Substring(RootDirectory.Length)
+                    : path
+            );
+
+        #endregion
+
+        #region Build
 
         /// <summary>
         /// Write all the output files to the default output directory
@@ -188,18 +212,9 @@ namespace Metalsharp
             Build(options);
         }
 
-        /// <summary>
-        /// Gets a MetalsharpFile with the RootDirectory removed from its path
-        /// </summary>
-        /// <param name="path">The path to the file to read</param>
-        /// <returns></returns>
-        MetalsharpFile GetFileWithNormalizedDirectory(string path) =>
-            new MetalsharpFile(
-                File.ReadAllText(path),
-                path.StartsWith(RootDirectory)
-                    ? path.Substring(RootDirectory.Length)
-                    : path
-            );
+        #endregion
+
+        #region Meta
 
         /// <summary>
         /// Add or alter a single item of metadata
@@ -231,6 +246,82 @@ namespace Metalsharp
 
             return this;
         }
+
+        #endregion
+
+        #region Move Files
+
+        /// <summary>
+        /// Move files in the input and output from one directory to another
+        /// </summary>
+        /// <param name="oldDirectory">The directory to move the files from</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveFiles(string oldDirectory, string newDirectory)
+        {
+            MoveInput(oldDirectory, newDirectory);
+            MoveOutput(oldDirectory, newDirectory);
+            return this;
+        }
+
+        /// <summary>
+        /// Move files matching a predicate in the input and output from one directory to another
+        /// </summary>
+        /// <param name="predicate">The predicate to match the files to move</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveFiles(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        {
+            MoveInput(predicate, newDirectory);
+            MoveOutput(predicate, newDirectory);
+            return this;
+        }
+
+        /// <summary>
+        /// Move files in the input from one directory to another
+        /// </summary>
+        /// <param name="oldDirectory">The directory to move the files from</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveInput(string oldDirectory, string newDirectory) =>
+            MoveInput(file => file.Directory == oldDirectory, newDirectory);
+
+        /// <summary>
+        /// Move files in the input matching a predicate from one directory to another
+        /// </summary>
+        /// <param name="predicate">The predicate to match the files to move</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveInput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        {
+            InputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
+            return this;
+        }
+
+        /// <summary>
+        /// Move files in the output from one directory to another
+        /// </summary>
+        /// <param name="oldDirectory">The directory to move the files from</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveOutput(string oldDirectory, string newDirectory) =>
+            MoveOutput(file => file.Directory == oldDirectory, newDirectory);
+
+        /// <summary>
+        /// Move files in the output matching a predicate from one directory to another
+        /// </summary>
+        /// <param name="predicate">The predicate to match the files to move</param>
+        /// <param name="newDirectory">The directory to move the files into</param>
+        /// <returns></returns>
+        public MetalsharpDirectory MoveOutput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        {
+            InputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
+            return this;
+        }
+
+        #endregion
+
+        #region Remove Files
 
         /// <summary>
         /// Remove a file from the input and output
@@ -294,6 +385,10 @@ namespace Metalsharp
             return this;
         }
 
+        #endregion
+
+        #region Use
+
         /// <summary>
         /// Invoke a function as a plugin
         /// </summary>
@@ -324,6 +419,9 @@ namespace Metalsharp
         /// <returns></returns>
         public MetalsharpDirectory Use<T>() where T : IMetalsharpPlugin, new() =>
             Use(new T());
+
+
+        #endregion
 
         #endregion
 

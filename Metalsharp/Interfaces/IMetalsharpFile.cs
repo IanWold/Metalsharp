@@ -22,6 +22,16 @@ namespace Metalsharp
         bool IsChildOf(string directory);
 
         /// <summary>
+        /// The directory of the file relative to the source directory
+        /// </summary>
+        string Directory { get; set; }
+
+        /// <summary>
+        /// The extension from the file name
+        /// </summary>
+        string Extension { get; set; }
+
+        /// <summary>
         /// The path of the file
         /// </summary>
         string FilePath { get; set; }
@@ -30,6 +40,11 @@ namespace Metalsharp
         /// Metadata from the file
         /// </summary>
         Dictionary<string, object> Metadata { get; set; }
+
+        /// <summary>
+        /// The name of the file, without the extension
+        /// </summary>
+        string Name { get; set; }
 
         /// <summary>
         /// The text of the file

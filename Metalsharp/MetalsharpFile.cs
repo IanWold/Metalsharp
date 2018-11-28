@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 namespace Metalsharp
 {
@@ -26,22 +27,28 @@ namespace Metalsharp
         public MetalsharpFile(string text, string filePath, Dictionary<string, object> metadata)
         {
             Text = text;
-            FilePath = filePath;
             Metadata = metadata;
+            FilePath = filePath;
         }
 
         #region Properties
+
+        /// <summary>
+        /// THe directory of the file relative to the source directory
+        /// </summary>
+        public string Directory
+        {
+            get => Path.GetDirectoryName(FilePath);
+            set => FilePath = Path.Combine(value + Name + "." + Extension);
+        }
 
         /// <summary>
         /// The extension from the file name
         /// </summary>
         public string Extension
         {
-            get
-            {
-                var splitString = FilePath.Split('.');
-                return splitString[splitString.Length - 1].ToLower(CultureInfo.InvariantCulture);
-            }
+            get => Path.GetExtension(FilePath);
+            set => FilePath = Path.Combine(Directory + Name + "." + value);
         }
 
         /// <summary>
@@ -53,6 +60,15 @@ namespace Metalsharp
         /// Metadata from the file
         /// </summary>
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// The name of the file, without the extension
+        /// </summary>
+        public string Name
+        {
+            get => Path.GetFileNameWithoutExtension(FilePath);
+            set => FilePath = Path.Combine(Directory + value + "." + Extension);
+        }
 
         /// <summary>
         /// The text of the file
