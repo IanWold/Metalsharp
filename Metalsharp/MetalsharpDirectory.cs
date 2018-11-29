@@ -187,6 +187,13 @@ namespace Metalsharp
             foreach (var file in OutputFiles)
             {
                 var path = Path.Combine(buildOptions.OutputDirectory, file.FilePath);
+                var directoryPath = Path.GetDirectoryName(path);
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
                 File.WriteAllText(path, file.Text);
             }
         }
@@ -206,9 +213,9 @@ namespace Metalsharp
         /// <param name="options">Metalsmith build configuration options</param>
         public void Build(Action<MetalsharpDirectory> func, BuildOptions options)
         {
-            BeforeBuild(this, new EventArgs());
+            BeforeBuild?.Invoke(this, new EventArgs());
             func(this);
-            AfterBuild(this, new EventArgs());
+            AfterBuild?.Invoke(this, new EventArgs());
             Build(options);
         }
 
@@ -315,7 +322,7 @@ namespace Metalsharp
         /// <returns></returns>
         public MetalsharpDirectory MoveOutput(Predicate<IMetalsharpFile> predicate, string newDirectory)
         {
-            InputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
+            OutputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
             return this;
         }
 
@@ -396,9 +403,9 @@ namespace Metalsharp
         /// <returns></returns>
         public MetalsharpDirectory Use(Action<MetalsharpDirectory> func)
         {
-            BeforeUse(this, new EventArgs());
+            BeforeUse?.Invoke(this, new EventArgs());
             func(this);
-            AfterUse(this, new EventArgs());
+            AfterUse?.Invoke(this, new EventArgs());
             return this;
         }
 
