@@ -39,7 +39,7 @@ namespace Metalsharp
         public string Directory
         {
             get => Path.GetDirectoryName(FilePath);
-            set => FilePath = Path.Combine(value + Name + "." + Extension);
+            set => FilePath = Path.Combine(value, Name + Extension);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Metalsharp
         public string Extension
         {
             get => Path.GetExtension(FilePath);
-            set => FilePath = Path.Combine(Directory + Name + "." + value);
+            set => FilePath = Path.Combine(Directory + Name + value);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Metalsharp
         public string Name
         {
             get => Path.GetFileNameWithoutExtension(FilePath);
-            set => FilePath = Path.Combine(Directory + value + "." + Extension);
+            set => FilePath = Path.Combine(Directory + value + Extension);
         }
 
         /// <summary>
