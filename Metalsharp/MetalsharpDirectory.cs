@@ -27,6 +27,17 @@ namespace Metalsharp
             AddInput(path, true);
         }
 
+        /// <summary>
+        /// Instantiate Metalsharp from an existing directory and add the contents to a specific virtual path
+        /// </summary>
+        /// <param name="diskPath">The path to the files on disk to add</param>
+        /// <param name="virtualPath">The path of the virtual directory to put the input files into</param>
+        public MetalsharpDirectory(string diskPath, string virtualPath)
+        {
+            RootDirectory = Path.Combine(diskPath, Path.DirectorySeparatorChar.ToString());
+            AddInput(diskPath, virtualPath, true);
+        }
+
         #endregion
 
         #region Static Methods
@@ -64,40 +75,41 @@ namespace Metalsharp
         #region Add Files
 
         /// <summary>
-        /// Add an existing file to the input or output
+        /// Add an existing file to the input or output and place the files in a specific virtual path
         /// </summary>
-        /// <param name="path">The path to the file or directory</param>
+        /// <param name="diskPath">The path to the file or directory</param>
+        /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <param name="add">The function to add the file</param>
         /// <returns></returns>
-        MetalsharpDirectory AddExisting(string path, bool enforceDirectory, Action<MetalsharpFile> add)
+        MetalsharpDirectory AddExisting(string diskPath, string virtualPath, bool enforceDirectory, Action<MetalsharpFile> add)
         {
-            if (Directory.Exists(path))
+            if (Directory.Exists(diskPath))
             {
-                foreach (var file in Directory.GetFiles(path))
+                foreach (var file in Directory.GetFiles(diskPath))
                 {
-                    add(GetFileWithNormalizedDirectory(file));
+                    add(GetFileWithNormalizedDirectory(file, virtualPath));
                 }
 
-                foreach (var dir in Directory.GetDirectories(path))
+                foreach (var dir in Directory.GetDirectories(diskPath))
                 {
-                    AddExisting(dir, false, add);
+                    AddExisting(dir, Path.GetDirectoryName(dir).Replace(diskPath, virtualPath), false, add);
                 }
 
                 return this;
             }
-            else if (File.Exists(path) && !enforceDirectory)
+            else if (File.Exists(diskPath) && !enforceDirectory)
             {
-                add(GetFileWithNormalizedDirectory(path));
+                add(GetFileWithNormalizedDirectory(diskPath, virtualPath));
                 return this;
             }
             else if (enforceDirectory)
             {
-                throw new ArgumentException("Directory " + path + " does not exist.");
+                throw new ArgumentException("Directory " + diskPath + " does not exist.");
             }
             else
             {
-                throw new ArgumentException("File " + path + " does not exist.");
+                throw new ArgumentException("File " + diskPath + " does not exist.");
             }
         }
 
@@ -105,28 +117,20 @@ namespace Metalsharp
         /// Add a file or all the files in a directory to the input
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
-        /// <returns></returns>
-        public MetalsharpDirectory AddInput(string path) =>
-            AddInput(path, false);
-
-        /// <summary>
-        /// Add a file or all the files in a directory to the input
-        /// </summary>
-        /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddInput(string path, bool enforceDirectory) =>
-            AddExisting(path, enforceDirectory, InputFiles.Add);
+        public MetalsharpDirectory AddInput(string path, bool enforceDirectory = false) =>
+            AddInput(path, path, enforceDirectory);
 
         /// <summary>
-        /// Add a file or all the files in a directory directly to the output
-        /// 
-        /// The file(s) will not be added to the input and JSON metadata in the file(s) will not be parsed
+        /// Add a file or all the files in a directory to the input and place the files in a specific virtual path
         /// </summary>
-        /// <param name="path">The path to the file or directory</param>
+        /// <param name="diskPath">The path to the file or directory</param>
+        /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
+        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddOutput(string path) =>
-            AddOutput(path, false);
+        public MetalsharpDirectory AddInput(string diskPath, string virtualPath, bool enforceDirectory = false) =>
+            AddExisting(diskPath, virtualPath, enforceDirectory, InputFiles.Add);
 
         /// <summary>
         /// Add a file or all the files in a directory directly to the output
@@ -136,20 +140,31 @@ namespace Metalsharp
         /// <param name="path">The path to the file or directory</param>
         /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddOutput(string path, bool enforceDirectory) =>
-            AddExisting(path, enforceDirectory, OutputFiles.Add);
-        
+        public MetalsharpDirectory AddOutput(string path, bool enforceDirectory = false) =>
+            AddOutput(path, path, enforceDirectory);
+
+        /// <summary>
+        /// Add a file or all the files in a directory directly to the output and place the files in a specific virtual path
+        /// 
+        /// The file(s) will not be added to the input and JSON metadata in the file(s) will not be parsed
+        /// </summary>
+        /// <param name="diskPath">The path to the file or directory</param>
+        /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
+        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
+        /// <returns></returns>
+        public MetalsharpDirectory AddOutput(string diskPath, string virtualPath, bool enforceDirectory = false) =>
+            AddExisting(diskPath, virtualPath, enforceDirectory, OutputFiles.Add);
+
         /// <summary>
         /// Gets a MetalsharpFile with the RootDirectory removed from its path
         /// </summary>
-        /// <param name="path">The path to the file to read</param>
+        /// <param name="diskPath">The path to the file or directory</param>
+        /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
         /// <returns></returns>
-        MetalsharpFile GetFileWithNormalizedDirectory(string path) =>
+        MetalsharpFile GetFileWithNormalizedDirectory(string diskPath, string virtualPath) =>
             new MetalsharpFile(
-                File.ReadAllText(path),
-                path.StartsWith(RootDirectory)
-                    ? path.Substring(RootDirectory.Length)
-                    : path
+                File.ReadAllText(diskPath),
+                diskPath.Replace(Path.GetDirectoryName(diskPath), virtualPath)
             );
 
         #endregion
