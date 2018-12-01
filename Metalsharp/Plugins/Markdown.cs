@@ -19,7 +19,10 @@ namespace Metalsharp
             {
                 if (file.Extension == ".md" || file.Extension == ".markdown")
                 {
-                    directory.OutputFiles.Add(new MetalsharpFile(Markdig.Markdown.ToHtml(file.Text), Path.Combine(file.Directory, file.Name + ".html")));
+                    var fileText = Markdig.Markdown.ToHtml(file.Text);
+                    var filePath = Path.Combine(file.Directory, file.Name + ".html");
+
+                    directory.OutputFiles.Add(new MetalsharpFile(fileText, filePath) { Metadata = file.Metadata });
                 }
             }
         }
