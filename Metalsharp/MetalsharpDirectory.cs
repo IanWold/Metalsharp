@@ -13,30 +13,24 @@ namespace Metalsharp
         #region Constructors
 
         /// <summary>
-        /// Used by Metalsharp.From to pass an empty Metalsharp to a plugin
+        /// Instantiate an empty MetalsharpDirectory
         /// </summary>
-        private MetalsharpDirectory() { }
+        public MetalsharpDirectory() { }
 
         /// <summary>
         /// Instantiate Metalsharp from an existing directory
         /// </summary>
         /// <param name="path">The path to the directory</param>
-        public MetalsharpDirectory(string path)
-        {
-            RootDirectory = Path.Combine(path, Path.DirectorySeparatorChar.ToString());
-            AddInput(path, true);
-        }
+        public MetalsharpDirectory(string path) =>
+            AddInput(path);
 
         /// <summary>
         /// Instantiate Metalsharp from an existing directory and add the contents to a specific virtual path
         /// </summary>
         /// <param name="diskPath">The path to the files on disk to add</param>
         /// <param name="virtualPath">The path of the virtual directory to put the input files into</param>
-        public MetalsharpDirectory(string diskPath, string virtualPath)
-        {
-            RootDirectory = Path.Combine(diskPath, Path.DirectorySeparatorChar.ToString());
-            AddInput(diskPath, virtualPath, true);
-        }
+        public MetalsharpDirectory(string diskPath, string virtualPath) =>
+            AddInput(diskPath, virtualPath);
 
         #endregion
 
@@ -79,10 +73,9 @@ namespace Metalsharp
         /// </summary>
         /// <param name="diskPath">The path to the file or directory</param>
         /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
-        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <param name="add">The function to add the file</param>
         /// <returns></returns>
-        MetalsharpDirectory AddExisting(string diskPath, string virtualPath, bool enforceDirectory, Action<MetalsharpFile> add)
+        MetalsharpDirectory AddExisting(string diskPath, string virtualPath, Action<MetalsharpFile> add)
         {
             if (Directory.Exists(diskPath))
             {
@@ -93,19 +86,15 @@ namespace Metalsharp
 
                 foreach (var dir in Directory.GetDirectories(diskPath))
                 {
-                    AddExisting(dir, Path.GetDirectoryName(dir).Replace(diskPath, virtualPath), false, add);
+                    AddExisting(dir, dir.Replace(diskPath, virtualPath), add);
                 }
 
                 return this;
             }
-            else if (File.Exists(diskPath) && !enforceDirectory)
+            else if (File.Exists(diskPath))
             {
                 add(GetFileWithNormalizedDirectory(diskPath, virtualPath));
                 return this;
-            }
-            else if (enforceDirectory)
-            {
-                throw new ArgumentException("Directory " + diskPath + " does not exist.");
             }
             else
             {
@@ -117,20 +106,29 @@ namespace Metalsharp
         /// Add a file or all the files in a directory to the input
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
-        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddInput(string path, bool enforceDirectory = false) =>
-            AddInput(path, path, enforceDirectory);
+        public MetalsharpDirectory AddInput(string path) =>
+            AddInput(path, path);
 
         /// <summary>
         /// Add a file or all the files in a directory to the input and place the files in a specific virtual path
         /// </summary>
         /// <param name="diskPath">The path to the file or directory</param>
         /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
-        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddInput(string diskPath, string virtualPath, bool enforceDirectory = false) =>
-            AddExisting(diskPath, virtualPath, enforceDirectory, InputFiles.Add);
+        public MetalsharpDirectory AddInput(string diskPath, string virtualPath) =>
+            AddExisting(diskPath, virtualPath, InputFiles.Add);
+
+        /// <summary>
+        /// Add a MetalsharpFile to the input files
+        /// </summary>
+        /// <param name="file">The file to add</param>
+        /// <returns></returns>
+        public MetalsharpDirectory AddInput(MetalsharpFile file)
+        {
+            InputFiles.Add(file);
+            return this;
+        }
 
         /// <summary>
         /// Add a file or all the files in a directory directly to the output
@@ -138,10 +136,9 @@ namespace Metalsharp
         /// The file(s) will not be added to the input and JSON metadata in the file(s) will not be parsed
         /// </summary>
         /// <param name="path">The path to the file or directory</param>
-        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddOutput(string path, bool enforceDirectory = false) =>
-            AddOutput(path, path, enforceDirectory);
+        public MetalsharpDirectory AddOutput(string path) =>
+            AddOutput(path, path);
 
         /// <summary>
         /// Add a file or all the files in a directory directly to the output and place the files in a specific virtual path
@@ -150,10 +147,20 @@ namespace Metalsharp
         /// </summary>
         /// <param name="diskPath">The path to the file or directory</param>
         /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
-        /// <param name="enforceDirectory">If true, will expect the path to lead to a directory</param>
         /// <returns></returns>
-        public MetalsharpDirectory AddOutput(string diskPath, string virtualPath, bool enforceDirectory = false) =>
-            AddExisting(diskPath, virtualPath, enforceDirectory, OutputFiles.Add);
+        public MetalsharpDirectory AddOutput(string diskPath, string virtualPath) =>
+            AddExisting(diskPath, virtualPath, OutputFiles.Add);
+
+        /// <summary>
+        /// Add a MetalsharpFile to output files
+        /// </summary>
+        /// <param name="file">The file to add</param>
+        /// <returns></returns>
+        public MetalsharpDirectory AddOutput(MetalsharpFile file)
+        {
+            OutputFiles.Add(file);
+            return this;
+        }
 
         /// <summary>
         /// Gets a MetalsharpFile with the RootDirectory removed from its path
@@ -162,10 +169,7 @@ namespace Metalsharp
         /// <param name="virtualPath">The path to the virtual directory to place the files in</param>
         /// <returns></returns>
         MetalsharpFile GetFileWithNormalizedDirectory(string diskPath, string virtualPath) =>
-            new MetalsharpFile(
-                File.ReadAllText(diskPath),
-                diskPath.Replace(Path.GetDirectoryName(diskPath), virtualPath)
-            );
+            new MetalsharpFile(File.ReadAllText(diskPath), Path.Combine(virtualPath, Path.GetFileName(diskPath)));
 
         #endregion
 
@@ -449,22 +453,29 @@ namespace Metalsharp
 
         #region Events
 
+        /// <summary>
+        /// Invoked before .Use()
+        /// </summary>
         public event EventHandler BeforeUse;
 
+        /// <summary>
+        /// Invoked after .Use()
+        /// </summary>
         public event EventHandler AfterUse;
 
+        /// <summary>
+        /// Invoked before .Build()
+        /// </summary>
         public event EventHandler BeforeBuild;
 
+        /// <summary>
+        /// Invoked after .Build()
+        /// </summary>
         public event EventHandler AfterBuild;
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The directory with which Metalsharp was instantiated
-        /// </summary>
-        public string RootDirectory { get; set; }
 
         /// <summary>
         /// The directory-level metadata

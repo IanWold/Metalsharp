@@ -1,0 +1,85 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Scenario\Directory1\file1.md" />
+    <None Remove="Scenario\Directory1\file2.md" />
+    <None Remove="Scenario\Directory1\file3.md" />
+    <None Remove="Scenario\Directory1\file4.md" />
+    <None Remove="Scenario\Directory1\file5.md" />
+    <None Remove="Scenario\Directory2\file10.md" />
+    <None Remove="Scenario\Directory2\file6.md" />
+    <None Remove="Scenario\Directory2\file7.md" />
+    <None Remove="Scenario\Directory2\file8.md" />
+    <None Remove="Scenario\Directory2\file9.md" />
+    <None Remove="Scenario\Directory2\SubDirectory1\file11.md" />
+    <None Remove="Scenario\Directory2\SubDirectory1\file12.md" />
+    <None Remove="Scenario\Directory2\SubDirectory1\file13.md" />
+    <None Remove="Scenario\Directory2\SubDirectory1\file14.md" />
+    <None Remove="Scenario\Directory2\SubDirectory1\file15.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scenario\Directory1\file1.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory1\file2.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory1\file3.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory1\file4.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory1\file5.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\file10.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\file6.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\file7.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\file8.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\file9.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\SubDirectory1\file11.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\SubDirectory1\file12.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\SubDirectory1\file13.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\SubDirectory1\file14.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenario\Directory2\SubDirectory1\file15.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Metalsharp\Metalsharp.csproj" />
+  </ItemGroup>
+
+</Project>
