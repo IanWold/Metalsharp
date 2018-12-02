@@ -34,36 +34,6 @@ namespace Metalsharp
 
         #endregion
 
-        #region Static Methods
-
-        /// <summary>
-        /// Instantiate Metalsharp by invoking a function as a plugin
-        /// </summary>
-        /// <param name="func">The function to invoke</param>
-        /// <returns></returns>
-        public static MetalsharpDirectory From(Func<MetalsharpDirectory, MetalsharpDirectory> func) =>
-            func(new MetalsharpDirectory());
-
-        /// <summary>
-        /// Instantiate Metalsharp by invoking a plugin
-        /// </summary>
-        /// <param name="plugin">The plugin to invoke</param>
-        /// <returns></returns>
-        public static MetalsharpDirectory From(IMetalsharpPlugin plugin) =>
-            new MetalsharpDirectory().Use(i => plugin.Execute(i));
-
-        /// <summary>
-        /// Instantiate Metalsharp by invoking a plugin by type
-        /// 
-        /// The plugin type must have an empty constructor
-        /// </summary>
-        /// <typeparam name="T">The type of the plugin to invoke</typeparam>
-        /// <returns></returns>
-        public static MetalsharpDirectory From<T>() where T : IMetalsharpPlugin, new() =>
-            new MetalsharpDirectory().Use<T>();
-
-        #endregion
-
         #region Methods
 
         #region Add Files

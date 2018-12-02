@@ -135,29 +135,6 @@
             <param name="diskPath">The path to the files on disk to add</param>
             <param name="virtualPath">The path of the virtual directory to put the input files into</param>
         </member>
-        <member name="M:Metalsharp.MetalsharpDirectory.From(System.Func{Metalsharp.MetalsharpDirectory,Metalsharp.MetalsharpDirectory})">
-            <summary>
-            Instantiate Metalsharp by invoking a function as a plugin
-            </summary>
-            <param name="func">The function to invoke</param>
-            <returns></returns>
-        </member>
-        <member name="M:Metalsharp.MetalsharpDirectory.From(Metalsharp.IMetalsharpPlugin)">
-            <summary>
-            Instantiate Metalsharp by invoking a plugin
-            </summary>
-            <param name="plugin">The plugin to invoke</param>
-            <returns></returns>
-        </member>
-        <member name="M:Metalsharp.MetalsharpDirectory.From``1">
-            <summary>
-            Instantiate Metalsharp by invoking a plugin by type
-            
-            The plugin type must have an empty constructor
-            </summary>
-            <typeparam name="T">The type of the plugin to invoke</typeparam>
-            <returns></returns>
-        </member>
         <member name="M:Metalsharp.MetalsharpDirectory.AddExisting(System.String,System.String,System.Action{Metalsharp.MetalsharpFile})">
             <summary>
             Add an existing file to the input or output and place the files in a specific virtual path
