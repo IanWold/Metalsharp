@@ -425,7 +425,58 @@ namespace Metalsharp.Tests
 
         #region Use
 
+        [Fact]
+        public void UsePluginInstanceExecutesPlugin()
+        {
+            var directory = new MetalsharpDirectory().Use(new TestPlugin());
 
+            Assert.True((bool)directory.Metadata["test"]);
+        }
+
+        [Fact]
+        public void UsePluginTypeExecutesPlugin()
+        {
+            var directory = new MetalsharpDirectory().Use<TestPlugin>();
+
+            Assert.True((bool)directory.Metadata["test"]);
+        }
+
+        [Fact]
+        public void UseFuncExecutesFunc()
+        {
+            var wasExecuted = false;
+            new MetalsharpDirectory().Use(dir => wasExecuted = true);
+
+            Assert.True(wasExecuted);
+        }
+
+        [Fact]
+        public void UseInvokesBeforeUseEevent()
+        {
+            var wasExecuted = false;
+            var directory = new MetalsharpDirectory();
+
+            directory.BeforeUse += (sender, e) =>
+            {
+                Assert.False(wasExecuted);
+            };
+
+            directory.Use(dir => wasExecuted = true);
+        }
+
+        [Fact]
+        public void UseInvokesAfterUseEvent()
+        {
+            var wasExecuted = false;
+            var directory = new MetalsharpDirectory();
+
+            directory.AfterUse += (sender, e) =>
+            {
+                Assert.True(wasExecuted);
+            };
+
+            directory.Use(dir => wasExecuted = true);
+        }
 
         #endregion
     }
