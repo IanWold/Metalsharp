@@ -1,7 +1,7 @@
 <h1><img src="Metalsharp.png" height="70"/></h1>
 
 [![AppVeyor Build](https://img.shields.io/appveyor/ci/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp)
-[![AppVeyor tests](https://img.shields.io/appveyor/tests/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp)
+[![AppVeyor tests](https://img.shields.io/appveyor/tests/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp/build/tests)
 [![Codacy grade](https://img.shields.io/codacy/grade/29c18f6bc08146e884e173ad1262cead.svg?logo=codacy&logoColor=white&style=flat-square)](https://app.codacy.com/project/IanWold/Metalsharp/dashboard) 
 [![Discord](https://img.shields.io/discord/517023630224523274.svg?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/HrxyfFP)
 
