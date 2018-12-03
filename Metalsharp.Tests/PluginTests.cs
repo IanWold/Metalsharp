@@ -14,7 +14,7 @@ namespace Metalsharp.Tests
             var firstBranchExecuted = false;
             var secondBranchExecuted = false;
 
-            var directory = new MetalsharpDirectory("Scenario\\Plugins")
+            new MetalsharpDirectory("Scenario\\Plugins")
                 .Branch(
                     dir =>
                     {
@@ -32,6 +32,38 @@ namespace Metalsharp.Tests
 
             Assert.True(firstBranchExecuted);
             Assert.True(secondBranchExecuted);
+        }
+
+        #endregion
+
+        #region Collections Plugin
+
+
+
+        #endregion
+
+        #region Debug Plugin
+
+        [Fact]
+        public void DebugLogsAftereUse()
+        {
+            var directory = new MetalsharpDirectory();
+            var uses = 0;
+
+            directory.UseDebug(i =>
+            {
+                // onLog will be called after UseDebug is called,
+                // Need to prevent the assertion before the use of TestPlugin
+                if (uses == 1)
+                {
+                    Assert.True((bool)directory.Metadata["test"]);
+                }
+                else
+                {
+                    uses++;
+                }
+            });
+            directory.Use<TestPlugin>();
         }
 
         #endregion
