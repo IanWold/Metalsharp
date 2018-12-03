@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B3C1270-CEE2-4A3C-ABB0-3861215D80B6}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
 		LICENSE = LICENSE
 		Metalsharp.png = Metalsharp.png
 		README.md = README.md
@@ -19,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleWebsite", "Examples\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplePlugin", "Examples\ExamplePlugin\ExamplePlugin.csproj", "{0C8CF260-43D9-41A1-AED2-B47404490B76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metalsharp.Tests", "Metalsharp.Tests\Metalsharp.Tests.csproj", "{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp.Tests", "Metalsharp.Tests\Metalsharp.Tests.csproj", "{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
