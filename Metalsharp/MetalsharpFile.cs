@@ -48,7 +48,7 @@ namespace Metalsharp
         public string Extension
         {
             get => Path.GetExtension(FilePath);
-            set => FilePath = Path.Combine(Directory + Name + value);
+            set => FilePath = Path.Combine(Directory, Name + value);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Metalsharp
         public string Name
         {
             get => Path.GetFileNameWithoutExtension(FilePath);
-            set => FilePath = Path.Combine(Directory + value + Extension);
+            set => FilePath = Path.Combine(Directory, value + Extension);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Metalsharp
         /// <param name="directory">The directory in question</param>
         /// <returns></returns>
         public bool IsDescendantOf(string directory) =>
-            FilePath.ToLower(CultureInfo.InvariantCulture).StartsWith(directory.ToLower(CultureInfo.InvariantCulture));
+            FilePath.Contains(directory + Path.DirectorySeparatorChar);
 
         /// <summary>
         /// Returns true if the directory is the parent of the file
@@ -93,8 +93,7 @@ namespace Metalsharp
         /// <param name="directory">The directory in question</param>
         /// <returns></returns>
         public bool IsChildOf(string directory) =>
-            FilePath.ToLower(CultureInfo.InvariantCulture).StartsWith(directory.ToLower(CultureInfo.InvariantCulture))
-            && ! FilePath.Substring(directory.Length).Contains("/");
+            FilePath.Contains(Path.Combine(directory, Name + Extension));
 
         #endregion
     }
