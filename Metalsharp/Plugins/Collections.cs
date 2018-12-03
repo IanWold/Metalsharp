@@ -17,6 +17,15 @@ namespace Metalsharp
         private (string name, Predicate<IMetalsharpFile> predicate)[] _definitions;
 
         /// <summary>
+        /// Instantiate the plugin with a single collection definition
+        /// </summary>
+        /// <param name="name">The name of the collection</param>
+        /// <param name="predicate">The predicate to match files for the collection</param>
+        public Collections(string name, Predicate<IMetalsharpFile> predicate)
+            : this((name, predicate))
+        { }
+
+        /// <summary>
         /// Instantiates the plugin with the definitions of the collections
         /// </summary>
         /// <param name="definitions">The definitions of the collections, including the name of the collection and the predicate which matches its files</param>
