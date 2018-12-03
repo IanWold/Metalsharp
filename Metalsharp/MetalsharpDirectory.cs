@@ -415,8 +415,7 @@ namespace Metalsharp
         /// <returns></returns>
         public MetalsharpDirectory Use<T>() where T : IMetalsharpPlugin, new() =>
             Use(new T());
-
-
+        
         #endregion
 
         #endregion
