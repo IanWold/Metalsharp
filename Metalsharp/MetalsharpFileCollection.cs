@@ -16,7 +16,7 @@ namespace Metalsharp
         /// <summary>
         /// The Metalsharp files in the collection
         /// </summary>
-        private List<T> _items = new List<T>();
+        readonly List<T> _items = new List<T>();
 
         /// <summary>
         /// Instantiate an empty collection
