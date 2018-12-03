@@ -187,10 +187,9 @@ If you'd like to contribute, please do! Open an Issue, submit a PR, I'm happy ho
 
 The current objective is to get to `v0.9.0-rc1`. The following needs to be done to get to that point:
 
-1. Finish writing unit tests to achieve full (or full-as-necessary) test coverage to prove intended functionality,
-2. Write source documentation,
-3. Write user documentation,
-4. Release `v0.9.0-rc1` on Nuget
+1. Write source documentation,
+1. Write user documentation,
+1. Release `v0.9.0-rc1` on Nuget
 
 After `v0.9.0-rc1` is released to Nuget, the goal is to test the library thoroughly in as many situations as possible to be sure of its design and usability. This will involve generating a GitHub Pages homepage for Metalsharp, and it may involve writing integration tests. `v0.9.0` will be released to Nuget when there is a concensus that Metalsharp is designed correctly.
 
