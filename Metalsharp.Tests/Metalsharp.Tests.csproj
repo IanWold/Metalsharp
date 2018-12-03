@@ -22,11 +22,25 @@
     <None Remove="Scenario\Directory2\SubDirectory1\file13.md" />
     <None Remove="Scenario\Directory2\SubDirectory1\file14.md" />
     <None Remove="Scenario\Directory2\SubDirectory1\file15.md" />
-    <None Remove="Scenario\Markdown\file1.md" />
+    <None Remove="Scenario\Plugins\FileJsonFrontmatter.md" />
+    <None Remove="Scenario\Plugins\FileMarkdown.md" />
+    <None Remove="Scenario\Plugins\FileYamlFrontmatter.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Scenario\Markdown\file1.md">
+    <Content Include="Scenario\Plugins\FileYamlFrontmatter.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scenario\Plugins\FileJsonFrontmatter.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scenario\Plugins\FileMarkdown.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
