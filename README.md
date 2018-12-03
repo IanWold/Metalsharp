@@ -5,9 +5,11 @@
 [![Codacy grade](https://img.shields.io/codacy/grade/29c18f6bc08146e884e173ad1262cead.svg?logo=codacy&logoColor=white&style=flat-square)](https://app.codacy.com/project/IanWold/Metalsharp/dashboard) 
 [![Discord](https://img.shields.io/discord/517023630224523274.svg?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/HrxyfFP)
 
-A tiny and extendable C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/).
+A tiny and extendable C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/). Metalsharp is guided by three basic principles:
 
-This project is brand-new - like, 0.0.1 new - so things will be added fast. I hope. Probably not. The good thing, though, is that it's so simple that very significant changes are unlikely to happen. That said, if you have a suggestion or want to contribute, now's probably the easiest time for it ;)
+1. **Small footprint**: Use the smallest amount of code necessary,
+1. **Extandable**: Make it as easy as possible for anyone to develop and release plugins, and
+1. **Approachable**: Maintain thorough documentation to keep the code easy to read and the library easy to learn
 
 Generating a website from a directory is as simple as the following (from [ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExampleWebsite)):
 
@@ -180,6 +182,19 @@ Full documentation right around the corner...
 ## Contributing
 
 If you'd like to contribute, please do! Open an Issue, submit a PR, I'm happy however you want to contribute.
+
+## Roadmap
+
+The current objective is to get to `v0.9.0-rc1`. The following needs to be done to get to that point:
+
+1. Finish writing unit tests to achieve full (or full-as-necessary) test coverage to prove intended functionality,
+2. Write source documentation,
+3. Write user documentation,
+4. Release `v0.9.0-rc1` on Nuget
+
+After `v0.9.0-rc1` is released to Nuget, the goal is to test the library thoroughly in as many situations as possible to be sure of its design and usability. This will involve generating a GitHub Pages homepage for Metalsharp, and it may involve writing integration tests. `v0.9.0` will be released to Nuget when there is a concensus that Metalsharp is designed correctly.
+
+After `v0.9.0`, it's on to `v1.0.0`!
 
 ## But why is this necessary?
 
