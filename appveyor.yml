@@ -1,0 +1,17 @@
+version: '{branch}-{build}'
+image: Visual Studio 2017
+branches:
+  only:
+  - feature-appveyor
+init:
+  - cmd: git config --global core.autocrlf true
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./Metalsharp/Metalsharp.csproj --verbosity m
+build_script:
+  - cmd: dotnet publish ./Metalsharp/Metalsharp.csproj
+test_script:
+  - cmd: dotnet restore ./Metalsharp.Tests/Metalsharp.Tests.csproj --verbosity m
+  - cmd: cd Metalsharp.Tests
+  - cmd: dotnet test
+deploy: off
