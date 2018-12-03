@@ -1,4 +1,4 @@
-﻿namespace Metalsharp
+﻿namespace Metalsharp.ExamplePlugin
 {
     /// <summary>
     /// The Drafts plugin

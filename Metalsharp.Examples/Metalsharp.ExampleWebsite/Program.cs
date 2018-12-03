@@ -1,7 +1,6 @@
-﻿using Metalsharp;
-using ExamplePlugin;
+﻿using Metalsharp.ExamplePlugin;
 
-namespace ExampleWebsite
+namespace Metalsharp.ExampleWebsite
 {
     class Program
     {

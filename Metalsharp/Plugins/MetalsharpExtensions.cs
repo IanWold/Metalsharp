@@ -52,13 +52,6 @@ namespace Metalsharp
             directory.Use(new Debug(onLog));
 
         /// <summary>
-        /// Invoke the Drafts plugin
-        /// </summary>
-        /// <returns></returns>
-        public static MetalsharpDirectory UseDrafts(this MetalsharpDirectory directory) =>
-            directory.Use(new Drafts());
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="directory"></param>
