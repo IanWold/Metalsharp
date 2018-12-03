@@ -107,7 +107,77 @@ namespace Metalsharp.Tests
 
         #region Build
 
+        [Fact]
+        public void BuildWithDefaultOptionsWritesToCurrentDirectory()
+        {
+            if (File.Exists("OutputFile1.txt"))
+            {
+                File.Delete("OutputFile1.txt");
+            }
 
+            new MetalsharpDirectory()
+                .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
+                .Build();
+
+            Assert.True(File.Exists("OutputFile1.txt"));
+        }
+
+        [Fact]
+        public void BuildWithDefaultOptionsDoesNotOverwriteOutputDirectory()
+        {
+            if (!File.Exists("ShouldNotDelete.txt"))
+            {
+                File.Create("ShouldNotDelete.txt");
+            }
+
+            new MetalsharpDirectory()
+                .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
+                .Build();
+
+            Assert.True(File.Exists("ShouldNotDelete.txt"));
+        }
+
+        [Fact]
+        public void BuildWritesOutputFilesToOutputDirectory()
+        {
+            new MetalsharpDirectory()
+                .AddInput(new MetalsharpFile("text", "InputFile1.txt"))
+                .AddInput(new MetalsharpFile("text", "InputDir\\InputFile2.txt"))
+                .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
+                .AddOutput(new MetalsharpFile("text", "OutputDir\\OutputFile2.txt"))
+                .Build(new BuildOptions()
+                {
+                    OutputDirectory = "Output",
+                    ClearOutputDirectory = true
+                });
+
+            Assert.True(File.Exists("Output\\OutputFile1.txt"));
+            Assert.True(File.Exists("Output\\OutputDir\\OutputFile2.txt"));
+
+            Assert.False(File.Exists("Output\\InputFile1.txt"));
+            Assert.False(File.Exists("Output\\InputDir\\InputFile2.txt"));
+        }
+
+        [Fact]
+        public void BuildExecutesProvidedFunctionBeforeBuild()
+        {
+            var wasExecuted = false;
+
+            if (File.Exists("OutputFile2.txt"))
+            {
+                File.Delete("OutputFile2.txt");
+            }
+
+            new MetalsharpDirectory()
+                .AddOutput(new MetalsharpFile("text", "OutputFile2.txt"))
+                .Build(dir =>
+                {
+                    wasExecuted = true;
+                    Assert.False(File.Exists("OutputFile2.txt"));
+                });
+
+            Assert.True(wasExecuted);
+        }
 
         #endregion
 

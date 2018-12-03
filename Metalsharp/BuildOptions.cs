@@ -8,11 +8,11 @@
         /// <summary>
         /// Whether Metalsharp should remove all the files in the output directory before writing any
         /// </summary>
-        public bool ClearOutputDirectory { get; set; } = true;
+        public bool ClearOutputDirectory { get; set; } = false;
 
         /// <summary>
         /// The directory to which the files will be output
         /// </summary>
-        public string OutputDirectory { get; set; } = "bin/";
+        public string OutputDirectory { get; set; } = ".\\";
     }
 }
