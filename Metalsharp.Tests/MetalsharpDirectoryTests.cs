@@ -271,7 +271,81 @@ namespace Metalsharp.Tests
 
         #region Remove Files
 
+        [Fact]
+        public void RemoveFilesByPathEquivalentToInputAndOutput()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
 
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .AddOutput(file)
+                .RemoveFiles(file.FilePath);
+
+            Assert.False(directory.InputFiles.Contains(file));
+            Assert.False(directory.OutputFiles.Contains(file));
+        }
+
+        [Fact]
+        public void RemoveFilesByPredicateEquivalentToInputAndOutput()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .AddOutput(file)
+                .RemoveFiles(f => f.Text == "text");
+
+            Assert.False(directory.InputFiles.Contains(file));
+            Assert.False(directory.OutputFiles.Contains(file));
+        }
+
+        [Fact]
+        public void RemoveInputByPathRemovesFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .RemoveInput(file.FilePath);
+
+            Assert.False(directory.InputFiles.Contains(file));
+        }
+
+        [Fact]
+        public void RemoveInputByPredicateSelectsFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .RemoveInput(f => f.Text == "text");
+
+            Assert.False(directory.InputFiles.Contains(file));
+        }
+
+        [Fact]
+        public void RemoveOutputByPathRemovesFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddOutput(file)
+                .RemoveOutput(file.FilePath);
+
+            Assert.False(directory.OutputFiles.Contains(file));
+        }
+
+        [Fact]
+        public void RemoveOutputByPredicateSelectsFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddOutput(file)
+                .RemoveOutput(f => f.Text == "text");
+
+            Assert.False(directory.OutputFiles.Contains(file));
+        }
 
         #endregion
 
