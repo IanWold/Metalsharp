@@ -145,7 +145,7 @@ namespace Metalsharp.Tests
                 .AddInput(new MetalsharpFile("text", "InputDir\\InputFile2.txt"))
                 .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
                 .AddOutput(new MetalsharpFile("text", "OutputDir\\OutputFile2.txt"))
-                .Build(new BuildOptions()
+                .Build(new BuildOptions
                 {
                     OutputDirectory = "Output",
                     ClearOutputDirectory = true
@@ -197,7 +197,7 @@ namespace Metalsharp.Tests
                 Assert.False(File.Exists("OutputFile3.txt"));
             };
 
-            directory.Build(dir => Assert.True(wasInvoked), new BuildOptions() { });
+            directory.Build(dir => Assert.True(wasInvoked), new BuildOptions());
 
             Assert.True(wasInvoked);
         }
@@ -220,7 +220,7 @@ namespace Metalsharp.Tests
                 // File may or may not exist here - cannot test this?
             };
 
-            directory.Build(dir => Assert.False(wasInvoked), new BuildOptions() { });
+            directory.Build(dir => Assert.False(wasInvoked), new BuildOptions());
 
             Assert.True(wasInvoked);
         }
