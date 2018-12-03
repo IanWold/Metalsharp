@@ -8,7 +8,7 @@
 A tiny and extendable C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/). Metalsharp is guided by three basic principles:
 
 1. **Small footprint**: Use the smallest amount of code necessary,
-1. **Extandable**: Make it as easy as possible for anyone to develop and release plugins, and
+1. **Extendable**: Make it as easy as possible for anyone to develop and release plugins, and
 1. **Approachable**: Maintain thorough documentation to keep the code easy to read and the library easy to learn
 
 Generating a website from a directory is as simple as the following (from [ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExampleWebsite)):
