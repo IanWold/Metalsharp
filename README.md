@@ -9,7 +9,7 @@ A tiny and extendable C# library for generating static sites, inspired by [Metal
 
 This project is brand-new - like, 0.0.1 new - so things will be added fast. I hope. Probably not. The good thing, though, is that it's so simple that very significant changes are unlikely to happen. That said, if you have a suggestion or want to contribute, now's probably the easiest time for it ;)
 
-Generating a website from a directory is as simple as the following (from [Examples/ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite)):
+Generating a website from a directory is as simple as the following (from [ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExampleWebsite)):
 
 ```c#
 new MetalsharpDirectory("Site")
@@ -25,7 +25,7 @@ This example uses three plugins: `Frontmatter`, `Drafts`, and `Markdown`, and th
 
 ### Configuring a Metalsharp Project Directory
 
-See [Examples/ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
+See [ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
 
 ```text
 .
