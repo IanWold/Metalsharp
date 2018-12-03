@@ -22,6 +22,13 @@
     <None Remove="Scenario\Directory2\SubDirectory1\file13.md" />
     <None Remove="Scenario\Directory2\SubDirectory1\file14.md" />
     <None Remove="Scenario\Directory2\SubDirectory1\file15.md" />
+    <None Remove="Scenario\Markdown\file1.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scenario\Markdown\file1.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
