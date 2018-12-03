@@ -74,7 +74,7 @@ namespace Metalsharp.Tests
         public void AddOutputAddsFilesToCorrectDirectory(string diskPath, string virtualPath)
         {
             var directory = new MetalsharpDirectory().AddOutput(diskPath, virtualPath);
-            
+
             foreach (var file in directory.OutputFiles)
             {
                 var newPath = (Directory.Exists(diskPath) ? diskPath : Path.GetDirectoryName(diskPath)) +
@@ -183,7 +183,37 @@ namespace Metalsharp.Tests
 
         #region Metadata
 
+        [Fact]
+        public void MetadataSinglePairAddsAndOverwrites()
+        {
+            var directory = new MetalsharpDirectory();
 
+            directory.Meta("key", "value1");
+            Assert.True(directory.Metadata.ContainsKey("key"));
+            Assert.True(directory.Metadata["key"].ToString() == "value1");
+
+            directory.Meta("key", "value2");
+            Assert.True(directory.Metadata["key"].ToString() == "value2");
+        }
+
+        [Fact]
+        public void MetadataMultiplePairsAddAndOverwrite()
+        {
+            var directory = new MetalsharpDirectory();
+
+            directory.Meta(("key1", "value1"), ("key2", "value1"), ("key3", "value1"));
+            Assert.True(directory.Metadata.ContainsKey("key1"));
+            Assert.True(directory.Metadata.ContainsKey("key2"));
+            Assert.True(directory.Metadata.ContainsKey("key3"));
+            Assert.True(directory.Metadata["key1"].ToString() == "value1");
+            Assert.True(directory.Metadata["key2"].ToString() == "value1");
+            Assert.True(directory.Metadata["key3"].ToString() == "value1");
+
+            directory.Meta(("key1", "value2"), ("key2", "value2"), ("key3", "value2"));
+            Assert.True(directory.Metadata["key1"].ToString() == "value2");
+            Assert.True(directory.Metadata["key2"].ToString() == "value2");
+            Assert.True(directory.Metadata["key3"].ToString() == "value2");
+        }
 
         #endregion
 
