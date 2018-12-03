@@ -6,6 +6,8 @@ namespace Metalsharp.Tests
 {
     public class PluginTests
     {
+        #region Branch Plugin
+
         [Fact]
         public void BranchExecutesBranchesIndependently()
         {
@@ -32,7 +34,9 @@ namespace Metalsharp.Tests
             Assert.True(secondBranchExecuted);
         }
 
+        #endregion
 
+        #region Frontmatter Plugin
 
         [Fact]
         public void FrontmatterSucceedsWithoutFrontmatter()
@@ -58,6 +62,10 @@ namespace Metalsharp.Tests
             Assert.True(ToBoolean(directory.InputFiles[0].Metadata["test"].ToString()));
         }
 
+        #endregion
+
+        #region Markdown Plugin Tests
+
         [Fact]
         public void MarkdownGeneratesHtmlFile()
         {
@@ -75,5 +83,7 @@ namespace Metalsharp.Tests
 
             Assert.True((bool)directory.OutputFiles[0].Metadata["test"]);
         }
+
+        #endregion
     }
 }
