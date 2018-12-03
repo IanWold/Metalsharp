@@ -179,6 +179,52 @@ namespace Metalsharp.Tests
             Assert.True(wasExecuted);
         }
 
+        [Fact]
+        public void BuildInvokesBeforeBuildEvent()
+        {
+            var wasInvoked = false;
+
+            if (File.Exists("OutputFile3.txt"))
+            {
+                File.Delete("OutputFile3.txt");
+            }
+
+            var directory = new MetalsharpDirectory().AddOutput(new MetalsharpFile("text", "OutputFile3.txt"));
+
+            directory.BeforeBuild += (sender, e) =>
+            {
+                wasInvoked = true;
+                Assert.False(File.Exists("OutputFile3.txt"));
+            };
+
+            directory.Build(dir => Assert.True(wasInvoked), new BuildOptions() { });
+
+            Assert.True(wasInvoked);
+        }
+
+        [Fact]
+        public void BuildInvokesAfterBuildEvent()
+        {
+            var wasInvoked = false;
+
+            if (File.Exists("OutputFile4.txt"))
+            {
+                File.Delete("OutputFile4.txt");
+            }
+
+            var directory = new MetalsharpDirectory().AddOutput(new MetalsharpFile("text", "OutputFile4.txt"));
+
+            directory.AfterBuild += (sender, e) =>
+            {
+                wasInvoked = true;
+                // File may or may not exist here - cannot test this?
+            };
+
+            directory.Build(dir => Assert.False(wasInvoked), new BuildOptions() { });
+
+            Assert.True(wasInvoked);
+        }
+
         #endregion
 
         #region Metadata
