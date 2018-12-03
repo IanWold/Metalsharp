@@ -265,7 +265,81 @@ namespace Metalsharp.Tests
 
         #region Move Files
 
+        [Fact]
+        public void MoveFilesByPathEquivalentToInputAndOutput()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
 
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .AddOutput(file)
+                .MoveFiles("dir1", "dir2");
+
+            Assert.True(directory.InputFiles[0].Directory == "dir2");
+            Assert.True(directory.OutputFiles[0].Directory == "dir2");
+        }
+
+        [Fact]
+        public void MoveFilesByPredicateEquivalentToInputAndOutput()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .AddOutput(file)
+                .MoveFiles(f => f.Text == "text", "dir2");
+
+            Assert.True(directory.InputFiles[0].Directory == "dir2");
+            Assert.True(directory.OutputFiles[0].Directory == "dir2");
+        }
+
+        [Fact]
+        public void MoveInputByPathMovesFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .MoveInput("dir1", "dir2");
+
+            Assert.True(directory.InputFiles[0].Directory == "dir2");
+        }
+
+        [Fact]
+        public void MoveInputByPredicateSelectsFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddInput(file)
+                .MoveInput(f => f.Text == "text", "dir2");
+
+            Assert.True(directory.InputFiles[0].Directory == "dir2");
+        }
+
+        [Fact]
+        public void MoveOutputByPathMovesFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddOutput(file)
+                .MoveOutput("dir1", "dir2");
+
+            Assert.True(directory.OutputFiles[0].Directory == "dir2");
+        }
+
+        [Fact]
+        public void MoveOutputByPredicateSelectsFilesCorrectly()
+        {
+            var file = new MetalsharpFile("text", "dir1\\File.txt");
+
+            var directory = new MetalsharpDirectory()
+                .AddOutput(file)
+                .MoveOutput(f => f.Text == "text", "dir2");
+
+            Assert.True(directory.OutputFiles[0].Directory == "dir2");
+        }
 
         #endregion
 
