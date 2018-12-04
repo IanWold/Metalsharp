@@ -53,7 +53,8 @@ namespace Metalsharp
         /// <returns></returns>
         public bool ContainsDirectory(string directory) =>
             _items.Exists(i => i.IsDescendantOf(directory));
-        
+
+        #pragma warning disable CS1591
         public T this[int index]
         {
             get => _items[index];
@@ -98,6 +99,8 @@ namespace Metalsharp
         
         public int RemoveAll(Predicate<T> match) =>
             _items.RemoveAll(match);
+
+        #pragma warning restore CS1591
     }
 
     /// <summary>
