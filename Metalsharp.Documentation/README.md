@@ -5,7 +5,7 @@
 
 - [Branch](#T-Metalsharp-Branch 'Metalsharp.Branch')
   - [#ctor(branches)](#M-Metalsharp-Branch-#ctor-System-Action{Metalsharp-MetalsharpDirectory}[]- 'Metalsharp.Branch.#ctor(System.Action{Metalsharp.MetalsharpDirectory}[])')
-  - [Branches](#P-Metalsharp-Branch-Branches 'Metalsharp.Branch.Branches')
+  - [_branches](#P-Metalsharp-Branch-_branches 'Metalsharp.Branch._branches')
   - [Execute(directory)](#M-Metalsharp-Branch-Execute-Metalsharp-MetalsharpDirectory- 'Metalsharp.Branch.Execute(Metalsharp.MetalsharpDirectory)')
 - [BuildOptions](#T-Metalsharp-BuildOptions 'Metalsharp.BuildOptions')
   - [ClearOutputDirectory](#P-Metalsharp-BuildOptions-ClearOutputDirectory 'Metalsharp.BuildOptions.ClearOutputDirectory')
@@ -19,8 +19,8 @@
   - [#ctor()](#M-Metalsharp-Debug-#ctor 'Metalsharp.Debug.#ctor')
   - [#ctor(logPath)](#M-Metalsharp-Debug-#ctor-System-String- 'Metalsharp.Debug.#ctor(System.String)')
   - [#ctor(onLog)](#M-Metalsharp-Debug-#ctor-System-Action{System-String}- 'Metalsharp.Debug.#ctor(System.Action{System.String})')
-  - [OnLog](#F-Metalsharp-Debug-OnLog 'Metalsharp.Debug.OnLog')
-  - [Uses](#F-Metalsharp-Debug-Uses 'Metalsharp.Debug.Uses')
+  - [_onLog](#F-Metalsharp-Debug-_onLog 'Metalsharp.Debug._onLog')
+  - [_useCount](#F-Metalsharp-Debug-_useCount 'Metalsharp.Debug._useCount')
   - [Execute(directory)](#M-Metalsharp-Debug-Execute-Metalsharp-MetalsharpDirectory- 'Metalsharp.Debug.Execute(Metalsharp.MetalsharpDirectory)')
   - [WriteDirectory(directory)](#M-Metalsharp-Debug-WriteDirectory-Metalsharp-IMetalsharpFileCollection{Metalsharp-MetalsharpFile}- 'Metalsharp.Debug.WriteDirectory(Metalsharp.IMetalsharpFileCollection{Metalsharp.MetalsharpFile})')
 - [Frontmatter](#T-Metalsharp-Frontmatter 'Metalsharp.Frontmatter')
@@ -158,8 +158,8 @@ Branches a directory for separate plugins to be computed
 | ---- | ---- | ----------- |
 | branches | [System.Action{Metalsharp.MetalsharpDirectory}[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Action 'System.Action{Metalsharp.MetalsharpDirectory}[]') | The functions defining each branch |
 
-<a name='P-Metalsharp-Branch-Branches'></a>
-### Branches `property`
+<a name='P-Metalsharp-Branch-_branches'></a>
+### _branches `property`
 
 ##### Summary
 
@@ -313,19 +313,19 @@ Configure Debug to use custom behavior when writing logs
 | ---- | ---- | ----------- |
 | onLog | [System.Action{System.String}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Action 'System.Action{System.String}') | The action to execute when writing a log |
 
-<a name='F-Metalsharp-Debug-OnLog'></a>
-### OnLog `constants`
+<a name='F-Metalsharp-Debug-_onLog'></a>
+### _onLog `constants`
 
 ##### Summary
 
 The action to execute when writing a log
 
-<a name='F-Metalsharp-Debug-Uses'></a>
-### Uses `constants`
+<a name='F-Metalsharp-Debug-_useCount'></a>
+### _useCount `constants`
 
 ##### Summary
 
-A count of the number of "Uses" against the directory
+A count of the number of calls to .Use() against the directory
 
 <a name='M-Metalsharp-Debug-Execute-Metalsharp-MetalsharpDirectory-'></a>
 ### Execute(directory) `method`

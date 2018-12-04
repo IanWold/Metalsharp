@@ -12,6 +12,16 @@ namespace Metalsharp
     public class Debug : IMetalsharpPlugin
     {
         /// <summary>
+        /// The action to execute when writing a log
+        /// </summary>
+        private Action<string> _onLog;
+
+        /// <summary>
+        /// A count of the number of calls to .Use() against the directory
+        /// </summary>
+        private int _useCount;
+
+        /// <summary>
         /// By default, write debug logs with Debug.WriteLine()
         /// </summary>
         public Debug() : this(message => System.Diagnostics.Debug.WriteLine(message)) { }
@@ -22,12 +32,12 @@ namespace Metalsharp
         /// <param name="logPath">The path to the log file</param>
         public Debug(string logPath)
             : this(message =>
-        {
-            using (var writer = new StreamWriter(logPath, true))
             {
-                writer.WriteLineAsync(message);
-            }
-        })
+                using (var writer = new StreamWriter(logPath, true))
+                {
+                    writer.WriteLineAsync(message);
+                }
+            })
         { }
 
         /// <summary>
@@ -35,17 +45,7 @@ namespace Metalsharp
         /// </summary>
         /// <param name="onLog">The action to execute when writing a log</param>
         public Debug(Action<string> onLog) =>
-            OnLog = onLog;
-
-        /// <summary>
-        /// The action to execute when writing a log
-        /// </summary>
-        private Action<string> OnLog;
-
-        /// <summary>
-        /// A count of the number of "Uses" against the directory
-        /// </summary>
-        private int Uses;
+            _onLog = onLog;
 
         /// <summary>
         /// Invokes the plugin
@@ -53,7 +53,7 @@ namespace Metalsharp
         /// <param name="directory"></param>
         public void Execute(MetalsharpDirectory directory) =>
             directory.AfterUse += (sender, e) =>
-                OnLog("Step " + ++Uses + "." +
+                _onLog("Step " + ++_useCount + "." +
                     "\r\n" +
                     "Input directory:" +
                     "\r\n\r\n" +

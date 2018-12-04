@@ -13,21 +13,21 @@ namespace Metalsharp
     public class Branch : IMetalsharpPlugin
     {
         /// <summary>
+        /// The function-branches
+        /// </summary>
+        private List<Action<MetalsharpDirectory>> _branches { get; set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="branches">The functions defining each branch</param>
         public Branch(params Action<MetalsharpDirectory>[] branches) =>
-            Branches = branches.ToList();
-
-        /// <summary>
-        /// The function-branches
-        /// </summary>
-        public List<Action<MetalsharpDirectory>> Branches { get; set; }
+            _branches = branches.ToList();
 
         /// <summary>
         /// Invokes the plugin
         /// </summary>
         /// <param name="directory"></param>
         public void Execute(MetalsharpDirectory directory) =>
-            Branches.ForEach(b => b(DeserializeObject<MetalsharpDirectory>(SerializeObject(directory))));
+            _branches.ForEach(b => b(DeserializeObject<MetalsharpDirectory>(SerializeObject(directory))));
     }
 }

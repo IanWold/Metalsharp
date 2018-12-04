@@ -9,6 +9,8 @@ namespace Metalsharp
     /// </summary>
     public static class MetalsharpExtensions
     {
+        #region Branch Plugin
+
         /// <summary>
         /// Invoke the Branch plugin
         /// </summary>
@@ -17,6 +19,10 @@ namespace Metalsharp
         /// <param name="branches">The functions to handle each of the branches</param>
         public static MetalsharpDirectory Branch(this MetalsharpDirectory directory, params Action<MetalsharpDirectory>[] branches) =>
             directory.Use(new Branch(branches));
+
+        #endregion
+
+        #region Collections Plugin
 
         /// <summary>
         /// Invoke the Collections plugin with a single collection definition
@@ -107,6 +113,10 @@ namespace Metalsharp
                 ? directory.OutputFiles.Where(file => files.Contains(file.FilePath))
                 : Enumerable.Empty<IMetalsharpFile>();
 
+        #endregion
+
+        #region Debug Plugin
+
         /// <summary>
         /// Invoke the default Debug plugin
         /// </summary>
@@ -133,6 +143,10 @@ namespace Metalsharp
         public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory, Action<string> onLog) =>
             directory.Use(new Debug(onLog));
 
+        #endregion
+
+        #region Frontmatter Plugin
+
         /// <summary>
         /// Invoke the frontmatter plugin
         /// </summary>
@@ -141,11 +155,17 @@ namespace Metalsharp
         public static MetalsharpDirectory UseFrontmatter(this MetalsharpDirectory directory) =>
             directory.Use(new Frontmatter());
 
+        #endregion
+
+        #region Markdown Plugin
+
         /// <summary>
         /// Invoke the Merkdown plugin
         /// </summary>
         /// <returns></returns>
         public static MetalsharpDirectory UseMarkdown(this MetalsharpDirectory directory) =>
             directory.Use(new Markdown());
+
+        #endregion
     }
 }
