@@ -15,7 +15,7 @@ namespace Metalsharp
         /// <summary>
         /// The function-branches
         /// </summary>
-        private List<Action<MetalsharpDirectory>> _branches { get; set; }
+        private List<Action<MetalsharpDirectory>> _branches;
 
         /// <summary>
         /// </summary>
