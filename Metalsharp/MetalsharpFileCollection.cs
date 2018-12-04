@@ -53,91 +53,49 @@ namespace Metalsharp
         /// <returns></returns>
         public bool ContainsDirectory(string directory) =>
             _items.Exists(i => i.IsDescendantOf(directory));
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public T this[int index]
         {
             get => _items[index];
             set => _items[index] = value;
         }
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public int Count =>
             _items.Count();
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public bool IsReadOnly =>
             false;
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public void Add(T item) =>
             _items.Add(item);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public void Clear() =>
             _items.Clear();
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public bool Contains(T item) =>
             _items.Contains(item);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public void CopyTo(T[] array, int arrayIndex) =>
             _items.CopyTo(array, arrayIndex);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public IEnumerator<T> GetEnumerator() =>
             _items.GetEnumerator();
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public int IndexOf(T item) =>
             _items.IndexOf(item);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public void Insert(int index, T item) =>
             _items.Insert(index, item);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public bool Remove(T item) =>
             _items.Remove(item);
-
-        /// <summary>
-        /// Implements IList
-        /// </summary>
+        
         public void RemoveAt(int index) =>
             _items.RemoveAt(index);
-
-        /// <summary>
-        /// Implements IMetalsharpCollection
-        /// </summary>
+        
         public int RemoveAll(Predicate<T> match) =>
             _items.RemoveAll(match);
     }
