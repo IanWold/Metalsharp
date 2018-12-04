@@ -21,6 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp.ExamplePlugin", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp.Tests", "Metalsharp.Tests\Metalsharp.Tests.csproj", "{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metalsharp.Documentation", "Metalsharp.Documentation", "{546D55B0-7888-4947-A29B-3017232C1181}"
+	ProjectSection(SolutionItems) = preProject
+		Metalsharp.Documentation\README.md = Metalsharp.Documentation\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
