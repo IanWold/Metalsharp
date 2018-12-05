@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp", "Metalsharp\Me
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B3C1270-CEE2-4A3C-ABB0-3861215D80B6}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
 		LICENSE = LICENSE
 		Metalsharp.png = Metalsharp.png
@@ -25,10 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metalsharp.Documentation", 
 	ProjectSection(SolutionItems) = preProject
 		Metalsharp.Documentation\README.md = Metalsharp.Documentation\README.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metalsharp.Tools", "Metalsharp.Tools", "{4A950785-B4BB-475E-AD23-00B4044C8681}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocToMarkdown", "Metalsharp.Tools\XmlDocToMarkdown\XmlDocToMarkdown.csproj", "{165824AF-D061-43E2-9583-365DFD892FB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +50,6 @@ Global
 		{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A969B480-A460-4F6F-86E4-8E2D4CE2A5A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{165824AF-D061-43E2-9583-365DFD892FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{165824AF-D061-43E2-9583-365DFD892FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{165824AF-D061-43E2-9583-365DFD892FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{165824AF-D061-43E2-9583-365DFD892FB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,7 +57,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CDAA157E-5E7C-4321-BE1B-6B3AEA206EE5} = {945D79AE-689D-40AB-9895-25216E7DCFFD}
 		{0C8CF260-43D9-41A1-AED2-B47404490B76} = {945D79AE-689D-40AB-9895-25216E7DCFFD}
-		{165824AF-D061-43E2-9583-365DFD892FB7} = {4A950785-B4BB-475E-AD23-00B4044C8681}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1302004-B5D6-48D4-B9DE-2B069A693245}
