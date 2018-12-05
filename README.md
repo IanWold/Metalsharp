@@ -176,7 +176,7 @@ new MetalsharpDirectory("Site")
 
 ## Docs
 
-Documentation is currently being written, and skeleton documentation is available for the source. The code is fully commented with XML documentation, and VSXMD is used to generate a markdown dump of all the API documentation. [You can find source documentation here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md).
+Documentation is currently being written, and skeleton documentation is available for the source. The code is fully commented with XML documentation, and [XmlDocToMarkdown](https://github.com/ianwold/XmlDocToMarkdown) is used to generate a markdown dump of all the API documentation. [You can find source documentation here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md).
 
 The current goal is to fully flush-out this documentation, generate separate files with it, and then write supplementary tutorials for the library.
 
