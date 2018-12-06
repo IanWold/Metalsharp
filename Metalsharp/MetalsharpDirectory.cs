@@ -122,7 +122,7 @@ namespace Metalsharp
         MetalsharpDirectory AddExisting(string diskPath, string virtualPath, Action<MetalsharpFile> add)
         {
             MetalsharpFile GetFileWithNormalizedDirectory(string dPath, string vPath) =>
-                new MetalsharpFile(File.ReadAllText(diskPath), Path.Combine(virtualPath, Path.GetFileName(diskPath)));
+                new MetalsharpFile(File.ReadAllText(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
 
             if (Directory.Exists(diskPath))
             {
