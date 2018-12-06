@@ -9,7 +9,7 @@ namespace Metalsharp.Tests
     {
         #region Add Files
 
-        [Theory]
+        [Theory(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         [InlineData("Scenario\\Directory1", 5)]
         [InlineData("Scenario\\Directory2", 10)]
         public void AddInputSinglePathAddsCorrectNumberOfFiles(string path, int expectedFileCount)
@@ -18,7 +18,7 @@ namespace Metalsharp.Tests
             Assert.True(directory.InputFiles.Count == expectedFileCount);
         }
 
-        [Theory]
+        [Theory(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         [InlineData("Scenario\\Directory1", "Scenario\\Directory1")]
         [InlineData("Scenario\\Directory1", "Dir")]
         [InlineData("Scenario\\Directory1\\file1.md", "Scenario\\Directory1")]
@@ -56,7 +56,7 @@ namespace Metalsharp.Tests
             Assert.True(directory.InputFiles.Contains(file));
         }
 
-        [Theory]
+        [Theory(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         [InlineData("Scenario\\Directory1", 5)]
         [InlineData("Scenario\\Directory2", 10)]
         public void AddOutputSinglePathAddsCorrectNumberOfFiles(string path, int expectedFileCount)
@@ -65,7 +65,7 @@ namespace Metalsharp.Tests
             Assert.True(directory.OutputFiles.Count == expectedFileCount);
         }
 
-        [Theory]
+        [Theory(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         [InlineData("Scenario\\Directory1", "Scenario\\Directory1")]
         [InlineData("Scenario\\Directory1", "Dir")]
         [InlineData("Scenario\\Directory1\\file1.md", "Scenario\\Directory1")]

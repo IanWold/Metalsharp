@@ -10,7 +10,7 @@ namespace Metalsharp.Tests
     {
         #region Branch Plugin
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void BranchExecutesBranchesIndependently()
         {
             var firstBranchExecuted = false;
@@ -40,7 +40,7 @@ namespace Metalsharp.Tests
 
         #region Collections Plugin
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void CollectionsCorrectlyGroupsFiles()
         {
             var directory = new MetalsharpDirectory()
@@ -59,7 +59,7 @@ namespace Metalsharp.Tests
             Assert.DoesNotContain(directory.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void GetFilesFromCollectionReturnsCorrectFiles()
         {
             var directory = new MetalsharpDirectory()
@@ -74,7 +74,7 @@ namespace Metalsharp.Tests
             Assert.DoesNotContain(directory.GetFilesFromCollection("test"), i => i.Name == "FileMarkdown");
         }
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void CollectionsCorrectlyGroupsInputFiles()
         {
             var directory = new MetalsharpDirectory()
@@ -86,7 +86,7 @@ namespace Metalsharp.Tests
             Assert.DoesNotContain(directory.GetInputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void CollectionsCorrectlyGroupsOutputFiles()
         {
             var directory = new MetalsharpDirectory()
@@ -98,7 +98,7 @@ namespace Metalsharp.Tests
             Assert.DoesNotContain(directory.GetOutputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void GetInputFilesFromCollectionReturnsCorrectFiles()
         {
             var directory = new MetalsharpDirectory()
@@ -110,7 +110,7 @@ namespace Metalsharp.Tests
             Assert.DoesNotContain(directory.GetInputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
         }
 
-        [Fact]
+        [Fact(Skip = "https://github.com/IanWold/Metalsharp/issues/4")]
         public void GetOutputFilesFromCollectionReturnsCorrectFiles()
         {
             var directory = new MetalsharpDirectory()
