@@ -4,6 +4,8 @@
 [![AppVeyor tests](https://img.shields.io/appveyor/tests/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp/build/tests)
 [![Discord](https://img.shields.io/discord/517023630224523274.svg?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/HrxyfFP)
 
+** All tests which access the file system are currently failing locally and in AppVeyor for multiple users. Any helpful insights would be appreciated. [See this issue](https://github.com/IanWold/Metalsharp/issues/4) if you can help. **
+
 A tiny and extendable C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/). Metalsharp is guided by three basic principles:
 
 1. **Small footprint**: Use the smallest amount of code necessary,
