@@ -5,31 +5,67 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    /// The Debug plugin
+    /// The Debug plugin.
     /// 
     /// Writes a log after every Use, outputting the contents of the input and output directories.
     /// </summary>
+    /// 
+    /// <example>
+    ///     `Debug` is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
+    ///     
+    ///     ```c#
+    ///         new MetalsharpDirectory("Path\\To\\Dir")
+    ///         .Debug()
+    ///         .Use ... ;
+    ///     ```
+    /// </example>
     public class Debug : IMetalsharpPlugin
     {
         /// <summary>
-        /// The action to execute when writing a log
+        ///     The action to execute when writing a log.
         /// </summary>
         private Action<string> _onLog;
 
         /// <summary>
-        /// A count of the number of calls to .Use() against the directory
+        ///     A count of the number of calls to .Use() against the directory.
         /// </summary>
         private int _useCount;
 
         /// <summary>
-        /// By default, write debug logs with Debug.WriteLine()
+        ///     By default, write debug logs with `Debug.WriteLine()`.
         /// </summary>
         public Debug() : this(message => System.Diagnostics.Debug.WriteLine(message)) { }
 
         /// <summary>
-        /// Configure Debug to write logs to a log file
+        ///     Instantiate `Debug` with a log file path to output the debug log to a log file.
         /// </summary>
-        /// <param name="logPath">The path to the log file</param>
+        /// 
+        /// <example>
+        ///     Given the following Metalsharp project:
+        ///     
+        ///     ```c#
+        ///         new MetalsharpDirectory()
+        ///         .UseDebug("output.log")
+        ///         .Use(i => i.AddInput(new MetalsharpFile("text", "file.md")));
+        ///     ```
+        ///     
+        ///     A file called `output.log` will be generated, and will look like the following:
+        ///     
+        ///     ```plaintext
+        ///         Step 1.
+        ///         Input directory:
+        ///         
+        ///         file.md
+        ///         
+        ///         Output directory:
+        ///         
+        ///         ---
+        ///     ```
+        /// </example>
+        /// 
+        /// <param name="logPath">
+        ///     The path to the log file.
+        /// </param>
         public Debug(string logPath)
             : this(message =>
             {
@@ -41,16 +77,22 @@ namespace Metalsharp
         { }
 
         /// <summary>
-        /// Configure Debug to use custom behavior when writing logs
+        ///     Instantiate `Debug` with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
         /// </summary>
-        /// <param name="onLog">The action to execute when writing a log</param>
+        /// 
+        /// <param name="onLog">
+        ///     The action to execute when writing a log.
+        /// </param>
         public Debug(Action<string> onLog) =>
             _onLog = onLog;
 
         /// <summary>
-        /// Invokes the plugin
+        ///     Invokes the plugin.
         /// </summary>
-        /// <param name="directory"></param>
+        /// 
+        /// <param name="directory">
+        ///     The directory to output debug logs for.
+        /// </param>
         public void Execute(MetalsharpDirectory directory) =>
             directory.AfterUse += (sender, e) =>
                 _onLog("Step " + ++_useCount + "." +
@@ -68,10 +110,16 @@ namespace Metalsharp
                 );
 
         /// <summary>
-        /// Prettify the contents of a collection of files
+        ///     Prettify the contents of a collection of files.
         /// </summary>
-        /// <param name="directory"></param>
-        /// <returns></returns>
+        /// 
+        /// <param name="directory">
+        ///     The collection of files to prettify/
+        /// </param>
+        /// 
+        /// <returns>
+        ///     A well-formatted string listing the paths of each file in the given collection.
+        /// </returns>
         private string WriteDirectory(IMetalsharpFileCollection<MetalsharpFile> directory) =>
             string.Join("\r\n",
                 directory
