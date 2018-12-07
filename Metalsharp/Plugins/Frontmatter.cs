@@ -6,16 +6,39 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    /// The Frontmatter plugin
+    /// The Frontmatter plugin.
     /// 
-    /// Adds any YAML or JSON frontmatter in the input files to the metadata
+    /// Adds any YAML or JSON frontmatter in the input files to the metadata.
     /// </summary>
+    /// 
+    /// <example>
+    ///     Given the following `file.txt`:
+    ///     
+    ///     ```plaintext
+    ///     ---
+    ///     draft: true
+    ///     ---
+    ///     Hello, World!
+    ///     ```
+    ///     
+    ///     The assertion in the following will evaluate to `true`:
+    ///     
+    ///     ```c#
+    ///         var directory = new MetalsharpDirectory("file.txt")
+    ///         .UseFrontmatter();
+    ///         
+    ///         Assert.True((bool)directory.InputFiles[0].Metadata["draft"])
+    ///     ```
+    /// </example>
     public class Frontmatter : IMetalsharpPlugin
     {
         /// <summary>
-        /// Invokes the plugin
+        ///     Invokes the plugin.
         /// </summary>
-        /// <param name="directory"></param>
+        /// 
+        /// <param name="directory">
+        ///     The directory to invoke the plugin on.
+        /// </param>
         public void Execute(MetalsharpDirectory directory)
         {
             foreach (var file in directory.InputFiles)
@@ -39,12 +62,22 @@ namespace Metalsharp
         }
 
         /// <summary>
-        /// Try to parse YAML or JSON frontmatter
+        ///     Try to parse YAML or JSON frontmatter
         /// </summary>
-        /// <param name="document">The document containing frontmatter</param>
-        /// <param name="frontmatter">The parsed frontmatter</param>
-        /// <param name="remainder">The document minus the frontmatter text</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="document">
+        ///     The document potentially containing frontmatter.
+        /// </param>
+        /// <param name="frontmatter">
+        ///     The parsed frontmatter.
+        /// </param>
+        /// <param name="remainder">
+        ///     The document minus the frontmatter text.
+        /// </param>
+        /// 
+        /// <returns>
+        ///     `true` if frontmatter text was found and parsed; `false` otherwise.
+        /// </returns>
         static bool TryGetFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
         {
             if (document.StartsWith("---")
@@ -70,12 +103,22 @@ namespace Metalsharp
         }
 
         /// <summary>
-        /// Try to parse YAML frontmatter
+        ///     Try to parse YAML frontmatter.
         /// </summary>
-        /// <param name="document">The document containing frontmatter</param>
-        /// <param name="frontmatter">The parsed frontmatter</param>
-        /// <param name="remainder">The document minus the frontmatter text</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="document">
+        ///     The document containing frontmatter.
+        /// </param>
+        /// <param name="frontmatter">
+        ///     The parsed frontmatter.
+        /// </param>
+        /// <param name="remainder">
+        ///     The document minus the frontmatter text.
+        /// </param>
+        /// 
+        /// <returns>
+        ///     `true` if frontmatter text was found and parsed; `false` otherwise.
+        /// </returns>
         static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
         {
             var split = document.Split(new [] { "---" }, StringSplitOptions.None);
@@ -107,12 +150,22 @@ namespace Metalsharp
         }
 
         /// <summary>
-        /// Try to parse JSON frontmatter
+        ///     Try to parse JSON frontmatter.
         /// </summary>
-        /// <param name="document">The document containing frontmatter</param>
-        /// <param name="frontmatter">The parsed frontmatter</param>
-        /// <param name="remainder">The document minus the frontmatter text</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="document">
+        ///     The document containing frontmatter.
+        /// </param>
+        /// <param name="frontmatter">
+        ///     The parsed frontmatter.
+        /// </param>
+        /// <param name="remainder">
+        ///     The document minus the frontmatter text.
+        /// </param>
+        /// 
+        /// <returns>
+        ///     `true` if frontmatter text was found and parsed; `false` otherwise.
+        /// </returns>
         static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
         {
             var split = document.Split(new [] { ";;;" }, StringSplitOptions.None);
