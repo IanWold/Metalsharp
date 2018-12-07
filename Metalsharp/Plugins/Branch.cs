@@ -6,9 +6,9 @@ using static Newtonsoft.Json.JsonConvert;
 namespace Metalsharp
 {
     /// <summary>.
-    /// The Branch plugin
-    /// 
-    /// Creates copies of a `MetalsharpDirectory` for separate stacks of plugins to be independently invoked on it.
+    ///     The Branch plugin
+    ///     
+    ///     Creates copies of a `MetalsharpDirectory` for separate stacks of plugins to be independently invoked on it.
     /// </summary>
     /// 
     /// <example>

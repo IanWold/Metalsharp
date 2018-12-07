@@ -6,9 +6,9 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    /// The Frontmatter plugin.
-    /// 
-    /// Adds any YAML or JSON frontmatter in the input files to the metadata.
+    ///     The Frontmatter plugin.
+    ///     
+    ///     Adds any YAML or JSON frontmatter in the input files to the metadata.
     /// </summary>
     /// 
     /// <example>

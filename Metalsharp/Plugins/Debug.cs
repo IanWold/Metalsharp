@@ -5,9 +5,9 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    /// The Debug plugin.
-    /// 
-    /// Writes a log after every Use, outputting the contents of the input and output directories.
+    ///     The Debug plugin.
+    ///     
+    ///     Writes a log after every Use, outputting the contents of the input and output directories.
     /// </summary>
     /// 
     /// <example>
