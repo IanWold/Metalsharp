@@ -2,17 +2,21 @@
 
 ## BuildOptions
 
-Represents the options when Metalsharp outputs a directory
+Represents the options when Metalsharp outputs a directory.
 
 ### Properties
 
 ### `ClearOutputDirectory`
 
-Whether Metalsharp should remove all the files in the output directory before writing any
+Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
+
+`false` by default.
 
 ### `OutputDirectory`
 
-The directory to which the files will be output
+The directory to which the files will be output.
+
+`.\` by default.
 
 
 ## IMetalsharpFile
@@ -72,40 +76,68 @@ The text of the file.
 
 ## IMetalsharpFileCollection
 
-Represents the interface for a collection of Metalsharp files
+Represents the interface for a collection of Metalsharp files.
 
 ### Methods
 
 ### `DescendantsOf(String)`
 
-Get the descendant files of a directory
+Gets the files in the collection which descend from the given virtual directory.
+
+#### Returns
+
+All of the files which descend from the given directory.
 
 ### `ChildrenOf(String)`
 
-Get the children files of a directory
+Gets the files in the collection which are children to the given virtual directory.
+
+#### Returns
+
+All of the files which are children of the given directory.
 
 ### `ContainsDirectory(String)`
 
-Returns true if one of the files in the collection descends from the directory
+Checks whether one of the files in the collection descends from the directory.
+
+#### Returns
+
+`true` if the collection contains a file descending from the given directory, `false` otherwise.
 
 ### `RemoveAll(Predicate<>)`
 
-Alias List.RemoveAll
+Alias `List.RemoveAll`.
 
 
 ## IMetalsharpPlugin
 
-Represents a Metalsharp plugin
+The interface from which Metalsharp plugin must (read: should) derive.
+
+Implementing a Metalsharp plugin is as easy as implementing this interface:
+
+```c#
+public class DeleteEverything : IMetalsharpPlugin
+{
+
+public void Execute(MetalsharpDirectory directory) =>
+directory.RemoveFiles(file => true);
+
+}
+```
+
+This plugin can then be used like any other:
+
+```c#
+new MetalsharpDirectory()
+... // Add files
+.Use<DeleteEverything>();
+```
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin. Called by Metalsharp.Use
-
-#### Returns
-
-The same directory as was input
+Invokes the plugin. `Called by Metalsharp.Use`.
 
 
 ## MetalsharpDirectory
@@ -852,13 +884,25 @@ Invoked after `Build()`
 
 ## MetalsharpFile
 
-Represents a file
+Represents a file with a virtual directory structure and metadata.
+
+Create a file called `File.md` in the directory `Directory` with the content `# File Header!`:
+
+```c#
+new MetalsharpFile("# File Header!", "Directory\\File.md");
+```
+
+The `Metadata` in this file will be empty. Metadata can be used to store inormation related to the file that doesn't relate to its path or content. This creates the same file, but with a metadata value "draft" = true:
+
+```c#
+new MetalsharpFile("# File Header!", "Directory\\File.md", new Dictionary<string, object> { ["draft"] = true });
+```
 
 ### Constructors
 
 ### `MetalsharpFile(String, String)`
 
-Instantiate a new MetalsharpFile with no metadata
+Instantiates a new MetalsharpFile with no metadata.
 
 ### `MetalsharpFile(String, String, Dictionary<String>, Object})`
 
@@ -868,280 +912,580 @@ Instantiate a new MetalsharpFile with the specified metadata
 
 ### `IsDescendantOf(String)`
 
-Returns true if the directory is an ancestor of the file
+Checks whether a directory is an ancestor of the file.
+
+#### Returns
+
+`true` if the file is a descendant of the directory, `false` otherwise.
 
 ### `IsChildOf(String)`
 
-Returns true if the directory is the parent of the file
+Checks whether a directory is the parent of the file.
+
+#### Returns
+
+`true` if the file is a child of the directory, `false` otherwise.
 
 ### Properties
 
 ### `Directory`
 
-THe directory of the file relative to the source directory
+The virtual directory the file sits in.
 
 ### `Extension`
 
-The extension from the file name
+The extension from the file name.
 
 ### `FilePath`
 
-The path of the file
+The full path of the file.
 
 ### `Metadata`
 
-Metadata from the file
+Metadata from the file.
 
 ### `Name`
 
-The name of the file, without the extension
+The name of the file, without the extension.
 
 ### `Text`
 
-The text of the file
+The text of the file.
 
 
 ## MetalsharpFileCollection
 
-Represents a collection of Metalsharp files
-
-Implements members to handle "virtual" directories
+Represents a collection of Metalsharp files.
 
 ### Constructors
 
 ### `MetalsharpFileCollection()`
 
-Instantiate an empty collection
+Instantiate an empty collection.
 
 ### `MetalsharpFileCollection(IEnumerable<>)`
 
-Instantiate a collection with an existing one
+Instantiate a collection with an existing one.
 
 ### Methods
 
 ### `DescendantsOf(String)`
 
-Get the descendant files of a directory
+Gets the files in the collection which descend from the given virtual directory.
+
+#### Returns
+
+All of the files which descend from the given directory.
 
 ### `ChildrenOf(String)`
 
-Get the children files of a directory
+Gets the files in the collection which are children to the given virtual directory.
 
-### `ContainsDirectory(String)`
+#### Returns
 
-Returns true if one of the files in the collection descends from the directory
+All of the files which are children of the given directory.
 
 ### Fields
 
 ### `_items`
 
-The Metalsharp files in the collection
+The Metalsharp files in the collection.
 
 
 ## IEnumerableExtensions
 
-MetalsharpFileCollection extensions for IEnumerable
+MetalsharpFileCollection extensions for IEnumerable.
 
 ### Methods
 
 ### `ToMetalsharpFileCollection`(IEnumerable<`>)`
 
-Mimic IEnumerable.ToList
+Mimic `IEnumerable.ToList`, allowing the easy conversion of an enumerable of files to an `IMetalsharpFileCollection`
+
+#### Returns
+
+An `IMetalsharpFileCollection` containing the files in the given list.
 
 
 ## Branch
 
+.
 The Branch plugin
 
-Branches a directory for separate plugins to be computed
+Creates copies of a `MetalsharpDirectory` for separate stacks of plugins to be independently invoked on it.
+
+The following will create a file and output it to two different directories by branching the `MetalsharpDirectory` and calling `Build` on each branch:
+
+```c#
+new MetalsharpDirectory()
+.AddOutput(new MetalsharpFile("# Header!", "file.md")
+.Branch(
+// The first branch:
+dir => dir.Build(new BuildOptions { OutputDirectory = "Directory1" }),
+
+// The second branch:
+dir => dir.Build(new BuildOptions { OutputDirectory = "Directory2" })
+);
+```
 
 ### Constructors
 
 ### `Branch(Action<MetalsharpDirectory[]>)`
 
-
+Instantiate the Branch plugin by providing a list of actions to specify the behavior of each branch.
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin
+Invokes the plugin.
 
 ### Fields
 
 ### `_branches`
 
-The function-branches
+The actions of each branch.
 
 
 ## Collections
 
 Collections plugin
 
-Groups files matching a predicate into collections in the directory metadata
+Groups files matching a predicate into collections in the directory metadata. Collections are stored in a `Dictionary` matching a string to another inner `Dictionary`, which itself matches a string (either "input" or "output") to an array of strings (which are the full paths of the files in the collection).
+
+Suppose I have the following files on disk:
+
+```plaintext
+├── Index.md
+├── Post1.md
+├── Post2.md
+└── About.md
+```
+
+And then I create a Metalsharp project, import these into the inputs, and then use the `Markdown` plugin to generate their HTML in the outputs:
+
+```c#
+var directory = new MetalsharpDirectory("Path\\To\\My\\Files")
+.UseMarkdown();
+```
+
+And then say that from here I want to add extra metadata to my posts, but not my `About` or `Index` files. It would be easy to be able to group those files into a collection for easy reference:
+
+```c#
+directory.UseCollections("posts", file => file.Name.ToLower().Contains("post"))
+```
+
+This will match all the files in the input and output whose names contain the word "post", and will create a collection of them in the metadata of the `MetalsharpDirectory`. This metadata object, named `collections` will look like the following:
+
+```plaintext
+["posts"] =
+{
+["input"] = { "Post1.md", "Post2.md" },
+["output"] = { "Post1.html", "Post2.html" }
+}
+```
+
+This can be a bit confusing and messy to sort through, so there are extra extension methods supporting retrieving these collections. The following will go through each of the post html files in the output and add some custom metadata to them:
+
+```c#
+directory.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
+```
 
 ### Constructors
 
 ### `Collections(String, Predicate<IMetalsharpFile>)`
 
-Instantiate the plugin with a single collection definition
+Instantiate the plugin with a single collection definition.
 
 ### `Collections(ValueTuple<String>, Predicate<IMetalsharpFile[]>)`
 
-Instantiates the plugin with the definitions of the collections
+Instantiates the plugin with the definitions of the collections.
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin
+Invokes the plugin.
 
 ### Fields
 
 ### `_definitions`
 
-Contains the definitions of the collections
+Contains the definitions of the collections.
 
 
 ## Debug
 
-The Debug plugin
+The Debug plugin.
 
 Writes a log after every Use, outputting the contents of the input and output directories.
+
+`Debug` is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
+
+```c#
+new MetalsharpDirectory("Path\\To\\Dir")
+.Debug()
+.Use ... ;
+```
 
 ### Constructors
 
 ### `Debug()`
 
-By default, write debug logs with Debug.WriteLine()
+By default, write debug logs with `Debug.WriteLine()`.
 
 ### `Debug(String)`
 
-Configure Debug to write logs to a log file
+Instantiate `Debug` with a log file path to output the debug log to a log file.
+
+Given the following Metalsharp project:
+
+```c#
+new MetalsharpDirectory()
+.UseDebug("output.log")
+.Use(i => i.AddInput(new MetalsharpFile("text", "file.md")));
+```
+
+A file called `output.log` will be generated, and will look like the following:
+
+```plaintext
+Step 1.
+Input directory:
+
+file.md
+
+Output directory:
+
+---
+```
 
 ### `Debug(Action<String>)`
 
-Configure Debug to use custom behavior when writing logs
+Instantiate `Debug` with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin
+Invokes the plugin.
 
 ### `WriteDirectory(IMetalsharpFileCollection<MetalsharpFile>)`
 
-Prettify the contents of a collection of files
+Prettify the contents of a collection of files.
+
+#### Returns
+
+A well-formatted string listing the paths of each file in the given collection.
 
 ### Fields
 
 ### `_onLog`
 
-The action to execute when writing a log
+The action to execute when writing a log.
 
 ### `_useCount`
 
-A count of the number of calls to .Use() against the directory
+A count of the number of calls to .Use() against the directory.
 
 
 ## Frontmatter
 
-The Frontmatter plugin
+The Frontmatter plugin.
 
-Adds any YAML or JSON frontmatter in the input files to the metadata
+Adds any YAML or JSON frontmatter in the input files to the metadata.
+
+Given the following `file.txt`:
+
+```plaintext
+---
+draft: true
+---
+Hello, World!
+```
+
+The assertion in the following will evaluate to `true`:
+
+```c#
+var directory = new MetalsharpDirectory("file.txt")
+.UseFrontmatter();
+
+Assert.True((bool)directory.InputFiles[0].Metadata["draft"])
+```
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin
+Invokes the plugin.
 
 ### `TryGetFrontmatter(String, Dictionary<String>, Object}@, String@)`
 
 Try to parse YAML or JSON frontmatter
 
+#### Returns
+
+`true` if frontmatter text was found and parsed; `false` otherwise.
+
 ### `TryGetYamlFrontmatter(String, Dictionary<String>, Object}@, String@)`
 
-Try to parse YAML frontmatter
+Try to parse YAML frontmatter.
+
+#### Returns
+
+`true` if frontmatter text was found and parsed; `false` otherwise.
 
 ### `TryGetJsonFrontmatter(String, Dictionary<String>, Object}@, String@)`
 
-Try to parse JSON frontmatter
+Try to parse JSON frontmatter.
+
+#### Returns
+
+`true` if frontmatter text was found and parsed; `false` otherwise.
 
 
 ## Markdown
 
 The Markdown plugin
 
-Converts any markdown files to HTML
+Converts any markdown files in the input to HTML with [Markdig](https://github.com/lunet-io/markdig). HTML files are placed in the output.
+
+```c#
+new MetalsharpDirectory()
+.AddInput(new MetalsharpFile("# Header 1", "file.md")
+.UseMarkdown()
+.Build();
+```
+
+Will output the file `file.html` to the output directory. The contents of `file.html` will be:
+
+```html
+<h1>Header 1</h1>
+```
 
 ### Methods
 
 ### `Execute(MetalsharpDirectory)`
 
-Invokes the plugin
+Invokes the plugin.
 
 
 ## MetalsharpExtensions
 
-Extensions to Metalsharp for invoking included plugins
+Extensions to Metalsharp for invoking included plugins.
 
 ### Methods
 
 ### `Branch(MetalsharpDirectory, Action<MetalsharpDirectory[]>)`
 
-Invoke the Branch plugin
+Invoke the Branch plugin.
+
+Branch the `MetalsharpDirectory` twice:
+
+```c#
+new MetalsharpDirectory()
+// Add files
+.Branch(
+dir => {
+// Do something with branch 1
+},
+dir => {
+// Do something with branch 2
+}
+);
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseCollections(MetalsharpDirectory, String, Predicate<IMetalsharpFile>)`
 
-Invoke the Collections plugin with a single collection definition
+Invoke the Collections plugin with a single collection definition.
+
+Only add `.md` files to a collection named `myCollection`:
+
+```c#
+new MetalsharpDirectory()
+.UseCollections("myCollection", file => file.Extension == ".md");
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseCollections(MetalsharpDirectory, ValueTuple<String>, Predicate<IMetalsharpFile[]>)`
 
 Invoke the Collections plugin with several collection definitions
 
+Add `.md` files to a collection named `mdFiles` and `.html` files to a collection named `htmlFiles`:
+
+```c#
+new MetalsharpDirectory()
+.UseCollections(("mdFiles", file => file.Extension == ".md"), ("htmlFiles", file => file.Extension == ".html"));
+```
+
+#### Returns
+
+Combinator; returns `this` input.
+
 ### `GetCollection(MetalsharpDirectory, String)`
 
-Get a collection from MetalsharpDirectory Metadata by name
+Given the name of a collection, returns that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+Dictionary<string, string[]> collection = new MetalsharpDirectory()
+... // Add Files
+... // Create a collection named "myCollection"
+.GetCollection("myCollection");
+
+string[] collectionInputFilesArray = collection["input"];
+string[] collectionOutputFilesArray = collection["output"];
+```
+
+#### Returns
+
+A `Dictionary` containing the input and output lists of file paths in the collection.
 
 ### `GetFilesFromCollection(MetalsharpDirectory, String)`
 
-Get input and output files from a collection by name
+Given the name of a collection, returns the input *and* output files in that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+IMetalsharpFile[] collectionFiles = new MetalsharpDirectory()
+... // Add files
+... // Create a collection named "myCollection"
+.GetFilesFromCollection("myCollection").ToArray();
+```
+
+#### Returns
+
+An enumerable of `IMetalsharpFile`s from the input and output lists of the collection.
 
 ### `GetInputCollection(MetalsharpDirectory, String)`
 
-Get the input files from a collection from MetalsharpDirectory Metadata by name
+Given the name of a collection, returns the input file paths in that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+string[] collectionInputFilePaths = new MetalsharpDirectory()
+... // Add files
+... // Create a collection named "myCollection"
+.GetInputCollection("myCollection");
+```
+
+#### Returns
+
+An array containing the list of input file paths in the collection.
 
 ### `GetInputFilesFromCollection(MetalsharpDirectory, String)`
 
-Get the input files from a collection by name
+Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+IMetalsharpFile[] collectionInputFiles = new MetalsharpDirectory()
+... // Add files
+... // Create a collection named "myCollection"
+.GetInputFilesFromCollection("myCollection").ToArray();
+```
+
+#### Returns
+
+An enumerable containing the files from the input list in the collection.
 
 ### `GetOutputCollection(MetalsharpDirectory, String)`
 
-Get the output files from a collection from MetalsharpDirectory Metadata by name
+Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+string[] collectionoutputFilePaths = new MetalsharpDirectory()
+... // Add files
+... // Create a collection named "myCollection"
+.GetOutputCollection("myCollection");
+```
+
+#### Returns
+
+An array containing the list of output file paths in the collection.
 
 ### `GetOutputFilesFromCollection(MetalsharpDirectory, String)`
 
-Get the output files from a collection by name
+Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpDirectory`.
+
+```c#
+IMetalsharpFile[] collectionoutputFiles = new MetalsharpDirectory()
+... // Add files
+... // Create a collection named "myCollection"
+.GetOutputFilesFromCollection("myCollection").ToArray();
+```
+
+#### Returns
+
+An enumerable containing the files from the output list in the collection.
 
 ### `UseDebug(MetalsharpDirectory)`
 
-Invoke the default Debug plugin
+Invoke the default Debug plugin.
+
+```c#
+new MetalsharpDirectory()
+.UseDebug();
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseDebug(MetalsharpDirectory, String)`
 
-Invoke the Debug plugin with a log file to capture the debug logs
+Invoke the Debug plugin with a log file to capture the debug logs.
+
+```c#
+new MetalsharpDirectory()
+.UseDebug("debug.log");
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseDebug(MetalsharpDirectory, Action<String>)`
 
-Invoke the Debug plugin with custom log behavior
+Invoke the Debug plugin with custom log behavior.
+
+```c#
+new MetalsharpDirectory()
+.UseDebug(log => Console.WriteLine(log));
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseFrontmatter(MetalsharpDirectory)`
 
-Invoke the frontmatter plugin
+Invoke the `Frontmatter` plugin.
+
+```c#
+new MetalsharpDirectory()
+... // Add files
+.UseFrontmatter();
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 ### `UseMarkdown(MetalsharpDirectory)`
 
-Invoke the Merkdown plugin
+Invoke the `Markdown` plugin.
+
+```c#
+new MetalsharpDirectory()
+... // Add files
+.UseMarkdown();
+```
+
+#### Returns
+
+Combinator; returns `this` input.
 
 
