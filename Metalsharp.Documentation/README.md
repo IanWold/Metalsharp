@@ -6,7 +6,7 @@ This folder contains documentation and tutorials for Metalsharp.
 
 ### API
 
-* [Generated API Documentation](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Documentation\api.md)
+* [Generated API Documentation](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md)
 
 ### Tutorials
 
