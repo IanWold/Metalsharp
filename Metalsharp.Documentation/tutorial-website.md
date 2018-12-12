@@ -1,4 +1,4 @@
-# Create a Real Website with Metalsharp
+# Create a Website with Metalsharp
 
 This tutorial will walk you through (almost) all the components of Metalsharp you might use in the regular course of making a website. This tutorial will make a personal/blog website similar to https://ianwold.com. Some layout/style content will be referenced from this project.
 
