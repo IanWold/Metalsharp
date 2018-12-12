@@ -303,7 +303,7 @@ class Post
         Date = file.Metadata["date"] as string;
         Description = file.Metadata["description"] as string;
         Author = file.Metadata["author"] as string;
-        Slug = file.Metadata["slug"] as string;
+        Slug = file.Name;
     }
 
     public string Title { get; set; }
@@ -474,7 +474,7 @@ namespace MyProject
             Date = file.Metadata["date"] as string;
             Description = file.Metadata["description"] as string;
             Author = file.Metadata["author"] as string;
-            Slug = file.Metadata["slug"] as string;
+            Slug = file.Name;
         }
 
         public string Title { get; set; }
