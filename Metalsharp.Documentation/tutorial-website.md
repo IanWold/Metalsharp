@@ -8,6 +8,21 @@ The website we'll be making will have a homepage, a few text pages, and several 
 
 > **Please Note:** Until `v0.9.0-rc1`, Metalsharp won't be able to be installed via NuGet. You'll need to build it from source yourself.
 
+## Content
+
+* [Project Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#project-files)
+  * [Website Content](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#website-content)
+  * [Static Content](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#static-content)
+  * [Templates](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#templates)
+* [Build it with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#build-it-with-metalsharp)
+  * [Adding Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#adding-files)
+  * [Using our First Plugins](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#using-our-first-plugins)
+  * [Handling the Blog Posts](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#handling-the-blog-posts)
+  * [Generating the Blog Page](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#generating-the-blog-page)
+  * [Using the Templates](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#using-the-templates)
+  * [Building the Site](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#building-the-site)
+  * [Conclusion](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#conclusion)
+
 ## Project Files
 
 ### Website Content
@@ -474,4 +489,4 @@ Now you're all set - your site is up and running! Congrats!
 
 Did you write a plugin to help you generate your site? If you did, you may want to consider releasing it. [This tutorial](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) explains how to develop and release your own plugin.
 
-Did you notice something odd with this tutorial - a typo, old information, or just something that could make it a bit better? Editing this tutorial and submitting a PR would be a great way to contribute to Metalsharp!
+Did you notice something odd with this tutorial - a typo, old information, or just something that could make it a bit better? [Editing this tutorial](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/tutorial-website.md) and submitting a PR would be a great way to contribute to Metalsharp!
