@@ -70,9 +70,9 @@ We'll include this and a couple other posts in a `Posts` folder:
 MyProject
 └── Site
     ├── Posts
-	│   ├── my_first_post.md
+    │   ├── my_first_post.md
     │   ├── i_love_blogging.md
-	│   └── on_writers_block.html
+    │   └── on_writers_block.html
     ├── about.md
     ├── contact.md
     └── index.md
@@ -355,7 +355,7 @@ At the top of our `layout.liquid` template, we'll put the following code:
 ```liquid
 {% assign directoryPrefix = "" %}
 {% for i in (1..level) %}
-	{% assign directoryPrefix = directoryPrefix + "../" %}
+    {% assign directoryPrefix = directoryPrefix + "../" %}
 {% endfor %}
 ```
 
