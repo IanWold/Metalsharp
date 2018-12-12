@@ -420,6 +420,13 @@ To reiterate, if you've been following along (and assuming you opted to use the 
 ```c#
 namespace MyProject
 {
+    using Metalsharp;
+    using System.Linq;
+    using Metalsharp.FluidTemplate;
+    using System.IO;
+    using System.Collections.Generic;
+    using System;
+
     class Program
     {
         static void Main(string[] args) =>
