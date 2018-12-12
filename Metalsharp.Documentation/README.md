@@ -12,9 +12,9 @@ This folder contains documentation and tutorials for Metalsharp.
 
 These need to be written before `0.9.0-rc1`
 
-* Quickstart
-* Create a Website
-* Create a Plugin
+* [Quickstart](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md)
+* [Create a Website](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md)
+* [Create a Plugin](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md)
 
 ### Guidelines
 
