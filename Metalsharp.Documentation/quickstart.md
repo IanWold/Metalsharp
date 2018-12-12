@@ -6,16 +6,16 @@ This quickstart will walk you through all the basics in Metalsharp. The tutorial
 
 ## Content
 
-* [Acquiring Metalsharp]()
-* [Project Structure]()
-* [Using Metalsharp]()
-  * [Files]()
-  * [Metadata]()
-  * [Plugins]()
-  * [Building]()
-* [Custom Plugins]()
-  * [Via `IMetalsharpPlugin`]()
-  * [Via Function]()
+* [Acquiring Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#acquiring-metalsharp)
+* [Project Structure](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#project-structure)
+* [Using Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#using-metalsharp)
+  * [Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#files)
+  * [Metadata](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#metadata)
+  * [Plugins](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#plugins)
+  * [Building](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#building)
+* [Custom Plugins](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#custom-plugins)
+  * [Via `IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#via-imetalsharpplugin)
+  * [Via Function](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md#via-function)
 
 ## Acquiring Metalsharp
 
