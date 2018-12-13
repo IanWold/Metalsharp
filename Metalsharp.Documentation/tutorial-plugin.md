@@ -6,10 +6,10 @@ Plugins manipulate files in small and understandable ways. Metalsharp works best
 
 ## Contents
 
-* [Developing the Plugin]()
-  * [Implementing `IMetalsharpPlugin`]()
-  * [Extending `MetalsharpDirectory`]()
-* [Publishing the Plugin]()
+* [Developing the Plugin](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#developing-the-plugin)
+  * [Implementing `IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#implementing-imetalsharpplugin)
+  * [Extending `MetalsharpDirectory`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#extending-metalsharpdirectory)
+* [Publishing the Plugin](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#publishing-the-plugin)
 
 ## Developing the Plugin
 
@@ -41,14 +41,14 @@ namespace Metalsharp.MyPlugin
 {
     public class MyPlugin : IMetalsharpPlugin
     {
-		private string _name;
-		private Predicate<IMetalsharpFile> _predicate;
+        private string _name;
+        private Predicate<IMetalsharpFile> _predicate;
 
-		public MyPlugin(string name, Predicate<IMetalsharpFile> predicate)
-		{
-			_name = name;
-			_predicate = predicate;
-		}
+        public MyPlugin(string name, Predicate<IMetalsharpFile> predicate)
+        {
+            _name = name;
+            _predicate = predicate;
+        }
 
         public void Execute(MetalsharpDirectory directory)
         {
@@ -63,9 +63,9 @@ Now, we want to select each of the files from the input matching the predicate. 
 ```c#
 public void Execute(MetalsharpDirectory directory)
 {
-	...
-	directory.InputFiles.Where(file => _predicate(file));
-	...
+    ...
+    directory.InputFiles.Where(file => _predicate(file));
+    ...
 }
 ```
 
@@ -74,7 +74,7 @@ The `Collections` plugin stores the full path of each file in an array in the `M
 
 ```c#
 public void Execute(MetalsharpDirectory directory) =>
-	directory.Meta(_name, directory.InputFiles.Where(file => _predicate(file)).Select(file => file.FilePath).ToArray());
+    directory.Meta(_name, directory.InputFiles.Where(file => _predicate(file)).Select(file => file.FilePath).ToArray());
 ```
 
 And that's all for the `Execute` method! Ideally, all Metalsharp plugins should be this simple. Truthfully though, most plugins are *slightly* more complicated and will need more functionality in the `Execute` method. We can, however, add more functionality by adding extensions to `MetalsharpDirectory` for this plugin.
@@ -86,8 +86,8 @@ As the plugins that come with Metalsharp demonstrate, it's easy to add an extens
 ```c#
 public static class MetalsharpExtensions
 {
-	public static MetalsharpDirectory UseMyPlugin(this MetalsharpDirectory directory, string name, Predicate<IMetalsharpFile> predicate) =>
-		directory.Use(new MyPlugin(name, predicate));
+    public static MetalsharpDirectory UseMyPlugin(this MetalsharpDirectory directory, string name, Predicate<IMetalsharpFile> predicate) =>
+        directory.Use(new MyPlugin(name, predicate));
 }
 ```
 
@@ -96,11 +96,11 @@ This is nice to include because you can add more customization to the constructi
 ```c#
 public static class MetalsharpExtensions
 {
-	// Dumb method name but call it what you want!
-	public static IMetalsharpFile[] GetMyPluginFiles(string name) =>
-		directory.Metadata[name] is string[] filePaths
-			? directory.InputFiles.Where(file => filePaths.Contains(file.FilePath))
-			: throw new ArgumentException("There is no collection by the name " + name);
+    // Dumb method name but call it what you want!
+    public static IMetalsharpFile[] GetMyPluginFiles(string name) =>
+        directory.Metadata[name] is string[] filePaths
+            ? directory.InputFiles.Where(file => filePaths.Contains(file.FilePath))
+            : throw new ArgumentException("There is no collection by the name " + name);
 }
 ```
 
