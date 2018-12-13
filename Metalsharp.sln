@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp", "Metalsharp\Metalsharp.csproj", "{BC5A2CC9-9F50-4061-8A1A-B7AB8D131251}"
 EndProject
@@ -25,7 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalsharp.Tests", "Metalsh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metalsharp.Documentation", "Metalsharp.Documentation", "{546D55B0-7888-4947-A29B-3017232C1181}"
 	ProjectSection(SolutionItems) = preProject
+		Metalsharp.Documentation\quickstart.md = Metalsharp.Documentation\quickstart.md
 		Metalsharp.Documentation\README.md = Metalsharp.Documentation\README.md
+		Metalsharp.Documentation\tutorial-plugin.md = Metalsharp.Documentation\tutorial-plugin.md
+		Metalsharp.Documentation\tutorial-website.md = Metalsharp.Documentation\tutorial-website.md
 	EndProjectSection
 EndProject
 Global
