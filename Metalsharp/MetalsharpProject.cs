@@ -6,43 +6,43 @@ using System.Linq;
 namespace Metalsharp
 {
     /// <summary>
-    ///     This is the root of a Metalsharp project. `MetalsharpDirectory` controls the use of plugins against a project, the files input and output by the project, and the building of the project.
+    ///     This is the root of a Metalsharp project. `MetalsharpProject` controls the use of plugins against a project, the files input and output by the project, and the building of the project.
     /// </summary>
     /// 
     /// <example>
     ///     The best example is always the example at the top of the [README](https://github.com/ianwold/metalsharp/):
     ///     
     ///     ```c#
-    ///         new MetalsharpDirectory("Site")
+    ///         new MetalsharpProject("Site")
     ///         .UseFrontmatter()
     ///         .UseDrafts()
     ///         .Use(new Markdown())
     ///         .Build();
     ///     ```
     ///     
-    ///     Here, `MetalsharpDirectory` is instantiated with a set of files from the on-disk directory `Site`. Then, the plugins `Frontmatter`, `Drafts`, and `Markdown` are invoked against the project. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
+    ///     Here, `MetalsharpProject` is instantiated with a set of files from the on-disk directory `Site`. Then, the plugins `Frontmatter`, `Drafts`, and `Markdown` are invoked against the project. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
     /// </example>
-    public class MetalsharpDirectory
+    public class MetalsharpProject
     {
         #region Constructors
 
         /// <summary>
-        ///     Instantiatea an empty `MetalsharpDirectory`.
+        ///     Instantiatea an empty `MetalsharpProject`.
         /// </summary>
-        public MetalsharpDirectory() { }
+        public MetalsharpProject() { }
 
         /// <summary>
-        ///     Instantiates a `MetalsharpDirectory` by reading the files from an on-disk directory into the input files of the project.
+        ///     Instantiates a `MetalsharpProject` by reading the files from an on-disk directory into the input files of the project.
         /// </summary>
         /// 
         /// <param name="path">
         ///     The path to the on-disk directory or file to read.
         /// </param>
-        public MetalsharpDirectory(string path) =>
+        public MetalsharpProject(string path) =>
             AddInput(path);
 
         /// <summary>
-        ///     Instantiates a `MetalsharpDirectory` from an on-disk directory. The root directory of each file is rewritten so as to group the files into a different virual path.
+        ///     Instantiates a `MetalsharpProject` from an on-disk directory. The root directory of each file is rewritten so as to group the files into a different virual path.
         /// </summary>
         /// 
         /// <example>
@@ -60,10 +60,10 @@ namespace Metalsharp
         ///         └── README.md
         ///     ```
         ///     
-        ///     And then suppose we want our virtual directory (that is, the directory as `MetalsharpDirectory`, and the plugins we use, understand it) to be `Content` instead of `Site`. Instantiating `MetalsharpDirectory` as follows will achieve that:
+        ///     And then suppose we want our virtual directory (that is, the directory as `MetalsharpProject`, and the plugins we use, understand it) to be `Content` instead of `Site`. Instantiating `MetalsharpProject` as follows will achieve that:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory("Site", "Content") ...
+        ///         new MetalsharpProject("Site", "Content") ...
         ///     ```
         ///     
         ///     Our virutal structure (in the project's input files) will be the following:
@@ -91,7 +91,7 @@ namespace Metalsharp
         /// <param name="virtualPath">
         ///     The path of the virtual directory to put the input files in.
         /// </param>
-        public MetalsharpDirectory(string diskPath, string virtualPath) =>
+        public MetalsharpProject(string diskPath, string virtualPath) =>
             AddInput(diskPath, virtualPath);
 
         #endregion
@@ -117,9 +117,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     Returns `this` - the current `MetalsharpDirectory`. This value is passed through `AddInput` and `AddOutput` and allows them to be used as combinators.
+        ///     Returns `this` - the current `MetalsharpProject`. This value is passed through `AddInput` and `AddOutput` and allows them to be fluent.
         /// </returns>
-        MetalsharpDirectory AddExisting(string diskPath, string virtualPath, Action<MetalsharpFile> add)
+        MetalsharpProject AddExisting(string diskPath, string virtualPath, Action<MetalsharpFile> add)
         {
             MetalsharpFile GetFileWithNormalizedDirectory(string dPath, string vPath) =>
                 new MetalsharpFile(File.ReadAllText(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
@@ -155,7 +155,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddInput("Path\\To\\Directory") // Add all files in Path\To\Directory to input.
         ///         .AddInput("Path\\To\\File.md"); // Add Path\To\File.md to input.
         ///     ```
@@ -166,9 +166,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddInput(string path) =>
+        public MetalsharpProject AddInput(string path) =>
             AddInput(path, path);
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddInput("Path\\To\\Directory", "New\\Path") // Add all files in Path\To\Directory to input in the New\Path directory.
         ///         .AddInput("Path\\To\\File.md", "New\\Path"); // Add Path\To\File.md to input. Its path will be New\Path\File.md.
         ///     ```
@@ -191,9 +191,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddInput(string diskPath, string virtualPath) =>
+        public MetalsharpProject AddInput(string diskPath, string virtualPath) =>
             AddExisting(diskPath, virtualPath, InputFiles.Add);
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddInput(new MetalsharpFile("# File Text", "path\\to\\file.md");
         ///     ```
         /// </example>
@@ -212,9 +212,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddInput(MetalsharpFile file)
+        public MetalsharpProject AddInput(MetalsharpFile file)
         {
             InputFiles.Add(file);
             return this;
@@ -226,7 +226,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("Path\\To\\Directory") // Add all files in Path\To\Directory to output
         ///         .AddOutput("Path\\To\\File.md"); // Add Path\To\File.md to output
         ///     ```
@@ -237,9 +237,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddOutput(string path) =>
+        public MetalsharpProject AddOutput(string path) =>
             AddOutput(path, path);
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("Path\\To\\Directory", "New\\Path") // Add all files in Path\To\Directory to the output in the New\Path directory.
         ///         .AddOutput("Path\\To\\File.md", "New\\Path"); // Add Path\To\File.md to the output. Its path will be New\Path\File.md.
         ///     ```
@@ -262,9 +262,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddOutput(string diskPath, string virtualPath) =>
+        public MetalsharpProject AddOutput(string diskPath, string virtualPath) =>
             AddExisting(diskPath, virtualPath, OutputFiles.Add);
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddInput(new MetalsharpFile("# File Text", "path\\to\\file.md");
         ///     ```
         /// </example>
@@ -283,9 +283,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory AddOutput(MetalsharpFile file)
+        public MetalsharpProject AddOutput(MetalsharpFile file)
         {
             OutputFiles.Add(file);
             return this;
@@ -303,7 +303,7 @@ namespace Metalsharp
         ///     The following will output a single file (`File.md`) to the current directory:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("text", "File.md")
         ///         .Build();
         ///     ```
@@ -319,7 +319,7 @@ namespace Metalsharp
         ///     The following will output a single file (`File.md`) to `OutputDirectory`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("text", "File.md")
         ///         .Build(new BuildOptions { OutputDirectory = "OutputDirectory" });
         ///     ```
@@ -327,7 +327,7 @@ namespace Metalsharp
         ///     If you want to clear all the files in the output directory before the files are written, set `ClearOutputDirectory` to `true`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("text", "File.md")
         ///         .Build(new BuildOptions { OutputDirectory = "OutputDirectory", ClearOutputDirectory = true });
         ///     ```
@@ -375,7 +375,7 @@ namespace Metalsharp
         ///     The following will output a single file (`NewName.md`) to the current directory:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("text", "File.md")
         ///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName");
         ///     ```
@@ -384,7 +384,7 @@ namespace Metalsharp
         /// <param name="func">
         ///     The function to perform before the files are output.
         /// </param>
-        public void Build(Action<MetalsharpDirectory> func) =>
+        public void Build(Action<MetalsharpProject> func) =>
             Build(func, new BuildOptions());
 
         /// <summary>
@@ -395,7 +395,7 @@ namespace Metalsharp
         ///     The following will output a single file (`NewName.md`) to `OutputDirectory`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .AddOutput("text", "File.md")
         ///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName", new BuildOptions { OutputDirectory = "OutputDirectory" });
         ///     ```
@@ -407,7 +407,7 @@ namespace Metalsharp
         /// <param name="options">
         ///     The options to configure the building behavior.
         /// </param>
-        public void Build(Action<MetalsharpDirectory> func, BuildOptions options)
+        public void Build(Action<MetalsharpProject> func, BuildOptions options)
         {
             BeforeBuild?.Invoke(this, new EventArgs());
             func(this);
@@ -427,7 +427,7 @@ namespace Metalsharp
         ///     The following will add a single item to the metadata, and will then overwrite that value:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .Meta("key", "value")
         ///         .Meta("key", "new value"); // The new value overwrites the old value.
         ///     ```
@@ -441,9 +441,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory Meta(string key, object value) =>
+        public MetalsharpProject Meta(string key, object value) =>
             Meta((key, value));
 
         /// <summary>
@@ -454,7 +454,7 @@ namespace Metalsharp
         ///     The following will add several items to the metadata:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .Meta(("key1", "value1"), ("key2", "value2"), ("key3", "value3"));
         ///     ```
         /// </example>
@@ -464,9 +464,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory Meta(params (string key, object value)[] pairs)
+        public MetalsharpProject Meta(params (string key, object value)[] pairs)
         {
             foreach (var (key, value) in pairs)
             {
@@ -508,7 +508,7 @@ namespace Metalsharp
         ///     And we want to elevate all the files in `Content` one level in each the input and output. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveFiles`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `InputFiles` with the files
         ///         ... // Populate `OutputFiles` with the files
         ///         .MoveFiles("Content", ".\\");
@@ -535,9 +535,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveFiles(string oldDirectory, string newDirectory)
+        public MetalsharpProject MoveFiles(string oldDirectory, string newDirectory)
         {
             MoveInput(oldDirectory, newDirectory);
             MoveOutput(oldDirectory, newDirectory);
@@ -565,7 +565,7 @@ namespace Metalsharp
         ///     And we want to elevate all the `html` files to the root directory in each the input and output. We use `MoveFiles` to match those files with a predicate and rewrite their directory:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `InputFiles` with the files
         ///         ... // Populate `OutputFiles` with the files
         ///         .MoveFiles(file => file.Extension == ".html", ".\\");
@@ -593,9 +593,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveFiles(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        public MetalsharpProject MoveFiles(Predicate<IMetalsharpFile> predicate, string newDirectory)
         {
             MoveInput(predicate, newDirectory);
             MoveOutput(predicate, newDirectory);
@@ -623,7 +623,7 @@ namespace Metalsharp
         ///     And we want to elevate all the files in `Content` one level. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveInput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `InputFiles` with the files
         ///         .MoveInput("Content", ".\\");
         ///     ```
@@ -649,9 +649,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveInput(string oldDirectory, string newDirectory) =>
+        public MetalsharpProject MoveInput(string oldDirectory, string newDirectory) =>
             MoveInput(file => file.Directory == oldDirectory, newDirectory);
 
         /// <summary>
@@ -675,7 +675,7 @@ namespace Metalsharp
         ///     And we want to elevate all the `html` files to the root directory. We use `MoveInput` to match those files with a predicate and rewrite their directory:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `InputFiles` with the files
         ///         .MoveInput(file => file.Extension == ".html", ".\\");
         ///     ```
@@ -702,9 +702,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveInput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        public MetalsharpProject MoveInput(Predicate<IMetalsharpFile> predicate, string newDirectory)
         {
             InputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
             return this;
@@ -731,7 +731,7 @@ namespace Metalsharp
         ///     And we want to elevate all the files in `Content` one level. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveOutput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `OutputFiles` with the files
         ///         .MoveOutput("Content", ".\\");
         ///     ```
@@ -757,9 +757,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveOutput(string oldDirectory, string newDirectory) =>
+        public MetalsharpProject MoveOutput(string oldDirectory, string newDirectory) =>
             MoveOutput(file => file.Directory == oldDirectory, newDirectory);
 
         /// <summary>
@@ -783,7 +783,7 @@ namespace Metalsharp
         ///     And we want to elevate all the `html` files to the root directory. We use `MoveOutput` to match those files with a predicate and rewrite their directory:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Populate `OutputFiles` with the files
         ///         .MoveOutput(file => file.Extension == ".html", ".\\");
         ///     ```
@@ -810,9 +810,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory MoveOutput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+        public MetalsharpProject MoveOutput(Predicate<IMetalsharpFile> predicate, string newDirectory)
         {
             OutputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
             return this;
@@ -830,7 +830,7 @@ namespace Metalsharp
         ///     Supposing we have `Directory\File.md` in the input and output, we can remove it from both with `RemoveFiles`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file to input
         ///         ... // Add file to output
         ///         .RemoveFiles("Directory\\File.md");
@@ -842,9 +842,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveFiles(string path)
+        public MetalsharpProject RemoveFiles(string path)
         {
             RemoveInput(path);
             RemoveOutput(path);
@@ -872,7 +872,7 @@ namespace Metalsharp
         ///     We can remove all the `html` files with `RemoveFiles`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file to input
         ///         ... // Add file to output
         ///         .RemoveFiles(file => file.Extension == ".html");
@@ -895,9 +895,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveFiles(Predicate<IMetalsharpFile> predicate)
+        public MetalsharpProject RemoveFiles(Predicate<IMetalsharpFile> predicate)
         {
             RemoveInput(predicate);
             RemoveOutput(predicate);
@@ -912,7 +912,7 @@ namespace Metalsharp
         ///     Supposing we have `Directory\File.md` in the input, we can remove it with `RemoveInput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file
         ///         .RemoveInput("Directory\\File.md");
         ///     ```
@@ -923,9 +923,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveInput(string path) =>
+        public MetalsharpProject RemoveInput(string path) =>
             RemoveInput(file => file.FilePath == path);
 
         /// <summary>
@@ -949,7 +949,7 @@ namespace Metalsharp
         ///     We can remove all the `html` files with `RemoveInput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file
         ///         .RemoveInput(file => file.Extension == ".html");
         ///     ```
@@ -971,9 +971,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveInput(Predicate<IMetalsharpFile> predicate)
+        public MetalsharpProject RemoveInput(Predicate<IMetalsharpFile> predicate)
         {
             InputFiles.RemoveAll(predicate);
             return this;
@@ -987,7 +987,7 @@ namespace Metalsharp
         ///     Supposing we have `Directory\File.md` in the output, we can remove it with `RemoveOutput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file
         ///         .RemoveOutput("Directory\\File.md");
         ///     ```
@@ -998,9 +998,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveOutput(string path) =>
+        public MetalsharpProject RemoveOutput(string path) =>
             RemoveOutput(file => file.FilePath == path);
 
         /// <summary>
@@ -1024,7 +1024,7 @@ namespace Metalsharp
         ///     We can remove all the `html` files with `RemoveOutput`:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add file
         ///         .RemoveOutput(file => file.Extension == ".html");
         ///     ```
@@ -1046,9 +1046,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory RemoveOutput(Predicate<IMetalsharpFile> predicate)
+        public MetalsharpProject RemoveOutput(Predicate<IMetalsharpFile> predicate)
         {
             OutputFiles.RemoveAll(predicate);
             return this;
@@ -1064,7 +1064,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .Use(dir => dir.Meta("Hello", "World!"));
         ///     ```
         /// </example>
@@ -1074,9 +1074,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory Use(Action<MetalsharpDirectory> func)
+        public MetalsharpProject Use(Action<MetalsharpProject> func)
         {
             BeforeUse?.Invoke(this, new EventArgs());
             func(this);
@@ -1090,7 +1090,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .Use(new Debug()); // Invokes the Debug plugin
         ///     ```
         /// </example>
@@ -1100,9 +1100,9 @@ namespace Metalsharp
         /// </param>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory Use(IMetalsharpPlugin plugin) =>
+        public MetalsharpProject Use(IMetalsharpPlugin plugin) =>
             Use(i => plugin.Execute(i));
 
         /// <summary>
@@ -1111,7 +1111,7 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .Use&lt;Debug&gt;(); // Invokes the Debug plugin
         ///     ```
         /// </example>
@@ -1121,9 +1121,9 @@ namespace Metalsharp
         /// </typeparam>
         /// 
         /// <returns>
-        ///     The current `MetalsharpDirectory`, allowing it to be used as a combinator.
+        ///     The current `MetalsharpProject`, allowing it to be fluent.
         /// </returns>
-        public MetalsharpDirectory Use<T>() where T : IMetalsharpPlugin, new() =>
+        public MetalsharpProject Use<T>() where T : IMetalsharpPlugin, new() =>
             Use(new T());
         
         #endregion

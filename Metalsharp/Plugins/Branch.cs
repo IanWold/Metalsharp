@@ -8,21 +8,21 @@ namespace Metalsharp
     /// <summary>.
     ///     The Branch plugin
     ///     
-    ///     Creates copies of a `MetalsharpDirectory` for separate stacks of plugins to be independently invoked on it.
+    ///     Creates copies of a `MetalsharpProject` for separate stacks of plugins to be independently invoked on it.
     /// </summary>
     /// 
     /// <example>
-    ///     The following will create a file and output it to two different directories by branching the `MetalsharpDirectory` and calling `Build` on each branch:
+    ///     The following will create a file and output it to two different directories by branching the `MetalsharpProject` and calling `Build` on each branch:
     ///     
     ///     ```c#
-    ///         new MetalsharpDirectory()
+    ///         new MetalsharpProject()
     ///         .AddOutput(new MetalsharpFile("# Header!", "file.md")
     ///         .Branch(
     ///         // The first branch:
-    ///         dir => dir.Build(new BuildOptions { OutputDirectory = "Directory1" }),
+    ///         proj => proj.Build(new BuildOptions { OutputDirectory = "Directory1" }),
     ///         
     ///         // The second branch:
-    ///         dir => dir.Build(new BuildOptions { OutputDirectory = "Directory2" })
+    ///         proj => proj.Build(new BuildOptions { OutputDirectory = "Directory2" })
     ///         );
     ///     ```
     /// </example>
@@ -31,7 +31,7 @@ namespace Metalsharp
         /// <summary>
         ///     The actions of each branch.
         /// </summary>
-        private List<Action<MetalsharpDirectory>> _branches;
+        private List<Action<MetalsharpProject>> _branches;
 
         /// <summary>
         ///     Instantiate the Branch plugin by providing a list of actions to specify the behavior of each branch.
@@ -40,17 +40,17 @@ namespace Metalsharp
         /// <param name="branches">
         ///     The functions defining each branch.
         /// </param>
-        public Branch(params Action<MetalsharpDirectory>[] branches) =>
+        public Branch(params Action<MetalsharpProject>[] branches) =>
             _branches = branches.ToList();
 
         /// <summary>
         ///     Invokes the plugin.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The directory to branch.
+        /// <param name="project">
+        ///     The `MetalsharpProject` to branch.
         /// </param>
-        public void Execute(MetalsharpDirectory directory) =>
-            _branches.ForEach(b => b(DeserializeObject<MetalsharpDirectory>(SerializeObject(directory))));
+        public void Execute(MetalsharpProject project) =>
+            _branches.ForEach(b => b(DeserializeObject<MetalsharpProject>(SerializeObject(project))));
     }
 }

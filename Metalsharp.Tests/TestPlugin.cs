@@ -2,7 +2,7 @@
 {
     public class TestPlugin : IMetalsharpPlugin
     {
-        public void Execute(MetalsharpDirectory directory) =>
-            directory.Meta("test", true);
+        public void Execute(MetalsharpProject project) =>
+            project.Meta("test", true);
     }
 }

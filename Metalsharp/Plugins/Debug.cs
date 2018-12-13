@@ -7,14 +7,14 @@ namespace Metalsharp
     /// <summary>
     ///     The Debug plugin.
     ///     
-    ///     Writes a log after every Use, outputting the contents of the input and output directories.
+    ///     Writes a log after every Use, outputting the contents of the input and output lists.
     /// </summary>
     /// 
     /// <example>
     ///     `Debug` is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
     ///     
     ///     ```c#
-    ///         new MetalsharpDirectory("Path\\To\\Dir")
+    ///         new MetalsharpProject("Path\\To\\Dir")
     ///         .Debug()
     ///         .Use ... ;
     ///     ```
@@ -44,7 +44,7 @@ namespace Metalsharp
         ///     Given the following Metalsharp project:
         ///     
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseDebug("output.log")
         ///         .Use(i => i.AddInput(new MetalsharpFile("text", "file.md")));
         ///     ```
@@ -53,11 +53,11 @@ namespace Metalsharp
         ///     
         ///     ```plaintext
         ///         Step 1.
-        ///         Input directory:
+        ///         Input files:
         ///         
         ///         file.md
         ///         
-        ///         Output directory:
+        ///         Output files:
         ///         
         ///         ---
         ///     ```
@@ -90,20 +90,20 @@ namespace Metalsharp
         ///     Invokes the plugin.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The directory to output debug logs for.
+        /// <param name="project">
+        ///     The `MetalsharpProject` to output debug logs for.
         /// </param>
-        public void Execute(MetalsharpDirectory directory) =>
-            directory.AfterUse += (sender, e) =>
+        public void Execute(MetalsharpProject project) =>
+            project.AfterUse += (sender, e) =>
                 _onLog("Step " + ++_useCount + "." +
                     "\r\n" +
-                    "Input directory:" +
+                    "Input files:" +
                     "\r\n\r\n" +
-                    WriteDirectory(directory.InputFiles) +
+                    WriteDirectory(project.InputFiles) +
                     "\r\n\r\n" +
-                    "Output directory:" +
+                    "Output files:" +
                     "\r\n\r\n" +
-                    WriteDirectory(directory.OutputFiles) +
+                    WriteDirectory(project.OutputFiles) +
                     "\r\n\r\n" +
                     "---" +
                     "\r\n\r\n"

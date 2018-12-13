@@ -41,20 +41,20 @@ MyProject
 
 ## Using Metalsharp
 
-Everything you'll do towards generating your website will be with the `MetalsharpDirectory` object. This object has a list of input files, a list of output files, and metadata, as well as several methods detailed below.
+Everything you'll do towards generating your website will be with the `MetalsharpProject` object. This object has a list of input files, a list of output files, and metadata, as well as several methods detailed below.
 
 ### Files
 
-The first step is to add files. We can do that right when we instantiate `MetalsharpDirectory`:
+The first step is to add files. We can do that right when we instantiate `MetalsharpProject`:
 
 ```c#
-new MetalsharpDirectory("Site")
+new MetalsharpProject("Site")
 ```
 
 This reads all the files in the `Site` directory on disk and places them into the input list. If you want to change the directory stored with the file in Metalsharp, you can do that to:
 
 ```c#
-new MetalsharpDirectory("Site", "New\\Path\\In\\Metalsharp")
+new MetalsharpProject("Site", "New\\Path\\In\\Metalsharp")
 ```
 
 If you need to add more files to the input:
@@ -92,9 +92,9 @@ And deleting files works very much the same:
 
 ### Metadata
 
-*Metadata* is data associated with a file that does not belong in the text of the file. Each `MetalsharpFile` has a `Dictionary<string, object>` property called `Metadata` to store metadata records. `MetalsharpDirectory` also has a `Metadata` property to store metadata for the whole project.
+*Metadata* is data associated with a file that does not belong in the text of the file. Each `MetalsharpFile` has a `Dictionary<string, object>` property called `Metadata` to store metadata records. `MetalsharpProject` also has a `Metadata` property to store metadata for the whole project.
 
-`MetalsharpDirectory.Meta` allows you to create metadata for the project:
+`MetalsharpProject.Meta` allows you to create metadata for the project:
 
 ```c#
 .Meta("my metadata", "hello!")
@@ -110,7 +110,7 @@ Which brings us to...
 
 ### Plugins
 
-Plugins are invoked by calling `MetalsharpDirectory.Use`. Using the `Frontmatter` plugin as an example, there are three ways to call a plugin:
+Plugins are invoked by calling `MetalsharpProject.Use`. Using the `Frontmatter` plugin as an example, there are three ways to call a plugin:
 
 1. By referencing its type
 
@@ -134,12 +134,12 @@ Metalsharp comes with a few fundamental plugins, described here.
 
 > Side note: if you think you can create a better plugin to replace one of the built-in ones, please do make it and publish it! It would be better for Metalsharp as a whole if all of the plugins are community-made. These just exist to give Metalsharp a footing in the early stages.
 
-`Branch` allows you to copy the `MetalsharpDirectory` you're working with a number of times for different functions. The following will build the project to two separate files.
+`Branch` allows you to copy the `MetalsharpProject` you're working with a number of times for different functions. The following will build the project to two separate files.
 
 ```c#
 .Branch(
-    dir => dir.Build(new BuildOptions { OutputDirectory = "output" }),
-    dir => dir.Build(new BuildOptions { OutputDirectory = "build" })
+    proj => proj.Build(new BuildOptions { OutputDirectory = "output" }),
+    proj => proj.Build(new BuildOptions { OutputDirectory = "build" })
 )
 ```
 
@@ -169,7 +169,7 @@ Metalsharp comes with a few fundamental plugins, described here.
 
 ### Building
 
-To build the project after you've invoked all the plugins you need, just call `MetalsharpDirectory.Build`. This writes the files in the output list to the current directory.
+To build the project after you've invoked all the plugins you need, just call `MetalsharpProject.Build`. This writes the files in the output list to the current directory.
 
 ```c#
 .Build();
@@ -178,7 +178,7 @@ To build the project after you've invoked all the plugins you need, just call `M
 Optionally, you can execute a function on the directory before you build.
 
 ```c#
-.Build(dir => dir.AddOutput("my-last-minute-file.txt"));
+.Build(proj => proj.AddOutput("my-last-minute-file.txt"));
 ```
 
 And if you want to change which directory the files write to, or if you want to delete all the files in the output directory before you write any, you can give `Build` a `BuildOptions` object with the settings you want:
@@ -198,9 +198,9 @@ Every published Metalsharp plugin is (or at least should be) implemented by impl
 ```c#
 public class SayHi : IMetalsharpPlugin
 {
-    public void Execute(MetalsharpDirectory directory)
+    public void Execute(MetalsharpProject project)
     {
-        foreach (var file in directory.InputFiles.Concat(directory.OutputFiles))
+        foreach (var file in project.InputFiles.Concat(project.OutputFiles))
         {
             if (file.Extension == ".txt") file.Text += "Hello";
         }
@@ -220,19 +220,19 @@ And we can write an extension to support it:
 ```c#
 public static class Extensions
 {
-    public static MetalsharpDirectory UseSayHi(this MetalsharpDirectory directory) =>
-        directory.Use(new SayHi());
+    public static MetalsharpProject UseSayHi(this MetalsharpProject project) =>
+        project.Use(new SayHi());
 }
 ```
 
 ### Via Function
 
-`MetalsharpDirectory.Use` has an overload that allows us to pass in a function. If we didn't want to publish this plugin, we could just make it a function.
+`MetalsharpProject.Use` has an overload that allows us to pass in a function. If we didn't want to publish this plugin, we could just make it a function.
 
 ```c#
-public void SayHi(MetalsharpDirectory directory)
+public void SayHi(MetalsharpProject project)
 {
-    foreach (var file in directory.InputFiles.Concat(directory.OutputFiles))
+    foreach (var file in project.InputFiles.Concat(project.OutputFiles))
     {
         if (file.Extension == ".txt") file.Text += "Hello";
     }
@@ -248,9 +248,9 @@ And we can use it as a delegate.
 Or, we could even write it as a lambda.
 
 ```c#
-.Use(directory =>
+.Use(project =>
 {
-    foreach (var file in directory.InputFiles.Concat(directory.OutputFiles))
+    foreach (var file in project.InputFiles.Concat(project.OutputFiles))
     {
         if (file.Extension == ".txt") file.Text += "Hello";
     }

@@ -118,7 +118,7 @@ namespace Metalsharp
     }
 
     /// <summary>
-    ///     MetalsharpFileCollection extensions for IEnumerable.
+    ///     `MetalsharpFileCollection` extensions for `IEnumerable`.
     /// </summary>
     public static class IEnumerableExtensions
     {

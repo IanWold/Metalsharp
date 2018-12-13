@@ -24,10 +24,10 @@ namespace Metalsharp
     ///     The assertion in the following will evaluate to `true`:
     ///     
     ///     ```c#
-    ///         var directory = new MetalsharpDirectory("file.txt")
+    ///         var project = new MetalsharpProject("file.txt")
     ///         .UseFrontmatter();
     ///         
-    ///         Assert.True((bool)directory.InputFiles[0].Metadata["draft"])
+    ///         Assert.True((bool)project.InputFiles[0].Metadata["draft"])
     ///     ```
     /// </example>
     public class Frontmatter : IMetalsharpPlugin
@@ -36,12 +36,12 @@ namespace Metalsharp
         ///     Invokes the plugin.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The directory to invoke the plugin on.
+        /// <param name="project">
+        ///     The `MetalsharpProject` to invoke the plugin on.
         /// </param>
-        public void Execute(MetalsharpDirectory directory)
+        public void Execute(MetalsharpProject project)
         {
-            foreach (var file in directory.InputFiles)
+            foreach (var file in project.InputFiles)
             {
                 if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
                 {

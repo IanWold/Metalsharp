@@ -15,10 +15,10 @@ namespace Metalsharp.ExamplePlugin
         /// <summary>
         /// Invokes the plugin
         /// </summary>
-        /// <param name="directory"></param>
-        public void Execute(MetalsharpDirectory directory)
+        /// <param name="project"></param>
+        public void Execute(MetalsharpProject project)
         {
-            foreach (var file in directory.OutputFiles.Where(i => i.Extension == "html"))
+            foreach (var file in project.OutputFiles.Where(i => i.Extension == "html"))
             {
                 if (file.Metadata.TryGetValue("layout", out var _layoutFile)
                     && _layoutFile is string layoutFile

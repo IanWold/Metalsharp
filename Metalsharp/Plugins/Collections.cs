@@ -23,7 +23,7 @@ namespace Metalsharp
     ///     And then I create a Metalsharp project, import these into the inputs, and then use the `Markdown` plugin to generate their HTML in the outputs:
     ///     
     ///     ```c#
-    ///         var directory = new MetalsharpDirectory("Path\\To\\My\\Files")
+    ///         var project = new MetalsharpProject("Path\\To\\My\\Files")
     ///         .UseMarkdown();
     ///     ```
     ///     
@@ -33,7 +33,7 @@ namespace Metalsharp
     ///         directory.UseCollections("posts", file => file.Name.ToLower().Contains("post"))
     ///     ```
     ///     
-    ///     This will match all the files in the input and output whose names contain the word "post", and will create a collection of them in the metadata of the `MetalsharpDirectory`. This metadata object, named `collections` will look like the following:
+    ///     This will match all the files in the input and output whose names contain the word "post", and will create a collection of them in the metadata of the `MetalsharpProject`. This metadata object, named `collections` will look like the following:
     ///     
     ///     ```plaintext
     ///         ["posts"] =
@@ -46,7 +46,7 @@ namespace Metalsharp
     ///     This can be a bit confusing and messy to sort through, so there are extra extension methods supporting retrieving these collections. The following will go through each of the post html files in the output and add some custom metadata to them:
     ///     
     ///     ```c#
-    ///         directory.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
+    ///         project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
     ///     ```
     /// </example>
     public class Collections : IMetalsharpPlugin
@@ -83,10 +83,10 @@ namespace Metalsharp
         ///     Invokes the plugin.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which the plugin will be invoked.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which the plugin will be invoked.
         /// </param>
-        public void Execute(MetalsharpDirectory directory)
+        public void Execute(MetalsharpProject project)
         {
             var collections = new Dictionary<string, Dictionary<string, string[]>>();
 
@@ -95,8 +95,8 @@ namespace Metalsharp
                 var inputCollection = new List<string>();
                 var outputCollection = new List<string>();
 
-                directory.InputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => inputCollection.Add(i.FilePath));
-                directory.OutputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => outputCollection.Add(i.FilePath));
+                project.InputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => inputCollection.Add(i.FilePath));
+                project.OutputFiles.Where(i => definition.predicate(i)).ToList().ForEach(i => outputCollection.Add(i.FilePath));
 
                 collections.Add(definition.name, new Dictionary<string, string[]>
                 {
@@ -105,8 +105,8 @@ namespace Metalsharp
                 });
             }
 
-            if (directory.Metadata.ContainsKey("collections")
-                && directory.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> dictionary)
+            if (project.Metadata.ContainsKey("collections")
+                && project.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> dictionary)
             {
                 foreach (var item in collections)
                 {
@@ -115,7 +115,7 @@ namespace Metalsharp
             }
             else
             {
-                directory.Meta("collections", collections);
+                project.Meta("collections", collections);
             }
         }
     }

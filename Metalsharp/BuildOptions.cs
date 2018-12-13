@@ -1,7 +1,7 @@
 ﻿namespace Metalsharp
 {
     /// <summary>
-    ///     Represents the options when Metalsharp outputs a directory.
+    ///     Represents the options when Metalsharp outputs a project.
     /// </summary>
     public class BuildOptions
     {

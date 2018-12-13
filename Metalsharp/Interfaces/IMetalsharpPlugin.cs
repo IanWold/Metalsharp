@@ -10,8 +10,8 @@
     ///         public class DeleteEverything : IMetalsharpPlugin
     ///         {
     ///         
-    ///         public void Execute(MetalsharpDirectory directory) =>
-    ///         directory.RemoveFiles(file => true);
+    ///         public void Execute(MetalsharpProject project) =>
+    ///         project.RemoveFiles(file => true);
     /// 
     ///         }
     ///     ```
@@ -19,7 +19,7 @@
     ///     This plugin can then be used like any other:
     ///     
     ///     ```c#
-    ///         new MetalsharpDirectory()
+    ///         new MetalsharpProject()
     ///         ... // Add files
     ///         .Use&lt;DeleteEverything&gt;();
     ///     ```
@@ -30,9 +30,9 @@
         ///     Invokes the plugin. `Called by Metalsharp.Use`.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The directory to alter.
+        /// <param name="project">
+        ///     The `MetalsharpProject` to alter.
         /// </param>
-        void Execute(MetalsharpDirectory directory);
+        void Execute(MetalsharpProject project);
     }
 }

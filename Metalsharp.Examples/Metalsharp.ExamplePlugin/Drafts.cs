@@ -10,16 +10,16 @@
         /// <summary>
         /// Invokes the plugin
         /// </summary>
-        /// <param name="directory"></param>
-        public void Execute(MetalsharpDirectory directory)
+        /// <param name="project"></param>
+        public void Execute(MetalsharpProject project)
         {
-            directory.InputFiles.RemoveAll(file =>
+            project.InputFiles.RemoveAll(file =>
                 file.Metadata.TryGetValue("draft", out var _isDraft)
                 && _isDraft is bool isDraft
                 && isDraft
             );
 
-            directory.OutputFiles.RemoveAll(file =>
+            project.OutputFiles.RemoveAll(file =>
                 file.Metadata.TryGetValue("draft", out var _isDraft)
                 && _isDraft is bool isDraft
                 && isDraft

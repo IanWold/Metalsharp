@@ -6,7 +6,7 @@ namespace Metalsharp.ExampleWebsite
     {
         static void Main(string[] args)
         {
-            new MetalsharpDirectory("Site")
+            new MetalsharpProject("Site")
                 .Use<Frontmatter>()
                 .UseDrafts()
                 .Use<Markdown>()

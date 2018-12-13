@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Xunit;
 using static System.Convert;
@@ -16,19 +15,19 @@ namespace Metalsharp.Tests
             var firstBranchExecuted = false;
             var secondBranchExecuted = false;
 
-            new MetalsharpDirectory("Scenario\\Plugins")
+            new MetalsharpProject("Scenario\\Plugins")
                 .Branch(
-                    dir =>
+                    proj =>
                     {
                         firstBranchExecuted = true;
-                        dir.AddInput("Scenario\\Directory1");
-                        Assert.DoesNotContain(dir.InputFiles, i => i.Name == "file11");
+                        proj.AddInput("Scenario\\Directory1");
+                        Assert.DoesNotContain(proj.InputFiles, i => i.Name == "file11");
                     },
-                    dir =>
+                    proj =>
                     {
                         secondBranchExecuted = true;
-                        dir.AddInput("Scenario\\Directory2\\SubDirectory1");
-                        Assert.DoesNotContain(dir.InputFiles, i => i.Name == "file1");
+                        proj.AddInput("Scenario\\Directory2\\SubDirectory1");
+                        Assert.DoesNotContain(proj.InputFiles, i => i.Name == "file1");
                     }
                 );
 
@@ -43,83 +42,83 @@ namespace Metalsharp.Tests
         [Fact]
         public void CollectionsCorrectlyGroupsFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddInput("Scenario\\Directory1")
                 .AddInput("Scenario\\Plugins")
                 .AddOutput("Scenario\\Directory2\\SubDirectory1")
                 .AddOutput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
 
-            Assert.Contains(directory.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "file1");
-            Assert.DoesNotContain(directory.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "file11");
-            Assert.DoesNotContain(directory.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
+            Assert.Contains(project.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "file1");
+            Assert.DoesNotContain(project.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "file11");
+            Assert.DoesNotContain(project.GetCollection("test")["input"], i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
 
-            Assert.Contains(directory.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "file11");
-            Assert.DoesNotContain(directory.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "file1");
-            Assert.DoesNotContain(directory.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
+            Assert.Contains(project.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "file11");
+            Assert.DoesNotContain(project.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "file1");
+            Assert.DoesNotContain(project.GetCollection("test")["output"], i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
         [Fact]
         public void GetFilesFromCollectionReturnsCorrectFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddInput("Scenario\\Directory1")
                 .AddInput("Scenario\\Plugins")
                 .AddOutput("Scenario\\Directory2\\SubDirectory1")
                 .AddOutput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
 
-            Assert.Contains(directory.GetFilesFromCollection("test"), i => i.Name == "file1");
-            Assert.Contains(directory.GetFilesFromCollection("test"), i => i.Name == "file11");
-            Assert.DoesNotContain(directory.GetFilesFromCollection("test"), i => i.Name == "FileMarkdown");
+            Assert.Contains(project.GetFilesFromCollection("test"), i => i.Name == "file1");
+            Assert.Contains(project.GetFilesFromCollection("test"), i => i.Name == "file11");
+            Assert.DoesNotContain(project.GetFilesFromCollection("test"), i => i.Name == "FileMarkdown");
         }
 
         [Fact]
         public void CollectionsCorrectlyGroupsInputFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddInput("Scenario\\Directory1")
                 .AddInput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
             
-            Assert.Contains(directory.GetInputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "file1");
-            Assert.DoesNotContain(directory.GetInputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
+            Assert.Contains(project.GetInputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "file1");
+            Assert.DoesNotContain(project.GetInputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
         [Fact]
         public void CollectionsCorrectlyGroupsOutputFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddOutput("Scenario\\Directory1")
                 .AddOutput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
 
-            Assert.Contains(directory.GetOutputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "file1");
-            Assert.DoesNotContain(directory.GetOutputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
+            Assert.Contains(project.GetOutputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "file1");
+            Assert.DoesNotContain(project.GetOutputCollection("test"), i => Path.GetFileNameWithoutExtension(i) == "FileMarkdown");
         }
 
         [Fact]
         public void GetInputFilesFromCollectionReturnsCorrectFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddInput("Scenario\\Directory1")
                 .AddInput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
 
-            Assert.Contains(directory.GetInputFilesFromCollection("test"), i => i.Name == "file1");
-            Assert.DoesNotContain(directory.GetInputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
+            Assert.Contains(project.GetInputFilesFromCollection("test"), i => i.Name == "file1");
+            Assert.DoesNotContain(project.GetInputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
         }
 
         [Fact]
         public void GetOutputFilesFromCollectionReturnsCorrectFiles()
         {
-            var directory = new MetalsharpDirectory()
+            var project = new MetalsharpProject()
                 .AddOutput("Scenario\\Directory1")
                 .AddOutput("Scenario\\Plugins")
                 .UseCollections("test", file => file.Name.Contains("file"));
 
-            Assert.Contains(directory.GetOutputFilesFromCollection("test"), i => i.Name == "file1");
-            Assert.DoesNotContain(directory.GetOutputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
+            Assert.Contains(project.GetOutputFilesFromCollection("test"), i => i.Name == "file1");
+            Assert.DoesNotContain(project.GetOutputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
         }
 
         #endregion
@@ -129,23 +128,23 @@ namespace Metalsharp.Tests
         [Fact]
         public void DebugLogsAftereUse()
         {
-            var directory = new MetalsharpDirectory();
+            var project = new MetalsharpProject();
             var uses = 0;
 
-            directory.UseDebug(i =>
+            project.UseDebug(i =>
             {
                 // onLog will be called after UseDebug is called,
                 // Need to prevent the assertion before the use of TestPlugin
                 if (uses == 1)
                 {
-                    Assert.True((bool)directory.Metadata["test"]);
+                    Assert.True((bool)project.Metadata["test"]);
                 }
                 else
                 {
                     uses++;
                 }
             });
-            directory.Use<TestPlugin>();
+            project.Use<TestPlugin>();
         }
 
         #endregion
@@ -155,25 +154,25 @@ namespace Metalsharp.Tests
         [Fact]
         public void FrontmatterSucceedsWithoutFrontmatter()
         {
-            var directory = new MetalsharpDirectory("Scenario\\Plugins\\FileMarkdown.md").UseFrontmatter();
+            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md").UseFrontmatter();
 
-            Assert.True(directory.InputFiles[0].Metadata.Count == 0);
+            Assert.True(project.InputFiles[0].Metadata.Count == 0);
         }
 
         [Fact]
         public void FrontmatterParsesJsonFrontmatter()
         {
-            var directory = new MetalsharpDirectory("Scenario\\Plugins\\FileJsonFrontmatter.md").UseFrontmatter();
+            var project = new MetalsharpProject("Scenario\\Plugins\\FileJsonFrontmatter.md").UseFrontmatter();
 
-            Assert.True((bool)directory.InputFiles[0].Metadata["test"]);
+            Assert.True((bool)project.InputFiles[0].Metadata["test"]);
         }
 
         [Fact]
         public void FrontmatterParsesYamlFrontmatter()
         {
-            var directory = new MetalsharpDirectory("Scenario\\Plugins\\FileYamlFrontmatter.md").UseFrontmatter();
+            var project = new MetalsharpProject("Scenario\\Plugins\\FileYamlFrontmatter.md").UseFrontmatter();
 
-            Assert.True(ToBoolean(directory.InputFiles[0].Metadata["test"].ToString()));
+            Assert.True(ToBoolean(project.InputFiles[0].Metadata["test"].ToString()));
         }
 
         #endregion
@@ -183,19 +182,19 @@ namespace Metalsharp.Tests
         [Fact]
         public void MarkdownGeneratesHtmlFile()
         {
-            var directory = new MetalsharpDirectory("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
+            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
             
-            Assert.Contains(directory.OutputFiles, i => i.Extension == ".html");
+            Assert.Contains(project.OutputFiles, i => i.Extension == ".html");
         }
 
         [Fact]
         public void MarkdownCopiesMetadata()
         {
-            var directory = new MetalsharpDirectory("Scenario\\Plugins\\FileMarkdown.md")
-                .Use(dir => dir.InputFiles.ToList().ForEach(i => i.Metadata.Add("test", true)))
+            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md")
+                .Use(proj => proj.InputFiles.ToList().ForEach(i => i.Metadata.Add("test", true)))
                 .Use<Markdown>();
 
-            Assert.True((bool)directory.OutputFiles[0].Metadata["test"]);
+            Assert.True((bool)project.OutputFiles[0].Metadata["test"]);
         }
 
         #endregion

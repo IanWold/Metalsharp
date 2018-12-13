@@ -16,10 +16,10 @@ namespace Metalsharp
         /// </summary>
         /// 
         /// <example>
-        ///     Branch the `MetalsharpDirectory` twice:
+        ///     Branch the `MetalsharpProject` twice:
         /// 
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         // Add files
         ///         .Branch(
         ///         dir => {
@@ -32,8 +32,8 @@ namespace Metalsharp
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// <param name="branches">
         ///     The functions to handle each of the branches.
@@ -42,8 +42,8 @@ namespace Metalsharp
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory Branch(this MetalsharpDirectory directory, params Action<MetalsharpDirectory>[] branches) =>
-            directory.Use(new Branch(branches));
+        public static MetalsharpProject Branch(this MetalsharpProject project, params Action<MetalsharpProject>[] branches) =>
+            project.Use(new Branch(branches));
 
         #endregion
 
@@ -57,13 +57,13 @@ namespace Metalsharp
         ///     Only add `.md` files to a collection named `myCollection`:
         /// 
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseCollections("myCollection", file => file.Extension == ".md");
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// <param name="name">
         ///     The name of the collection to define.
@@ -75,8 +75,8 @@ namespace Metalsharp
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseCollections(this MetalsharpDirectory directory, string name, Predicate<IMetalsharpFile> predicate) =>
-            directory.Use(new Collections(name, predicate));
+        public static MetalsharpProject UseCollections(this MetalsharpProject project, string name, Predicate<IMetalsharpFile> predicate) =>
+            project.Use(new Collections(name, predicate));
 
         /// <summary>
         ///     Invoke the Collections plugin with several collection definitions
@@ -86,13 +86,13 @@ namespace Metalsharp
         ///     Add `.md` files to a collection named `mdFiles` and `.html` files to a collection named `htmlFiles`:
         /// 
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseCollections(("mdFiles", file => file.Extension == ".md"), ("htmlFiles", file => file.Extension == ".html"));
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// <param name="definitions">
         ///     The definitions of each collection.
@@ -101,16 +101,16 @@ namespace Metalsharp
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseCollections(this MetalsharpDirectory directory, params (string name, Predicate<IMetalsharpFile> predicate)[] definitions) =>
-            directory.Use(new Collections(definitions));
+        public static MetalsharpProject UseCollections(this MetalsharpProject project, params (string name, Predicate<IMetalsharpFile> predicate)[] definitions) =>
+            project.Use(new Collections(definitions));
 
         /// <summary>
-        ///     Given the name of a collection, returns that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         Dictionary&lt;string, string[]&gt; collection = new MetalsharpDirectory()
+        ///         Dictionary&lt;string, string[]&gt; collection = new MetalsharpProject()
         ///         ... // Add Files
         ///         ... // Create a collection named "myCollection"
         ///         .GetCollection("myCollection");
@@ -120,7 +120,7 @@ namespace Metalsharp
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -130,27 +130,27 @@ namespace Metalsharp
         /// <returns>
         ///     A `Dictionary` containing the input and output lists of file paths in the collection.
         /// </returns>
-        public static Dictionary<string, string[]> GetCollection(this MetalsharpDirectory directory, string name) =>
+        public static Dictionary<string, string[]> GetCollection(this MetalsharpProject project, string name) =>
             new Dictionary<string, string[]>
             {
-                ["input"] = directory.GetInputCollection(name),
-                ["output"] = directory.GetOutputCollection(name)
+                ["input"] = project.GetInputCollection(name),
+                ["output"] = project.GetOutputCollection(name)
             };
 
         /// <summary>
-        ///     Given the name of a collection, returns the input *and* output files in that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns the input *and* output files in that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         IMetalsharpFile[] collectionFiles = new MetalsharpDirectory()
+        ///         IMetalsharpFile[] collectionFiles = new MetalsharpProject()
         ///         ... // Add files
         ///         ... // Create a collection named "myCollection"
         ///         .GetFilesFromCollection("myCollection").ToArray();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -160,23 +160,23 @@ namespace Metalsharp
         /// <returns>
         ///     An enumerable of `IMetalsharpFile`s from the input and output lists of the collection.
         /// </returns>
-        public static IEnumerable<IMetalsharpFile> GetFilesFromCollection(this MetalsharpDirectory directory, string name) =>
-            directory.GetInputFilesFromCollection(name).Concat(directory.GetOutputFilesFromCollection(name));
+        public static IEnumerable<IMetalsharpFile> GetFilesFromCollection(this MetalsharpProject project, string name) =>
+            project.GetInputFilesFromCollection(name).Concat(project.GetOutputFilesFromCollection(name));
 
         /// <summary>
-        ///     Given the name of a collection, returns the input file paths in that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns the input file paths in that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         string[] collectionInputFilePaths = new MetalsharpDirectory()
+        ///         string[] collectionInputFilePaths = new MetalsharpProject()
         ///         ... // Add files
         ///         ... // Create a collection named "myCollection"
         ///         .GetInputCollection("myCollection");
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -186,27 +186,27 @@ namespace Metalsharp
         /// <returns>
         ///     An array containing the list of input file paths in the collection.
         /// </returns>
-        public static string[] GetInputCollection(this MetalsharpDirectory directory, string name) =>
-            directory.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> collectionsDictionary
+        public static string[] GetInputCollection(this MetalsharpProject project, string name) =>
+            project.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> collectionsDictionary
             && collectionsDictionary[name] is Dictionary<string, string[]> collection
             && collection["input"] is string[] inputsCollection
                 ? inputsCollection
                 : new string[0];
 
         /// <summary>
-        ///     Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         IMetalsharpFile[] collectionInputFiles = new MetalsharpDirectory()
+        ///         IMetalsharpFile[] collectionInputFiles = new MetalsharpProject()
         ///         ... // Add files
         ///         ... // Create a collection named "myCollection"
         ///         .GetInputFilesFromCollection("myCollection").ToArray();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -216,25 +216,25 @@ namespace Metalsharp
         /// <returns>
         ///     An enumerable containing the files from the input list in the collection.
         /// </returns>
-        public static IEnumerable<IMetalsharpFile> GetInputFilesFromCollection(this MetalsharpDirectory directory, string name) =>
-            directory.GetInputCollection(name) is string[] files && files.Count() > 0
-                ? directory.InputFiles.Where(file => files.Contains(file.FilePath))
+        public static IEnumerable<IMetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
+            project.GetInputCollection(name) is string[] files && files.Count() > 0
+                ? project.InputFiles.Where(file => files.Contains(file.FilePath))
                 : Enumerable.Empty<IMetalsharpFile>();
 
         /// <summary>
-        ///     Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         string[] collectionoutputFilePaths = new MetalsharpDirectory()
+        ///         string[] collectionoutputFilePaths = new MetalsharpProject()
         ///         ... // Add files
         ///         ... // Create a collection named "myCollection"
         ///         .GetOutputCollection("myCollection");
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -244,27 +244,27 @@ namespace Metalsharp
         /// <returns>
         ///     An array containing the list of output file paths in the collection.
         /// </returns>
-        public static string[] GetOutputCollection(this MetalsharpDirectory directory, string name) =>
-            directory.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> collectionsDictionary
+        public static string[] GetOutputCollection(this MetalsharpProject project, string name) =>
+            project.Metadata["collections"] is Dictionary<string, Dictionary<string, string[]>> collectionsDictionary
             && collectionsDictionary[name] is Dictionary<string, string[]> collection
             && collection["output"] is string[] outputsCollection
                 ? outputsCollection
                 : new string[0];
 
         /// <summary>
-        ///     Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpDirectory`.
+        ///     Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpProject`.
         /// </summary>
         /// 
         /// <example>
         ///     ```c#
-        ///         IMetalsharpFile[] collectionoutputFiles = new MetalsharpDirectory()
+        ///         IMetalsharpFile[] collectionoutputFiles = new MetalsharpProject()
         ///         ... // Add files
         ///         ... // Create a collection named "myCollection"
         ///         .GetOutputFilesFromCollection("myCollection").ToArray();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
+        /// <param name="project">
         ///     The directory holding the collection.
         /// </param>
         /// <param name="name">
@@ -274,9 +274,9 @@ namespace Metalsharp
         /// <returns>
         ///     An enumerable containing the files from the output list in the collection.
         /// </returns>
-        public static IEnumerable<IMetalsharpFile> GetOutputFilesFromCollection(this MetalsharpDirectory directory, string name) =>
-            directory.GetOutputCollection(name) is string[] files && files.Count() > 0
-                ? directory.OutputFiles.Where(file => files.Contains(file.FilePath))
+        public static IEnumerable<IMetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
+            project.GetOutputCollection(name) is string[] files && files.Count() > 0
+                ? project.OutputFiles.Where(file => files.Contains(file.FilePath))
                 : Enumerable.Empty<IMetalsharpFile>();
 
         #endregion
@@ -289,20 +289,20 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseDebug();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// 
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory) =>
-            directory.Use(new Debug());
+        public static MetalsharpProject UseDebug(this MetalsharpProject project) =>
+            project.Use(new Debug());
 
         /// <summary>
         ///     Invoke the Debug plugin with a log file to capture the debug logs.
@@ -310,13 +310,13 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseDebug("debug.log");
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// <param name="logPath">
         ///     The path to the log file.
@@ -325,8 +325,8 @@ namespace Metalsharp
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory, string logPath) =>
-            directory.Use(new Debug(logPath));
+        public static MetalsharpProject UseDebug(this MetalsharpProject project, string logPath) =>
+            project.Use(new Debug(logPath));
 
         /// <summary>
         ///     Invoke the Debug plugin with custom log behavior.
@@ -334,13 +334,13 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         .UseDebug(log => Console.WriteLine(log));
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// <param name="onLog">
         ///     The action to execute to log a debug line.
@@ -349,8 +349,8 @@ namespace Metalsharp
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseDebug(this MetalsharpDirectory directory, Action<string> onLog) =>
-            directory.Use(new Debug(onLog));
+        public static MetalsharpProject UseDebug(this MetalsharpProject project, Action<string> onLog) =>
+            project.Use(new Debug(onLog));
 
         #endregion
 
@@ -362,21 +362,21 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add files
         ///         .UseFrontmatter();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// 
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseFrontmatter(this MetalsharpDirectory directory) =>
-            directory.Use(new Frontmatter());
+        public static MetalsharpProject UseFrontmatter(this MetalsharpProject project) =>
+            project.Use(new Frontmatter());
 
         #endregion
 
@@ -388,21 +388,21 @@ namespace Metalsharp
         /// 
         /// <example>
         ///     ```c#
-        ///         new MetalsharpDirectory()
+        ///         new MetalsharpProject()
         ///         ... // Add files
         ///         .UseMarkdown();
         ///     ```
         /// </example>
         /// 
-        /// <param name="directory">
-        ///     The `MetalsharpDirectory` on which this method will be called.
+        /// <param name="project">
+        ///     The `MetalsharpProject` on which this method will be called.
         /// </param>
         /// 
         /// <returns>
         ///     Combinator; returns `this` input.
         /// </returns>
-        public static MetalsharpDirectory UseMarkdown(this MetalsharpDirectory directory) =>
-            directory.Use(new Markdown());
+        public static MetalsharpProject UseMarkdown(this MetalsharpProject project) =>
+            project.Use(new Markdown());
 
         #endregion
     }

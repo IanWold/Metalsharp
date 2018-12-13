@@ -10,7 +10,7 @@ namespace Metalsharp
     /// 
     /// <example>
     ///     ```c#
-    ///         new MetalsharpDirectory()
+    ///         new MetalsharpProject()
     ///         .AddInput(new MetalsharpFile("# Header 1", "file.md")
     ///         .UseMarkdown()
     ///         .Build();
@@ -28,19 +28,19 @@ namespace Metalsharp
         ///     Invokes the plugin.
         /// </summary>
         /// 
-        /// <param name="directory">
-        ///     The directory to invoke the plugin on.
+        /// <param name="project">
+        ///     The `MetalsharpProject` to invoke the plugin on.
         /// </param>
-        public void Execute(MetalsharpDirectory directory)
+        public void Execute(MetalsharpProject project)
         {
-            foreach (var file in directory.InputFiles)
+            foreach (var file in project.InputFiles)
             {
                 if (file.Extension == ".md" || file.Extension == ".markdown")
                 {
                     var fileText = Markdig.Markdown.ToHtml(file.Text);
                     var filePath = Path.Combine(file.Directory, file.Name + ".html");
 
-                    directory.OutputFiles.Add(new MetalsharpFile(fileText, filePath) { Metadata = file.Metadata });
+                    project.OutputFiles.Add(new MetalsharpFile(fileText, filePath) { Metadata = file.Metadata });
                 }
             }
         }

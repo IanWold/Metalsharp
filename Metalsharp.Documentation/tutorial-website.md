@@ -134,16 +134,16 @@ To start using Metalsharp, you'll need a new C# console application. Metalsharp 
 
 > When Metalsharp is on NuGet, you will also have the option of using a C# script with NuGet packages (via [scriptcs](http://scriptcs.net/)) to create your project. Until then, this tutorial will only cover a C# project. In addition, you will currently need to build Metalsharp from source and add an assembly reference to your built DLL. This tutorial will be updated when Metalsharp hits NuGet.
 
-Your project will have a `Program.cs` file with a `Main` method inside. In the main method, we will instantiate a `MetalsharpDirectory` object, add our files, apply several plugins to it, and built it to an output directory. Each step of the way this tutorial will explain parts of the Metalsharp API. Full generated API documentation [is available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md).
+Your project will have a `Program.cs` file with a `Main` method inside. In the main method, we will instantiate a `MetalsharpProject` object, add our files, apply several plugins to it, and built it to an output directory. Each step of the way this tutorial will explain parts of the Metalsharp API. Full generated API documentation [is available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md).
 
 ### Adding files
 
 > Note that this tutorial will use Windows directory separator characters (i.e. `\`). Metalsharp is written to handle the directory separator characters specific to your platform. So, if you're not using Windows, use the character(s) native to your platform. If you want to use universal directory separator characters, use `Path.DirectorySeparatorCharacter` and/or `Path.Combine` from .NET.
 
-So, we need to get our Metalsharp project up and going, and we'll want to add the site contents (in `/Site`) right off the bat. When we instantiate our `MetalsharpDirectory`, we can read in the files in that directory right away:
+So, we need to get our Metalsharp project up and going, and we'll want to add the site contents (in `/Site`) right off the bat. When we instantiate our `MetalsharpProject`, we can read in the files in that directory right away:
 
 ```c#
-var directory = new MetalsharpDirectory("Site");
+var project = new MetalsharpProject("Site");
 ```
 
 When Metalsharp reads files in, it stores them in a single list. That is, there is no `Folder` object now storing our files. All the files are `MetalsharpFile` objects, and they're all stored in a single list. Each `MetalsharpFile` object has a `FilePath` property. Here is what our list of files looks like now, having read all the files in the `Site` directory:
@@ -155,10 +155,10 @@ When Metalsharp reads files in, it stores them in a single list. That is, there 
 - `Site\Posts\i_love_blogging.md`
 - `Site\Posts\on_writers_block.md`
 
-They have a virtual directory structure which resembles that of the files on disk (we call this a "virtual directory structure" to reinforce the fact that they're really in a single list). There's a slight problem here, and that is that when we output our website, we don't want the website inside a `Site` directory within our output directory. To fix that, we want to move the contents of `Site` up one directory. We can do that by using a different constructor for `MetalsharpDirectory`:
+They have a virtual directory structure which resembles that of the files on disk (we call this a "virtual directory structure" to reinforce the fact that they're really in a single list). There's a slight problem here, and that is that when we output our website, we don't want the website inside a `Site` directory within our output directory. To fix that, we want to move the contents of `Site` up one directory. We can do that by using a different constructor for `MetalsharpProject`:
 
 ```c#
-var directory = new MetalsharpDirectory("Site", ".");
+var directory = new MetalsharpProject("Site", ".");
 ```
 
 This will still read all the files in `Site`, but instead of remembering them in a `Site` directory, Metalsharp will remember them in the "." directory. Windows (and other OSes?) understand "." as a "root" directory - at output there will be no directory created named ".". Thus, our new list of files looks like this:
@@ -170,9 +170,9 @@ This will still read all the files in `Site`, but instead of remembering them in
 - `.\Posts\i_love_blogging.md`
 - `.\Posts\on_writers_block.md`
 
-It's important to note here that `MetalsharpDirectory` keeps two lists of files, in fact. These are the input and output files (`MetalsharpDirectory.InputFiles` and `MetalsharpDirectory.OutputFiles`, respectively). The distinction is that files in the output list will be written to disk during build, and the input files won't be. When we instantiate `MetalsharpDirectory` and tell it to read in a directory, it places those files in the input list only. This gives us a staging area and allows us to more precisely control which files we output, and how we do so.
+It's important to note here that `MetalsharpProject` keeps two lists of files, in fact. These are the input and output files (`MetalsharpProject.InputFiles` and `MetalsharpProject.OutputFiles`, respectively). The distinction is that files in the output list will be written to disk during build, and the input files won't be. When we instantiate `MetalsharpProject` and tell it to read in a directory, it places those files in the input list only. This gives us a staging area and allows us to more precisely control which files we output, and how we do so.
 
-Once we've instantiated our `MetalsharpDirectory`, we can continue adding files to the input and output lists. We still need to add our `Templates` and `Static` directories.
+Once we've instantiated our `MetalsharpProject`, we can continue adding files to the input and output lists. We still need to add our `Templates` and `Static` directories.
 
 `Templates` needs to go in the inputs (because they won't be included with the final site):
 
@@ -188,10 +188,10 @@ directory.AddOutput("Static", ".");
 
 Notice that as we add `Templates`, it will be placed in a virtual directory called `Templates`, while `Static` will be placed in our root (`.`) directory.
 
-Now that you've added several files to the project, you may need to move some files from one directory to another, or you may need to remove a file or two. `MetalsharpDirectory` includes methods to move and remove files from the input and output. We don't need to do that on this project, but here are some examples in case you do:
+Now that you've added several files to the project, you may need to move some files from one directory to another, or you may need to remove a file or two. `MetalsharpProject` includes methods to move and remove files from the input and output. We don't need to do that on this project, but here are some examples in case you do:
 
 ```c#
-directory
+project
     // Move files in Posts directory to Articles directory
     .MoveInput(".\\Posts", ".\\Articles")
     .MoveOutput(".\\Posts", ".\\Articles")
@@ -206,7 +206,7 @@ directory
 We've got our files in, now we need to start processing them. Let's run these two plugins first:
 
 ```c#
-directory
+project
     .UseFrontmatter()
     .UseMarkdown();
 ```
@@ -215,10 +215,10 @@ These two plugins come with Metalsharp and they're pretty self-descriptive. `Fro
 
 > *Metadata* is any data associated with the file that isn't part of the file's actual text. Metalsharp uses a `Dictionary<string, object>` to store metadata.
 
-There are a few ways to invoke a plugin. Above, the plugins are invoked using extension methods to `MetalsharpDirectory`. Each plugin is a class (which implements `IMetalsharpPlugin`), and these plugins can also be accessed by referencing their type with the `MetalsharpDirectory.Use<T>()` method. The above is equivalent to the following:
+There are a few ways to invoke a plugin. Above, the plugins are invoked using extension methods to `MetalsharpProject`. Each plugin is a class (which implements `IMetalsharpPlugin`), and these plugins can also be accessed by referencing their type with the `MetalsharpProject.Use<T>()` method. The above is equivalent to the following:
 
 ```c#
-directory
+project
     .Use<Frontmatter>()
     .Use<Markdown>();
 ```
@@ -226,7 +226,7 @@ directory
 This can be desirable if you prefer that style of coding. Note though that this only works for plugins with default constructors (a constructor with no arguments). What both the extension methods and generic-type `Use` methods do, though, is they create an instance of the plugin object and call its `Execute` method. You can invoke a plugin by supplying an instance of the plugin object, if that makes more logical sense to you. Again, the above are each equivalent to the following:
 
 ```c#
-directory
+project
     .Use(new Frontmatter())
     .Use(new Markdown());
 ```
@@ -244,16 +244,16 @@ What is important is that after running our `Markdown` plugin, we get the follow
 
 ### Handling the Blog Posts
 
-Just like each file has its own metadata, `MetalsharpDirectory` also has it's own metadata to pass information about the whole project from plugin to plugin. The `Collections` plugin uses this project-level directory to store collections of files, in both the input and the output lists. This can be useful if you have several files that each need some operations performed on them. In our case, we need to do some additional processing to the blog post files, so we will use the `Collections` plugin to group the posts together.
+Just like each file has its own metadata, `MetalsharpProject` also has it's own metadata to pass information about the whole project from plugin to plugin. The `Collections` plugin uses this project-level directory to store collections of files, in both the input and the output lists. This can be useful if you have several files that each need some operations performed on them. In our case, we need to do some additional processing to the blog post files, so we will use the `Collections` plugin to group the posts together.
 
 To create a collection, we need a name for the collection and a function to choose which files to include in that collection. Here's how we'll collect the blog post files:
 
 ```c#
-directory
+project
     .UseCollections("posts", file => file.IsChildOf("Posts"));
 ```
 
-This will add a new record to the metadata in our `directory` object, which will look like the following mess (using the C# literal dictionary notation):
+This will add a new record to the metadata in our `project` object, which will look like the following mess (using the C# literal dictionary notation):
 
 ```c#
 ["posts"] =
@@ -273,17 +273,17 @@ This will add a new record to the metadata in our `directory` object, which will
 }
 ```
 
-This selected each of the files, in each the input and output lists, which are children of the "Posts" directory, and put them into a metadata record with the key "posts-collection", which was the name of the collection. If you were to recall the metadata value for the key "posts-collection" from the `MetalsharpDirectory` metadata (as follows), you would be able to get this object, but there are better ways to get this information.
+This selected each of the files, in each the input and output lists, which are children of the "Posts" directory, and put them into a metadata record with the key "posts-collection", which was the name of the collection. If you were to recall the metadata value for the key "posts-collection" from the `MetalsharpProject` metadata (as follows), you would be able to get this object, but there are better ways to get this information.
 
 ```c#
 // Getting at your collection - the hard way
-var postsCollection = directory.Metadata["posts-collection"] as Dictionary<string, string[]>;
+var postsCollection = project.Metadata["posts-collection"] as Dictionary<string, string[]>;
 ```
 
 Now we need to add metadata to each post. Specifically, we want each post to reference the `article` template (from our `Templates` directory) in its metadata. The reason for this is specific to the `FluentTemplates` plugin and is explained below. If you are using a different system for templating, your mileage here may vary.
 
 ```c#
-directory.GetOutputFilesFromCollection("posts-collection").ToList().ForEach(file => file.Metadata.Add("template", ".\\Templates\\article.liquid"));
+project.GetOutputFilesFromCollection("posts-collection").ToList().ForEach(file => file.Metadata.Add("template", ".\\Templates\\article.liquid"));
 ```
 
 This method, `GetOutputFilesFromCollection` is an extension method for the `Collections` plugin. It does all the typecasting and file-matching for you so that you have all of your files from the "posts-collection" collection - and specifically the outputs, at that. There is also `GetInputFilesFromCollection` and `GetFilesFromCollection`, for the input files and all files, respectively.
@@ -318,33 +318,33 @@ class Post
 }
 ```
 
-Now we need to make a `blog.html` file in the output, and we need to set its metadata to have a list of these `Post` objects, as well as a link to the `blog.liquid` template. As we covered before, `MetalsharpDirectory` does have an `AddOutput` method, and we could *just* use that here, but this is an opportunity to demonstrate another feature. `MetalsharpDirectory` has another overload of the `Use` method which allows you to use a lambda function (that is, an anonymous function) as a kind of plugin. If you want to use a function, it'll have one input (the directory) and should have no output. This is what .NET calls an `Action<MetalsharpDirectory>`. Here's how it would look:
+Now we need to make a `blog.html` file in the output, and we need to set its metadata to have a list of these `Post` objects, as well as a link to the `blog.liquid` template. As we covered before, `MetalsharpProject` does have an `AddOutput` method, and we could *just* use that here, but this is an opportunity to demonstrate another feature. `MetalsharpProject` has another overload of the `Use` method which allows you to use a lambda function (that is, an anonymous function) as a kind of plugin. If you want to use a function, it'll have one input (the directory) and should have no output. This is what .NET calls an `Action<MetalsharpProject>`. Here's how it would look:
 
 ```c#
-directory.Use(dir => dir.AddOutput("", "blog.html")
+project.Use(proj => proj.AddOutput("", "blog.html")
 {
     Metadata = new Dictionary<string, object>()
     {
-        ["posts"] = dir.GetOutputFilesFromList("posts").Select(file => new Post(file)),
+        ["posts"] = proj.GetOutputFilesFromList("posts").Select(file => new Post(file)),
         ["template"] = ".\\Templates\\blog.liquid"
     }
 });
 ```
 
-Obviously, because our `MetalsharpDirectory` is in the variable `directory`, we don't need this complexity. The following will achieve the same for us:
+Obviously, because our `MetalsharpProject` is in the variable `project`, we don't need this complexity. The following will achieve the same for us:
 
 ```c#
-directory.AddOutput("", "blog.html")
+project.AddOutput("", "blog.html")
 {
     Metadata = new Dictionary<string, object>()
     {
-        ["posts"] = directory.GetOutputFilesFromList("posts").Select(file => new Post(file)),
+        ["posts"] = project.GetOutputFilesFromList("posts").Select(file => new Post(file)),
         ["template"] = ".\\Templates\\blog.liquid"
     }
 });
 ```
 
-Where the former option is desirable is where you are using `MetalsharpDirectory`'s fluent interface. That is, if you are chaining together all of your plugin invocations rather than creating a new `MetalsharpDirectory` variable, you will need to use the former option to access the current `MetalsharpDirectory` object.
+Where the former option is desirable is where you are using `MetalsharpProject`'s fluent interface. That is, if you are chaining together all of your plugin invocations rather than creating a new `MetalsharpProject` variable, you will need to use the former option to access the current `MetalsharpProject` object.
 
 ### Using the Templates
 
@@ -367,12 +367,12 @@ This expects that our template will be given a `level` object (an int), which wi
 
 When we're at the root directory, `directoryPrefix` will be empty, so the link will take us right to `index.html`. However, when we're in a post, `directoryPrefix` will be `../`, which will take us back up one directory to get to `index.html`.
 
-Now we just need to generate this `level` variable in our Metalsharp code, and give every page a new metadata record keyed "level" with the appropriate integer. It should be relatively easy to write a function that goes over every file in both the inputs and outputs in the `MetalsharpDirectory` and assigns an appropriate metadata record, but for brevity here is that function:
+Now we just need to generate this `level` variable in our Metalsharp code, and give every page a new metadata record keyed "level" with the appropriate integer. It should be relatively easy to write a function that goes over every file in both the inputs and outputs in the `MetalsharpProject` and assigns an appropriate metadata record, but for brevity here is that function:
 
 ```c#
-static void LeveledFiles(MetalsharpDirectory directory)
+static void LeveledFiles(MetalsharpProject project)
 {
-    foreach (var file in directory.InputFiles.Concat(directory.OutputFiles))
+    foreach (var file in project.InputFiles.Concat(project.OutputFiles))
     {
         // Get the directories from the path of the file as an array
         var dirLevels = file.Directory.Split(Path.DirectorySeparatorChar);
@@ -385,10 +385,10 @@ static void LeveledFiles(MetalsharpDirectory directory)
 }
 ```
 
-Now we have our method to achieve this, we just need to plug it in to our Metalsharp project. Recall from above where we used `MetalsharpDirectory.Use` to invoke a function on the project - we can do exactly the same here with this method. Becuase the method has the same inputs and outputs as an `Action<MetalsharpDirectory>`, we can use it as a delegate here:
+Now we have our method to achieve this, we just need to plug it in to our Metalsharp project. Recall from above where we used `MetalsharpProject.Use` to invoke a function on the project - we can do exactly the same here with this method. Becuase the method has the same inputs and outputs as an `Action<MetalsharpProject>`, we can use it as a delegate here:
 
 ```c#
-directory.Use(LeveledFiles);
+project.Use(LeveledFiles);
 ```
 
 And now, we are ready to hook up our templates. Again, it bears mentioning that this tutorial is covering specifics for the `Metalsharp.FluidTemplate` library, and you may have a slightly different experience if you're using a different system for your templates.
@@ -398,15 +398,15 @@ If you've been reading closely, you'll notice that only four of our files have a
 Thus, we only need the following addition to our Metalsharp code:
 
 ```c#
-directory.UseFluidTemplate(".\\Templates\\layout.liquid");
+project.UseFluidTemplate(".\\Templates\\layout.liquid");
 ```
 
 ### Building the Site
 
-Now we're done doing the processing we need to with Metalsharp, we can build the site! But we have a couple requirements: we want to build the site to a `build` directory, and every time we build the site we want to remove all the files in that directory before we write any files there. The `BuildOptions` class handles these options for us, and we can provide an instance of this class, with these options configured, to the `MetalsharpDirectory.Build` method.
+Now we're done doing the processing we need to with Metalsharp, we can build the site! But we have a couple requirements: we want to build the site to a `build` directory, and every time we build the site we want to remove all the files in that directory before we write any files there. The `BuildOptions` class handles these options for us, and we can provide an instance of this class, with these options configured, to the `MetalsharpProject.Build` method.
 
 ```c#
-directory.Build(new BuildOptions
+project.Build(new BuildOptions
 {
     OutputDirectory = "build",
     ClearOutputDirectory = true
@@ -430,7 +430,7 @@ namespace MyProject
     class Program
     {
         static void Main(string[] args) =>
-            new MetalsharpDirectory("Site", ".")
+            new MetalsharpProject("Site", ".")
                 .AddInput("Templates")
                 .AddOutput("Static", ".")
                 .UseFrontmatter()
@@ -455,9 +455,9 @@ namespace MyProject
                     ClearOutputDirectory = true
                 });
 
-        static void LeveledFiles(MetalsharpDirectory directory)
+        static void LeveledFiles(MetalsharpProject project)
         {
-            foreach (var file in directory.InputFiles.Concat(directory.OutputFiles))
+            foreach (var file in project.InputFiles.Concat(project.OutputFiles))
             {
                 var dirLevels = file.Directory.Split(Path.DirectorySeparatorChar);
                 var dirLevelCount = dirLevels.Count() - (dirLevels[0] == "." ? 1 : 0);
