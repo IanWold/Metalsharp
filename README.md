@@ -186,11 +186,7 @@ If you'd like to contribute, please do! Open an Issue, submit a PR, I'm happy ho
 
 ## Roadmap
 
-The current objective is to get to `v0.9.0-rc1`. The following needs to be done to get to that point:
-
-1. Write source documentation,
-1. Write user documentation,
-1. Release `v0.9.0-rc1` on Nuget
+The current objective is to get to `v0.9.0-rc1`. As of 13 December 2018 all the boxes have been checked to this end, and to this end all the last-minute reviews are being done so we can publish on NuGet. This involves making sure we have the test coverage we want, naming concerns are all sorted out, functionality is all useful, and documentation is current. We're targeting 16 December as the deadline for the NuGet release.
 
 After `v0.9.0-rc1` is released to Nuget, the goal is to test the library thoroughly in as many situations as possible to be sure of its design and usability. This will involve generating a GitHub Pages homepage for Metalsharp, and it may involve writing integration tests. `v0.9.0` will be released to Nuget when there is a concensus that Metalsharp is designed correctly.
 
