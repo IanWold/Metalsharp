@@ -14,112 +14,74 @@ Generating a website from a directory is as simple as the following (from [Examp
 
 ```c#
 new MetalsharpDirectory("Site")
-    .UseFrontmatter()
-    .Use<Drafts>()
-    .Use(new Markdown())
+    .Use<Frontmatter>()
+    .Use(new Drafts())
+    .UseMarkdown()
+    .AddOutput("Static")
     .Build();
 ```
-
-This example uses three plugins: `Frontmatter`, `Drafts`, and `Markdown`, and they demonstrate the three standard ways (syntactically) a Metalsharp plugin can be chained onto each other. `Frontmatter` parses JSON or YAML frontmatter into the metadata of each file, `Drafts` will remove any files marked as a draft, and `Markdown` will convert Markdown files to HTML.
 
 ## Getting Started
 
 ### Configuring a Metalsharp Project Directory
 
-See [ExampleWebsite](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExampleWebsite) for a project implementing this. It is recommended that a Metalsharp project use the following directory structure:
+It is recommended that a Metalsharp project use something like the following directory structure.
 
 ```text
-.
+ProjectFolder
 ├── Site
 │   ├── SomeFile.md
 │   └── SomeOtherFile.md
-├── bin
-│   ├── SomeFile.html
-│   └── SomeOtherFile.html
-├── layout.template
+├── Static
+│   └── style.css
 └── README.md
 ```
 
-Within a root directory is a good place for any files needed to configure plugins, such as `layout.template` for the [example `Layout` plugin](https://github.com/IanWold/Metalsharp/tree/master/Examples/ExamplePlugin). Putting all the site files in a site folder keeps them separated from config files or other project files. The default behavior for Metalsharp is to put output files in a `bin` directory, but you can configure that differently. An output folder separate and outside the folder with site files is best practice.
+Here we have a project in a `ProjectFolder` directory. At that level, you can place files irrelevant to the resultant website. Site content can go in a `Site` folder, and content that will be copied right through to the output can go in a `Static` folder. None of these are requirements, and as your mileage varies you can implement whichever structure you need.
 
 ### Using Metalsharp
 
-Full docs are on their way, in the meantime, here's (basically) how you use this tiny library:
+Let's walk though the example at the top. The [quickstart](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md) can give you a more thorough glimpse at Metalsharp, and there's also a tutorial to [create a practical website](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md).
 
-1. Instantiate a new Metalsharp object with the directory containing the files you want to manipulate:
-
-```c#
-new MetalsharpDirectory("Site")
-```
-
-2. If you want to add a file to the input, you can do that:
+1. Instantiate a new `MetalsharpProject` with the directory containing the files you want to manipulate:
 
 ```c#
-.AddInput("C:/SomeDir/myFile.md")
+new MetalsharpProject("Site")
 ```
 
-3. You can add a file directly to the output:
-
-```c#
-.AddOutput("C:/SomeDir/ForOutput.css")
-```
-
-4. And if you have a change of heart you can remove them again too:
-
-```c#
-.RemoveInput("C:/SomeDir/myFile.md")
-.RemoveOutput("ForOutput.css")
-```
-
-5. You can add a plugin by referencing its type if it has an empty constructor, like the `Frontmatter` plugin:
+2. You can add a plugin by referencing its type if it has an empty constructor, like the `Frontmatter` plugin. This one will add a file's frontmatter to its metadata:
 
 ```c#
 .Use<Frontmatter>()
 ```
 
-6. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method:
+3. If a plugin does not have an empty constructor, or if you prefer this syntax, you'll either need to use a provided extension method, or instantiate the plugin yourself. The `Drafts` plugin (one of the [example plugins](https://github.com/IanWold/Metalsharp/tree/master/Metalsharp.Examples/Metalsharp.ExamplePlugin)) removes files marked as drafts.
 
 ```c#
-.UseDrafts()
+.Use(new Drafts())
 ```
 
-7. If a plugin does not have an empty constructor, or if you prefer this syntax, you'll either need to use a provided extension method, or instantiate the plugin yourself like so:
+4. And if an extension to `Metalsharp` exists for a plugin, as does for [all the plugins that come with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Plugins/MetalsharpExtensions.cs), you can use that extension method. `Markdown` converts Markdown files in the input to HTML files in the output.
 
 ```c#
-.Use(new Markdown())
+.UseMarkdown()
 ```
 
-8. When you've configured your plugin pipeline, call `Build` to execute the stack:
+5. Finally, we've got a `Static` folder with files we want to copy right through to the output, so let's include those in the output:
+
+```c#
+.AddOutput("Static")
+```
+
+6. When you've configured your plugin pipeline, call `Build` to execute the stack:
 
 ```c#
 .Build();
 ```
 
-9. If you need to configure your output directory or other options, you can pass those into `Build` using `BuildOptions`:
-
-```c#
-.Build(new BuildOptions() { OutputDirectory = "C:/Output" });
-```
-
-And with that all your output files should be in your output directory. Here's all the code together:
-
-```c#
-new MetalsharpDirectory("Site")
-	.AddInput("C:/SomeDir/myFile.md")
-	.AddOutput("C:/SomeDir/ForOutput.css")
-	.RemoveInput("C:/SomeDir/myFile.md")
-	.RemoveOutput("ForOutput.css")
-	.Use<Frontmatter>()
-	.UseDrafts()
-	.Use(new Markdown())
-	.Build(new BuildOptions() { OutputDirectory = "C:/Output" });
-```
-
 ## Creating a Custom Plugin
 
-### By Implementing `IMetalsharpPlugin`
-
-Any plugin just needs to inherit from [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Interfaces/IMetalsharpPlugin.cs). Below is the code for the `Markdown` plugin:
+Creating a Metalsharp plugin is very easy. [This tutorial]() demonstrates how to develop and publish a plugin. Fundamentally, all you need to do is implement [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Interfaces/IMetalsharpPlugin.cs). Below is the code for the `Markdown` plugin:
 
 ```c#
 public class Markdown : IMetalsharpPlugin
@@ -136,49 +98,15 @@ public class Markdown : IMetalsharpPlugin
 }
 ```
 
-Your `Execute` funtion should always return `directory` at the end, or throw an error.
-
-`directory` is a `MetalsharpDirectory` object and has three properties a plugin can interface with: `Metadata`, `InputFiles`, and `OutputFiles`.
-
-`Metadata` is a `Dictionary<string, object>` which contains any metadata defined by the programmer. `InputFiles` is a list of `InputFile` objects which represent the files in the project folder. `OutputFiles` is a list of `OutpuFile` objects which are all the output files that have been generated by the plugins that ran before yours. Plugins can modify, delete, or add anything to any of these properties to modify the end result.
-
-### With a Function (err... "Action")
-
-If you don't plan on packaging your plugin for others to use, or you need a "quick and dirty" solution, you can just use any `Action<MetalsharpDirectory>` with `Use`. First, implement a function:
-
-```c#
-void DeleteEverything(MetalsharpDirectory directory)
-{
-	directory.InputFiles.Clear();
-	directory.OutputFiles.Clear();
-	return directory;
-}
-```
-
-Then add it to the stack with `Use`:
-
-```c#
-new MetalsharpDirectory("Site")
-	.Use(DeleteEverything)
-	...
-```
-
-You can also use a lambda, if you wish:
-
-```c#
-new MetalsharpDirectory("Site")
-	.Use(directory => {
-		directory.InputFiles.Clear();
-		directory.OutputFiles.Clear();
-	})
-	...
-```
-
 ## Docs
 
-Documentation is currently being written, and skeleton documentation is available for the source. The code is fully commented with XML documentation, and [XmlDocToMarkdown](https://github.com/ianwold/XmlDocToMarkdown) is used to generate a markdown dump of all the API documentation. [You can find source documentation here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md).
+[Metalsharp.Documentation]() houses generated API docs and hand-written tutorials.
 
-The current goal is to fully flush-out this documentation, generate separate files with it, and then write supplementary tutorials for the library.
+The source code is fullly documented with XML comments, and [XmlDocToMarkdown](https://github.com/ianwold/XmlDocToMarkdown) is used to generate a markdown dump of all the API documentation.
+
+If you notice any issues or potential improvements in the documentation or tutorials, please edit the file(s) and submit a PR, it would be a huge help! If you don't have the time or skill to do that, then opening an issue would be awesome too.
+
+If you have a question or need help using Metalsharp, please do not open an issue. Rather, head on over to the [Metalsharp Discord](https://discord.gg/HrxyfFP) for general questions and help.
 
 ## Contributing
 
