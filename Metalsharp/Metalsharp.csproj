@@ -8,7 +8,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <Version>0.9.0-rc1</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Ian Wold</Authors>
     <Company />
     <Copyright>Copyright (c) 2018 Ian Wold</Copyright>
