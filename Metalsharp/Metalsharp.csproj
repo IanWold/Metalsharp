@@ -14,7 +14,7 @@
     <Copyright>Copyright (c) 2018 Ian Wold</Copyright>
     <PackageLicenseUrl>https://github.com/IanWold/Metalsharp/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl></PackageProjectUrl>
-    <PackageIconUrl>https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/IanWold/Metalsharp/blob/master/MetalsharpIcon.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/IanWold/Metalsharp</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>metalsharp metalsmith static-site-generator static-site dotnet-standard</PackageTags>
