@@ -15,7 +15,11 @@ Plugins manipulate files in small and understandable ways. Metalsharp works best
 
 Metalsharp is developed as a .NET Standard library, and your library would be the most portable if you are able to target .NET Standard as well. However, there is nothing stopping you from exclusively targeting .NET Core or Framework. If you are planning on publishing your plugin - which you definitely should - your plugin should be in a class library.
 
-It is recommended that your plugin sit in a namespace within the `Metalsharp` namespace. In this tutorial, we'll call our version of the `Collections` plugin `MyPlugin`, so your plugin should sit in the namespace `Metalsharp.MyPlugin`. It is easiest if this is also the name of your project (for example, [`Metalsharp.FluidTemplate`](https://github.com/IanWold/Metalsharp.FluidTemplate)). This project will need an assembly reference to Metalsharp, which you must build from source. When Metalsharp reaches `v0.9.0-rc1`, it will be on NuGet, and this tutorial will be updated accordingly.
+It is recommended that your plugin sit in a namespace within the `Metalsharp` namespace. In this tutorial, we'll call our version of the `Collections` plugin `MyPlugin`, so your plugin should sit in the namespace `Metalsharp.MyPlugin`. It is easiest if this is also the name of your project (for example, [`Metalsharp.FluidTemplate`](https://github.com/IanWold/Metalsharp.FluidTemplate)). This project will obviously need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
+
+```plaintext
+PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+```
 
 ### Implementing `IMetalsharpPlugin`
 
@@ -120,7 +124,7 @@ If you want to keep your source closed (or if you're in an enterprise and you ne
 
 **NuGet**
 
-NuGet is the de facto package manager for .NET, and that's how Metalsharp will eventually be released. Indeed, until Metalsharp is on NuGet it doesn't make sense to release here. But that's coming around the corner, so preparing your package for NuGet might make sense. And, it'll give other users an easier time consuming your plugin.
+NuGet is the de facto package manager for .NET, and that's how Metalsharp is released. Releasing your package on NuGet gives other users an easier time consuming your plugin. If you are planning on releasing your plugin on NuGet, it's best practice for your C# project to reference Metalsharp from NuGet.
 
 **DLL Download**
 

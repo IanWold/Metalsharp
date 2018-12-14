@@ -19,6 +19,7 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>metalsharp metalsmith static-site-generator static-site dotnet-standard</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>A tiny and extendable C# library for generating static sites, inspired by Metalsmith.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

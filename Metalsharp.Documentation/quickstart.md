@@ -19,9 +19,11 @@ This quickstart will walk you through all the basics in Metalsharp. The tutorial
 
 ## Acquiring Metalsharp
 
-You'll need a C# console application (let's call it `MyProject`). This can be either .NET Core or .NET Framework, it shouldn't matter which. You'll need to add an assembly reference to `Metalsharp.dll`, which you can only acquire by building Metalsharp from source.
+You'll need a C# console application (let's call it `MyProject`). This can be either .NET Core or .NET Framework, it shouldn't matter which.This project will also, of course need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
 
-When Metalsharp hits `v0.9.0-rc1`, it will be available on NuGet, but until then, you'll need to build from source and add an assembly reference.
+```plaintext
+PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+```
 
 ## Project Structure
 

@@ -24,6 +24,14 @@ new MetalsharpDirectory("Site")
 
 ## Getting Started
 
+To get Metalsharp, you can either build it from source, or get it on [NuGet](https://www.nuget.org/packages/Metalsharp/).
+
+```plaintext
+PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+```
+
+> Note that you will need NuGet 4.3.0 or higher to install Metalsharp with NuGet.
+
 ### Configuring a Metalsharp Project Directory
 
 It is recommended that a Metalsharp project use something like the following directory structure.
@@ -115,9 +123,7 @@ If you'd like to contribute, please do! Open an Issue, submit a PR, I'm happy ho
 
 ## Roadmap
 
-The current objective is to get to `v0.9.0-rc1`. As of 13 December 2018 all the boxes have been checked to this end, and to this end all the last-minute reviews are being done so we can publish on NuGet. This involves making sure we have the test coverage we want, naming concerns are all sorted out, functionality is all useful, and documentation is current. We're targeting 16 December as the deadline for the NuGet release.
-
-After `v0.9.0-rc1` is released to Nuget, the goal is to test the library thoroughly in as many situations as possible to be sure of its design and usability. This will involve generating a GitHub Pages homepage for Metalsharp, and it may involve writing integration tests. `v0.9.0` will be released to Nuget when there is a concensus that Metalsharp is designed correctly.
+`v0.9.0-rc.1` is on NuGet! The current goal is to test the library thoroughly in as many situations as possible to be sure of its design and usability. This will involve generating a GitHub Pages homepage for Metalsharp, and it may involve writing integration tests. `v0.9.0` will be released to Nuget when there is a concensus that Metalsharp is designed correctly.
 
 After `v0.9.0`, it's on to `v1.0.0`!
 

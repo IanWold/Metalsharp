@@ -6,8 +6,6 @@ This tutorial will walk you through (almost) all the components of Metalsharp yo
 
 The website we'll be making will have a homepage, a few text pages, and several blog posts. We'll use the [Metalsharp.FluidTemplate](https://github.com/IanWold/Metalsharp.FluidTemplate) plugin to use templates for our site. First, we'll walk through adding each of the pages and the design decisions behind doing things the way they are presented (hopefully allowing you to easier change this structure if you desire). Then, we'll write the Metalsharp code to do all the generation.
 
-> **Please Note:** Until `v0.9.0-rc1`, Metalsharp won't be able to be installed via NuGet. You'll need to build it from source yourself.
-
 ## Content
 
 * [Project Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#project-files)
@@ -132,9 +130,11 @@ This concludes all of the files for the website project. You will, in addition, 
 
 To start using Metalsharp, you'll need a new C# console application. Metalsharp is written in .NET Standard, so you can choose whether you want to create a .NET Framework or a .NET Core console application. In general, if you are running Windows and you will need to rely on the robustness and future-compatibility of .NET Framework (this would probably be in an enterprise environment), then choose .NET Framework. Otherwise, Microsoft really wants you to choose .NET Core. This tutorial will use .NET Core, though it will (probably) make no difference to you. We'll call the C# app `MyProject`.
 
-> When Metalsharp is on NuGet, you will also have the option of using a C# script with NuGet packages (via [scriptcs](http://scriptcs.net/)) to create your project. Until then, this tutorial will only cover a C# project. In addition, you will currently need to build Metalsharp from source and add an assembly reference to your built DLL. This tutorial will be updated when Metalsharp hits NuGet.
+Your project will have a `Program.cs` file with a `Main` method inside. In the main method, we will instantiate a `MetalsharpProject` object, add our files, apply several plugins to it, and built it to an output directory. Each step of the way this tutorial will explain parts of the Metalsharp API. Full generated API documentation [is available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md). This project will also, of course need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
 
-Your project will have a `Program.cs` file with a `Main` method inside. In the main method, we will instantiate a `MetalsharpProject` object, add our files, apply several plugins to it, and built it to an output directory. Each step of the way this tutorial will explain parts of the Metalsharp API. Full generated API documentation [is available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md).
+```plaintext
+PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+```
 
 ### Adding files
 
