@@ -5,6 +5,20 @@
     <RootNamespace>Metalsharp</RootNamespace>
     <LangVersion>latest</LangVersion>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <Version>0.9.0-rc1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Ian Wold</Authors>
+    <Company />
+    <Copyright>Copyright (c) 2018 Ian Wold</Copyright>
+    <PackageLicenseUrl>https://github.com/IanWold/Metalsharp/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageIconUrl>https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/IanWold/Metalsharp</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>metalsharp metalsmith static-site-generator static-site dotnet-standard</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
