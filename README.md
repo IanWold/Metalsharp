@@ -81,7 +81,7 @@ new MetalsharpProject("Site")
 
 ## Creating a Custom Plugin
 
-Creating a Metalsharp plugin is very easy. [This tutorial]() demonstrates how to develop and publish a plugin. Fundamentally, all you need to do is implement [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Interfaces/IMetalsharpPlugin.cs). Below is the code for the `Markdown` plugin:
+Creating a Metalsharp plugin is very easy. [This tutorial](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) demonstrates how to develop and publish a plugin. Fundamentally, all you need to do is implement [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/Interfaces/IMetalsharpPlugin.cs). Below is the code for the `Markdown` plugin:
 
 ```c#
 public class Markdown : IMetalsharpPlugin
@@ -100,7 +100,7 @@ public class Markdown : IMetalsharpPlugin
 
 ## Docs
 
-[Metalsharp.Documentation]() houses generated API docs and hand-written tutorials.
+[Metalsharp.Documentation](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md) houses generated API docs and hand-written tutorials.
 
 The source code is fullly documented with XML comments, and [XmlDocToMarkdown](https://github.com/ianwold/XmlDocToMarkdown) is used to generate a markdown dump of all the API documentation.
 
