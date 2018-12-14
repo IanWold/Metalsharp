@@ -1,5 +1,6 @@
 <h1><img src="Metalsharp.png" height="70"/></h1>
 
+[![](https://img.shields.io/nuget/vpre/Metalsharp.svg?logo=nuget&logoColor=white&style=flat-square)](https://www.nuget.org/packages/Metalsharp/)
 [![AppVeyor Build](https://img.shields.io/appveyor/ci/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp)
 [![AppVeyor tests](https://img.shields.io/appveyor/tests/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp/build/tests)
 [![Discord](https://img.shields.io/discord/517023630224523274.svg?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/HrxyfFP)
