@@ -86,13 +86,13 @@ Creating a Metalsharp plugin is very easy. [This tutorial](https://github.com/Ia
 ```c#
 public class Markdown : IMetalsharpPlugin
 {
-    public void Execute(MetalsharpDirectory directory)
+    public void Execute(MetalsharpDirectory project)
     {
-        foreach (var file in directory.InputFiles)
+        foreach (var file in project.InputFiles)
         {
             var name = Path.GetFileNameWithoutExtension(file.Path);
             var text = Markdig.Markdown.ToHtml(file.FileText);
-            directory.OutputFiles.Add(new OutputFile(name + ".html", text) { Metadata = file.Metadata });
+            project.OutputFiles.Add(new OutputFile(name + ".html", text) { Metadata = file.Metadata });
         }
     }
 }
