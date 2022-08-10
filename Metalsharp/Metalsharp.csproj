@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6</TargetFramework>
     <RootNamespace>Metalsharp</RootNamespace>
     <LangVersion>latest</LangVersion>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -28,9 +28,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.15.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="YamlDotNet" Version="5.2.1" />
+    <PackageReference Include="Markdig" Version="0.30.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="YamlDotNet" Version="12.0.0" />
   </ItemGroup>
 
 </Project>
