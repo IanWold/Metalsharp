@@ -22,4 +22,4 @@ jobs:
         VERSION="${VERSION//v}"
         dotnet pack -c Release -p:PackageVersion=$VERSION
     - name: Publish
-      run: dotnet nuget push **/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_KEY}} --skip-duplicate --no-symbols true
+      run: dotnet nuget push **/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_KEY}}
