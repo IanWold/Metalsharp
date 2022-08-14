@@ -217,7 +217,7 @@ public static class MetalsharpExtensions
 	///     An enumerable containing the files from the input list in the collection.
 	/// </returns>
 	public static IEnumerable<IMetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
-		project.GetInputCollection(name) is string[] files && files.Count() > 0
+		project.GetInputCollection(name) is string[] files && files.Length > 0
 			? project.InputFiles.Where(file => files.Contains(file.FilePath))
 			: Enumerable.Empty<IMetalsharpFile>();
 
@@ -275,7 +275,7 @@ public static class MetalsharpExtensions
 	///     An enumerable containing the files from the output list in the collection.
 	/// </returns>
 	public static IEnumerable<IMetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
-		project.GetOutputCollection(name) is string[] files && files.Count() > 0
+		project.GetOutputCollection(name) is string[] files && files.Length > 0
 			? project.OutputFiles.Where(file => files.Contains(file.FilePath))
 			: Enumerable.Empty<IMetalsharpFile>();
 
@@ -377,6 +377,32 @@ public static class MetalsharpExtensions
 	/// </returns>
 	public static MetalsharpProject UseFrontmatter(this MetalsharpProject project) =>
 		project.Use(new Frontmatter());
+
+	#endregion
+
+	#region Leveller Plugin
+
+	/// <summary>
+	///     Invoke the `Leveller` plugin.
+	/// </summary>
+	/// 
+	/// <example>
+	///     ```c#
+	///         new MetalsharpProject()
+	///         ... // Add files
+	///         .UseLeveller();
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="project">
+	///     The `MetalsharpProject` on which this method will be called.
+	/// </param>
+	/// 
+	/// <returns>
+	///     Combinator; returns `this` input.
+	/// </returns>
+	public static MetalsharpProject UseLeveller(this MetalsharpProject project) =>
+		project.Use(new Leveller());
 
 	#endregion
 
