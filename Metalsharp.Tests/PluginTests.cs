@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using static System.Convert;
@@ -175,11 +176,33 @@ namespace Metalsharp.Tests
             Assert.True(ToBoolean(project.InputFiles[0].Metadata["test"].ToString()));
         }
 
-        #endregion
+		#endregion
 
-        #region Markdown Plugin Tests
+		#region Leveller Tests
 
         [Fact]
+        public void LevellerAddsLevelMetadata()
+        {
+            var file = new MetalsharpFile("", "file");
+			_ = new MetalsharpProject().AddInput(file).UseLeveller();
+
+            Assert.Contains(file.Metadata, m => m.Key == "level");
+		}
+
+        [Fact]
+        public void LevellerCorrectlyLevelsFiles()
+        {
+            var project = new MetalsharpProject().AddInput("Scenario\\Directory2", "").UseLeveller();
+
+            Assert.Equal(1, project.InputFiles.Single(f => f.Name == "file10").Metadata["level"]);
+            Assert.Equal(2, project.InputFiles.Single(f => f.Name == "file11").Metadata["level"]);
+		}
+
+        #endregion
+
+		#region Markdown Plugin Tests
+
+		[Fact]
         public void MarkdownGeneratesHtmlFile()
         {
             var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();

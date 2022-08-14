@@ -18,11 +18,12 @@ namespace Metalsharp.ExamplePlugin
         /// <param name="project"></param>
         public void Execute(MetalsharpProject project)
         {
-            foreach (var file in project.OutputFiles.Where(i => i.Extension == "html"))
+            foreach (var file in project.OutputFiles.Where(i => i.Extension == ".html"))
             {
                 if (file.Metadata.TryGetValue("layout", out var _layoutFile)
                     && _layoutFile is string layoutFile
-                    && File.Exists(layoutFile))
+                    && File.Exists(layoutFile)
+                )
                 {
                     var regex = new Regex("\\{\\{(\\s)*content(\\s)*\\}\\}");
                     var res = regex.Replace(File.ReadAllText(layoutFile), file.Text);
