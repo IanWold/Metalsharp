@@ -1,4 +1,4 @@
-<h1><img src="Metalsharp.png" height="70"/></h1>
+![](https://raw.githubusercontent.com/IanWold/Metalsharp/master/Metalsharp.png)
 
 [![](https://img.shields.io/nuget/vpre/Metalsharp.svg?logo=nuget&logoColor=white&style=flat-square)](https://www.nuget.org/packages/Metalsharp/)
 [![AppVeyor Build](https://img.shields.io/appveyor/ci/ianwold/metalsharp.svg?logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/IanWold/metalsharp)
