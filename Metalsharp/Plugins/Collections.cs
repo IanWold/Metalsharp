@@ -90,11 +90,24 @@ public class Collections : IMetalsharpPlugin
 
 		foreach (var (name, predicate) in _definitions)
 		{
+			project.Log.Debug($"Calculating collection {name}:");
+
 			var inputCollection = new List<string>();
 			var outputCollection = new List<string>();
 
-			project.InputFiles.Where(i => predicate(i)).ToList().ForEach(i => inputCollection.Add(i.FilePath));
-			project.OutputFiles.Where(i => predicate(i)).ToList().ForEach(i => outputCollection.Add(i.FilePath));
+			project.Log.Debug("    Input:");
+			foreach (var file in project.InputFiles.Where(i => predicate(i)))
+			{
+				project.Log.Debug($"        {file.FilePath}");
+				inputCollection.Add(file.FilePath);
+			}
+
+			project.Log.Debug("    Output:");
+			foreach (var file in project.OutputFiles.Where(i => predicate(i)))
+			{
+				project.Log.Debug($"        {file.FilePath}");
+				outputCollection.Add(file.FilePath);
+			}
 
 			collections.Add(name, new Dictionary<string, string[]>
 			{

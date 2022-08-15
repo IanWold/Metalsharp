@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Metalsharp.Logging;
 
 namespace Metalsharp;
 
@@ -13,7 +14,7 @@ namespace Metalsharp;
 ///     The best example is always the example at the top of the [README](https://github.com/ianwold/metalsharp/):
 ///     
 ///     ```c#
-///         new MetalsharpProject("Site")
+///     new MetalsharpProject("Site")
 ///         .UseFrontmatter()
 ///         .UseDrafts()
 ///         .Use(new Markdown())
@@ -27,72 +28,84 @@ public class MetalsharpProject
 	#region Constructors
 
 	/// <summary>
-	///     Instantiatea an empty `MetalsharpProject`.
+	///		Instantiate a `MetalsharpProject` with the specified `logLevel`.
 	/// </summary>
-	public MetalsharpProject() { }
+	/// <param name="logLevel">The lowest level of log messages to log.</param>
+	public MetalsharpProject(LogLevel logLevel)
+	{
+		LogLevel = logLevel;
+		Log.Info("Initiated Metalsharp");
+	}
 
 	/// <summary>
-	///     Instantiates a `MetalsharpProject` by reading the files from an on-disk directory into the input files of the project.
+	///		Instantiate a `MetalsharpProject` with the log level derived from the build arguments.
 	/// </summary>
-	/// 
-	/// <param name="path">
-	///     The path to the on-disk directory or file to read.
-	/// </param>
-	public MetalsharpProject(string path) =>
-		AddInput(path);
+	/// <param name="args">The build arguments.</param>
+	public MetalsharpProject(string[] args)
+	{
+
+	}
 
 	/// <summary>
-	///     Instantiates a `MetalsharpProject` from an on-disk directory. The root directory of each file is rewritten so as to group the files into a different virual path.
+	///     Instantiate a an empty `MetalsharpProject` with the default log level of `Error`
 	/// </summary>
-	/// 
-	/// <example>
-	///     Supposing the following on-disk directory structure (where `Project.exe` is the executable of our Metalsharp project):
-	///     
-	///     ```plaintext
-	///         .
-	///         ├── Site
-	///         │   ├── Posts
-	///         │   │   ├── Post1.md
-	///         │   │   └── Post2.md
-	///         │   ├── Index.md
-	///         │   └── About.md
-	///         ├── Project.exe
-	///         └── README.md
-	///     ```
-	///     
-	///     And then suppose we want our virtual directory (that is, the directory as `MetalsharpProject`, and the plugins we use, understand it) to be `Content` instead of `Site`. Instantiating `MetalsharpProject` as follows will achieve that:
-	///     
-	///     ```c#
-	///         new MetalsharpProject("Site", "Content") ...
-	///     ```
-	///     
-	///     Our virutal structure (in the project's input files) will be the following:
-	///     
-	///     ```plaintext
-	///         Content
-	///         ├── Posts
-	///         │   ├── Post1.md
-	///         │   └── Post2.md
-	///         ├── Index.md
-	///         └── About.md
-	///     ```
-	///     
-	///     This is a virtual structure because files are each stored in a list and not a tree, so the true form of the list will be the following:
-	///     
-	///     - `Content\Index.md`
-	///     - `Content\About.md`
-	///     - `Content\Posts\Post1.md`
-	///     - `Content\Posts\Post2.md`
-	/// </example>
-	/// 
-	/// <param name="diskPath">
-	///     The path to the files on disk to add.
-	/// </param>
-	/// <param name="virtualPath">
-	///     The path of the virtual directory to put the input files in.
-	/// </param>
-	public MetalsharpProject(string diskPath, string virtualPath) =>
-		AddInput(diskPath, virtualPath);
+	public MetalsharpProject() : this(LogLevel.Error) { }
+
+	#endregion
+
+	#region Events
+
+	/// <summary>
+	///     Invoked before `Use()`
+	/// </summary>
+	public event EventHandler BeforeUse;
+
+	/// <summary>
+	///     Invoked after `Use()`
+	/// </summary>
+	public event EventHandler AfterUse;
+
+	/// <summary>
+	///     Invoked before `Build()`
+	/// </summary>
+	public event EventHandler BeforeBuild;
+
+	/// <summary>
+	///     Invoked after `Build()`
+	/// </summary>
+	public event EventHandler AfterBuild;
+
+	#endregion
+
+	#region Properties
+
+	/// <summary>
+	///		The minimum level to log.
+	/// </summary>
+	public LogLevel LogLevel { get; init; }
+
+	/// <summary>
+	///		The logger.
+	/// </summary>
+	[Newtonsoft.Json.JsonIgnore]
+	public Log Log =>
+		_log ??= new Log(LogLevel, this);
+	private Log _log;
+
+	/// <summary>
+	///     The directory-level metadata.
+	/// </summary>
+	public Dictionary<string, object> Metadata { get; init; } = new Dictionary<string, object>();
+
+	/// <summary>
+	///     The input files of the project.
+	/// </summary>
+	public IMetalsharpFileCollection<MetalsharpFile> InputFiles { get; init; } = new MetalsharpFileCollection<MetalsharpFile>();
+
+	/// <summary>
+	///     The files to output during building.
+	/// </summary>
+	public IMetalsharpFileCollection<MetalsharpFile> OutputFiles { get; init; } = new MetalsharpFileCollection<MetalsharpFile>();
 
 	#endregion
 
@@ -115,37 +128,59 @@ public class MetalsharpProject
 	/// <param name="add">
 	///     The function to perform on each file. The intent is that this function will add the file to `InputFiles` or `OutputFiles`.
 	/// </param>
+	/// <param name="list">
+	///		The list to which the files are being added - "Input" or "Output"
+	/// </param>
+	/// <param name="recurse">
+	///     The level of recursion; used by the logger.
+	/// </param>
 	/// 
 	/// <returns>
 	///     Returns `this` - the current `MetalsharpProject`. This value is passed through `AddInput` and `AddOutput` and allows them to be fluent.
 	/// </returns>
-	MetalsharpProject AddExisting(string diskPath, string virtualPath, Action<MetalsharpFile> add)
+	MetalsharpProject AddFromFileSystem(string diskPath, string virtualPath, Action<MetalsharpFile> add, string list, int recurse = 0)
 	{
 		static MetalsharpFile GetFileWithNormalizedDirectory(string dPath, string vPath) =>
 			new(File.ReadAllText(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
 
 		if (Directory.Exists(diskPath))
 		{
+			Action<string> log =
+				recurse > 0
+				? Log.Debug
+				: Log.Info;
+
+			log($"Adding all files from file system at {diskPath} to {list}");
+
 			foreach (var file in Directory.GetFiles(diskPath))
 			{
+				Log.Debug($"Adding file from file system: {Path.GetFileName(file)} to {list}");
 				add(GetFileWithNormalizedDirectory(file, virtualPath));
+				Log.Debug($"    Added to virtual directory {virtualPath}");
 			}
 
-			foreach (var dir in Directory.GetDirectories(diskPath))
+			foreach (var directory in Directory.GetDirectories(diskPath))
 			{
-				AddExisting(dir, dir.Replace(diskPath, virtualPath), add);
+				AddFromFileSystem(directory, directory.Replace(diskPath, virtualPath), add, list, recurse + 1);
 			}
 
+			log($"Finished adding files from file system at {diskPath}");
 			return this;
 		}
 		else if (File.Exists(diskPath))
 		{
+			Log.Info($"Adding file from file system to {list}: {diskPath}");
 			add(GetFileWithNormalizedDirectory(diskPath, virtualPath));
+			Log.Debug($"    Added to virtual directory {virtualPath}");
+
 			return this;
 		}
 		else
 		{
-			throw new ArgumentException("File " + diskPath + " does not exist.");
+			var message = $"Directory or file {diskPath} does not exist in file system.";
+
+			Log.Fatal(message);
+			throw new ArgumentException(message, nameof(diskPath));
 		}
 	}
 
@@ -194,7 +229,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddInput(string diskPath, string virtualPath) =>
-		AddExisting(diskPath, virtualPath, InputFiles.Add);
+		AddFromFileSystem(diskPath, virtualPath, InputFiles.Add, "Input");
 
 	/// <summary>
 	///     Add a MetalsharpFile to the input files
@@ -216,7 +251,10 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject AddInput(MetalsharpFile file)
 	{
+		Log.Info($"Adding new virtual file {file.Name} to Input");
 		InputFiles.Add(file);
+		Log.Debug($"    Added to virtual directory {file.FilePath}");
+
 		return this;
 	}
 
@@ -265,7 +303,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddOutput(string diskPath, string virtualPath) =>
-		AddExisting(diskPath, virtualPath, OutputFiles.Add);
+		AddFromFileSystem(diskPath, virtualPath, OutputFiles.Add, "Output");
 
 	/// <summary>
 	///     Add a MetalsharpFile to the input files
@@ -287,7 +325,10 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject AddOutput(MetalsharpFile file)
 	{
+		Log.Info($"Adding new virtual file {file.Name} to Output");
 		OutputFiles.Add(file);
+		Log.Debug($"    Added to virtual directory {file.FilePath}");
+
 		return this;
 	}
 
@@ -309,7 +350,27 @@ public class MetalsharpProject
 	///     ```
 	/// </example>
 	public void Build() =>
-		Build(new BuildOptions());
+		Build(null, new BuildOptions());
+
+	/// <summary>
+	///     Write all the output files to the default output directory with default build options after performing a function.
+	/// </summary>
+	/// 
+	/// <example>
+	///     The following will output a single file (`NewName.md`) to the current directory:
+	///     
+	///     ```c#
+	///         new MetalsharpProject()
+	///         .AddOutput("text", "File.md")
+	///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName");
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="prebuild">
+	///     The function to perform before the files are output.
+	/// </param>
+	public void Build(Action<MetalsharpProject> prebuild) =>
+		Build(prebuild, new BuildOptions());
 
 	/// <summary>
 	///     Writes all the output files to the output directory defined in the options.
@@ -336,56 +397,8 @@ public class MetalsharpProject
 	/// <param name="options">
 	///     The options to configure the building behavior.
 	/// </param>
-	public void Build(BuildOptions options)
-	{
-		var buildOptions = options ?? new BuildOptions();
-
-		if (!Directory.Exists(buildOptions.OutputDirectory))
-		{
-			Directory.CreateDirectory(buildOptions.OutputDirectory);
-		}
-
-		if (buildOptions.ClearOutputDirectory)
-		{
-			foreach (var file in Directory.GetFiles(buildOptions.OutputDirectory))
-			{
-				File.Delete(file);
-			}
-		}
-
-		foreach (var file in OutputFiles)
-		{
-			var path = Path.Combine(buildOptions.OutputDirectory, file.FilePath);
-			var directoryPath = Path.GetDirectoryName(path);
-
-			if (!Directory.Exists(directoryPath))
-			{
-				Directory.CreateDirectory(directoryPath);
-			}
-
-			File.WriteAllText(path, file.Text);
-		}
-	}
-
-	/// <summary>
-	///     Write all the output files to the default output directory with default build options after performing a function.
-	/// </summary>
-	/// 
-	/// <example>
-	///     The following will output a single file (`NewName.md`) to the current directory:
-	///     
-	///     ```c#
-	///         new MetalsharpProject()
-	///         .AddOutput("text", "File.md")
-	///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName");
-	///     ```
-	/// </example>
-	/// 
-	/// <param name="func">
-	///     The function to perform before the files are output.
-	/// </param>
-	public void Build(Action<MetalsharpProject> func) =>
-		Build(func, new BuildOptions());
+	public void Build(BuildOptions options) =>
+		Build(null, options);
 
 	/// <summary>
 	///     Write all the output files to the output directory defined in the options after performing a function.
@@ -401,18 +414,68 @@ public class MetalsharpProject
 	///     ```
 	/// </example>
 	/// 
-	/// <param name="func">
+	/// <param name="prebuild">
 	///     The function to perform before the files are output.
 	/// </param>
 	/// <param name="options">
 	///     The options to configure the building behavior.
 	/// </param>
-	public void Build(Action<MetalsharpProject> func, BuildOptions options)
+	public void Build(Action<MetalsharpProject> prebuild, BuildOptions options)
 	{
+		Log.Debug("Invoking BeforeBuild");
 		BeforeBuild?.Invoke(this, new EventArgs());
-		func(this);
+
+		if (prebuild is not null)
+		{
+			Log.Debug("Invoking PreBuild");
+			prebuild(this);
+		}
+		else
+		{
+			Log.Debug("Skipped PreBuild");
+		}
+
+		Log.Info("\nBeginning Build");
+
+		var buildOptions = options ?? new BuildOptions();
+
+		if (!Directory.Exists(buildOptions.OutputDirectory))
+		{
+			Log.Debug($"Creating output directory {buildOptions.OutputDirectory}");
+			Directory.CreateDirectory(buildOptions.OutputDirectory);
+		}
+
+		if (buildOptions.ClearOutputDirectory)
+		{
+			Log.Debug("Cleaning output directory");
+			foreach (var file in Directory.GetFiles(buildOptions.OutputDirectory))
+			{
+				File.Delete(file);
+			}
+		}
+
+		Log.Info($"\nWriting files to {buildOptions.OutputDirectory}");
+
+		foreach (var file in OutputFiles)
+		{
+			var path = Path.Combine(buildOptions.OutputDirectory, file.FilePath);
+			var directoryPath = Path.GetDirectoryName(path);
+
+			if (!Directory.Exists(directoryPath))
+			{
+				Log.Debug($"Creating directory {directoryPath}");
+				Directory.CreateDirectory(directoryPath);
+			}
+
+			Log.Debug($"Wrting file {path}");
+			File.WriteAllText(path, file.Text);
+		}
+
+		Log.Info("\nFinalizing Build");
+		Log.Debug("Invoking AfterBuild");
 		AfterBuild?.Invoke(this, new EventArgs());
-		Build(options);
+
+		Log.Info("Finished Build");
 	}
 
 	#endregion
@@ -472,10 +535,12 @@ public class MetalsharpProject
 		{
 			if (Metadata.ContainsKey(key))
 			{
+				Log.Debug($"Updating metadata [{key}] = {value}");
 				Metadata[key] = value;
 			}
 			else
 			{
+				Log.Debug($"Adding metadata [{key}] = {value}");
 				Metadata.Add(key, value);
 			}
 		}
@@ -527,20 +592,20 @@ public class MetalsharpProject
 	///     ```
 	/// </example>
 	/// 
-	/// <param name="oldDirectory">
+	/// <param name="fromDirectory">
 	///     The directory to move the files from.
 	/// </param>
-	/// <param name="newDirectory">
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveFiles(string oldDirectory, string newDirectory)
+	public MetalsharpProject MoveFiles(string fromDirectory, string toDirectory)
 	{
-		MoveInput(oldDirectory, newDirectory);
-		MoveOutput(oldDirectory, newDirectory);
+		MoveInput(fromDirectory, toDirectory);
+		MoveOutput(fromDirectory, toDirectory);
 		return this;
 	}
 
@@ -588,17 +653,17 @@ public class MetalsharpProject
 	/// <param name="predicate">
 	///     The predicate to match the files to move.
 	/// </param>
-	/// <param name="newDirectory">
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveFiles(Predicate<IMetalsharpFile> predicate, string newDirectory)
+	public MetalsharpProject MoveFiles(Predicate<IMetalsharpFile> predicate, string toDirectory)
 	{
-		MoveInput(predicate, newDirectory);
-		MoveOutput(predicate, newDirectory);
+		MoveInput(predicate, toDirectory);
+		MoveOutput(predicate, toDirectory);
 		return this;
 	}
 
@@ -641,18 +706,18 @@ public class MetalsharpProject
 	///     ```
 	/// </example>
 	/// 
-	/// <param name="oldDirectory">
+	/// <param name="fromDirectory">
 	///     The directory to move the files from.
 	/// </param>
-	/// <param name="newDirectory">
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveInput(string oldDirectory, string newDirectory) =>
-		MoveInput(file => file.Directory == oldDirectory, newDirectory);
+	public MetalsharpProject MoveInput(string fromDirectory, string toDirectory) =>
+		MoveInput(file => file.Directory == fromDirectory, toDirectory, $"Matching path {fromDirectory}");
 
 	/// <summary>
 	///     Moves files in the input matching a predicate from one directory to another.
@@ -697,16 +762,28 @@ public class MetalsharpProject
 	/// <param name="predicate">
 	///     The predicate to match the files to move.
 	/// </param>
-	/// <param name="newDirectory">
+	/// 
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
+	/// </param>
+	/// 
+	/// <param name="logMessage">
+	///		The message to log indicating which files are being moved.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveInput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+	public MetalsharpProject MoveInput(Predicate<IMetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
-		InputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
+		Log.Info($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+
+		foreach (var file in InputFiles.Where(i => predicate(i)))
+		{
+			Log.Debug($"    Moving file: {file.FilePath}");
+			file.Directory = toDirectory;
+		}
+
 		return this;
 	}
 
@@ -749,18 +826,18 @@ public class MetalsharpProject
 	///     ```
 	/// </example>
 	/// 
-	/// <param name="oldDirectory">
+	/// <param name="fromDirectory">
 	///     The directory to move the files from.
 	/// </param>
-	/// <param name="newDirectory">
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveOutput(string oldDirectory, string newDirectory) =>
-		MoveOutput(file => file.Directory == oldDirectory, newDirectory);
+	public MetalsharpProject MoveOutput(string fromDirectory, string toDirectory) =>
+		MoveOutput(file => file.Directory == fromDirectory, toDirectory, $"Matching path {fromDirectory}");
 
 	/// <summary>
 	///     Moves files in the output matching a predicate from one directory to another.
@@ -805,16 +882,28 @@ public class MetalsharpProject
 	/// <param name="predicate">
 	///     The predicate to match the files to move.
 	/// </param>
-	/// <param name="newDirectory">
+	/// 
+	/// <param name="toDirectory">
 	///     The directory to move the files to.
+	/// </param>
+	/// 
+	/// <param name="logMessage">
+	///		The message to log indicating which files are being moved.
 	/// </param>
 	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveOutput(Predicate<IMetalsharpFile> predicate, string newDirectory)
+	public MetalsharpProject MoveOutput(Predicate<IMetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
-		OutputFiles.Where(i => predicate(i)).ToList().ForEach(i => i.Directory = newDirectory);
+		Log.Info($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+
+		foreach (var file in OutputFiles.Where(i => predicate(i)))
+		{
+			Log.Debug($"    Moving file: {file.FilePath}");
+			file.Directory = toDirectory;
+		}
+
 		return this;
 	}
 
@@ -926,7 +1015,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveInput(string path) =>
-		RemoveInput(file => file.FilePath == path);
+		RemoveInput(file => file.FilePath.StartsWith(path), $"Matching path {path}");
 
 	/// <summary>
 	///     Remove all the files matching a predicate from the input.
@@ -970,12 +1059,30 @@ public class MetalsharpProject
 	///     The predicate function to identify files to delete.
 	/// </param>
 	/// 
+	/// <param name="logMessage">
+	///		The message to log indicating which files are being removed.
+	/// </param>
+	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveInput(Predicate<IMetalsharpFile> predicate)
+	public MetalsharpProject RemoveInput(Predicate<IMetalsharpFile> predicate, string logMessage = null)
 	{
-		InputFiles.RemoveAll(predicate);
+		Log.Info($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
+
+		if (LogLevel > LogLevel.Debug)
+		{
+			InputFiles.RemoveAll(predicate);
+		}
+		else
+		{
+			foreach (var file in InputFiles.Where(f => predicate(f as IMetalsharpFile)))
+			{
+				Log.Debug($"    Removing file: {file.FilePath}");
+				InputFiles.Remove(file);
+			}
+		}
+
 		return this;
 	}
 
@@ -1001,7 +1108,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveOutput(string path) =>
-		RemoveOutput(file => file.FilePath == path);
+		RemoveOutput(file => file.FilePath.StartsWith(path), $"Matching path {path}");
 
 	/// <summary>
 	///     Remove all the files matching a predicate from the output.
@@ -1045,18 +1152,52 @@ public class MetalsharpProject
 	///     The predicate function to identify files to delete.
 	/// </param>
 	/// 
+	/// <param name="logMessage">
+	///		The message to log indicating which files are being removed.
+	/// </param>
+	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveOutput(Predicate<IMetalsharpFile> predicate)
+	public MetalsharpProject RemoveOutput(Predicate<IMetalsharpFile> predicate, string logMessage = null)
 	{
-		OutputFiles.RemoveAll(predicate);
+		Log.Info($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
+
+		if (LogLevel > LogLevel.Debug)
+		{
+			OutputFiles.RemoveAll(predicate);
+		}
+		else
+		{
+			foreach (var file in InputFiles.Where(f => predicate(f as IMetalsharpFile)))
+			{
+				Log.Debug($"    Removing file: {file.FilePath}");
+				OutputFiles.Remove(file);
+			}
+		}
+
 		return this;
 	}
 
 	#endregion
 
 	#region Use
+
+	private MetalsharpProject Use(Action<MetalsharpProject> func, string transformKind, string transformName)
+	{
+
+		Log.Info($"\nAbout to use {transformKind} {transformName}\n");
+		BeforeUse?.Invoke(this, new EventArgs());
+
+		Log.Info($"\nUsing {transformKind} {transformName}\n");
+		func(this);
+
+		Log.Info($"\nFinishing using {transformKind} {transformName}\n");
+		AfterUse?.Invoke(this, new EventArgs());
+
+		Log.Info($"\nFinished using {transformKind} {transformName}\n");
+		return this;
+	}
 
 	/// <summary>
 	///     Invokes a function as a plugin.
@@ -1073,16 +1214,15 @@ public class MetalsharpProject
 	///     The function to invoke.
 	/// </param>
 	/// 
+	/// <param name="functionName">
+	///     Optionally, the name of the function to log.
+	/// </param>
+	/// 
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject Use(Action<MetalsharpProject> func)
-	{
-		BeforeUse?.Invoke(this, new EventArgs());
-		func(this);
-		AfterUse?.Invoke(this, new EventArgs());
-		return this;
-	}
+	public MetalsharpProject Use(Action<MetalsharpProject> func, string functionName = null) =>
+		Use(func, "function", functionName ?? "<anonymous>");
 
 	/// <summary>
 	///     Invoke a plugin.
@@ -1103,7 +1243,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Use(IMetalsharpPlugin plugin) =>
-		Use(i => plugin.Execute(i));
+		Use(i => plugin.Execute(i), "plugin", plugin.GetType().Name);
 
 	/// <summary>
 	///     Invoke a plugin by type. The plugin must have a default (no arguments) constructor.
@@ -1127,49 +1267,6 @@ public class MetalsharpProject
 		Use(new T());
 
 	#endregion
-
-	#endregion
-
-	#region Events
-
-	/// <summary>
-	///     Invoked before `Use()`
-	/// </summary>
-	public event EventHandler BeforeUse;
-
-	/// <summary>
-	///     Invoked after `Use()`
-	/// </summary>
-	public event EventHandler AfterUse;
-
-	/// <summary>
-	///     Invoked before `Build()`
-	/// </summary>
-	public event EventHandler BeforeBuild;
-
-	/// <summary>
-	///     Invoked after `Build()`
-	/// </summary>
-	public event EventHandler AfterBuild;
-
-	#endregion
-
-	#region Properties
-
-	/// <summary>
-	///     The directory-level metadata.
-	/// </summary>
-	public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
-
-	/// <summary>
-	///     The input files of the project.
-	/// </summary>
-	public IMetalsharpFileCollection<MetalsharpFile> InputFiles { get; set; } = new MetalsharpFileCollection<MetalsharpFile>();
-
-	/// <summary>
-	///     The files to output during building.
-	/// </summary>
-	public IMetalsharpFileCollection<MetalsharpFile> OutputFiles { get; set; } = new MetalsharpFileCollection<MetalsharpFile>();
 
 	#endregion
 }

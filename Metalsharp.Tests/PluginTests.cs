@@ -16,7 +16,8 @@ namespace Metalsharp.Tests
             var firstBranchExecuted = false;
             var secondBranchExecuted = false;
 
-            new MetalsharpProject("Scenario\\Plugins")
+            new MetalsharpProject(Logging.LogLevel.None)
+                .AddInput("Scenario\\Plugins")
                 .Branch(
                     proj =>
                     {
@@ -124,38 +125,12 @@ namespace Metalsharp.Tests
 
         #endregion
 
-        #region Debug Plugin
-
-        [Fact]
-        public void DebugLogsAftereUse()
-        {
-            var project = new MetalsharpProject();
-            var uses = 0;
-
-            project.UseDebug(i =>
-            {
-                // onLog will be called after UseDebug is called,
-                // Need to prevent the assertion before the use of TestPlugin
-                if (uses == 1)
-                {
-                    Assert.True((bool)project.Metadata["test"]);
-                }
-                else
-                {
-                    uses++;
-                }
-            });
-            project.Use<TestPlugin>();
-        }
-
-        #endregion
-
         #region Frontmatter Plugin
 
         [Fact]
         public void FrontmatterSucceedsWithoutFrontmatter()
         {
-            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md").UseFrontmatter();
+            var project = new MetalsharpProject(Logging.LogLevel.None).AddInput("Scenario\\Plugins\\FileMarkdown.md").UseFrontmatter();
 
             Assert.True(project.InputFiles[0].Metadata.Count == 0);
         }
@@ -163,7 +138,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void FrontmatterParsesJsonFrontmatter()
         {
-            var project = new MetalsharpProject("Scenario\\Plugins\\FileJsonFrontmatter.md").UseFrontmatter();
+            var project = new MetalsharpProject(Logging.LogLevel.None).AddInput("Scenario\\Plugins\\FileJsonFrontmatter.md").UseFrontmatter();
 
             Assert.True((bool)project.InputFiles[0].Metadata["test"]);
         }
@@ -171,7 +146,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void FrontmatterParsesYamlFrontmatter()
         {
-            var project = new MetalsharpProject("Scenario\\Plugins\\FileYamlFrontmatter.md").UseFrontmatter();
+            var project = new MetalsharpProject(Logging.LogLevel.None).AddInput("Scenario\\Plugins\\FileYamlFrontmatter.md").UseFrontmatter();
 
             Assert.True(ToBoolean(project.InputFiles[0].Metadata["test"].ToString()));
         }
@@ -205,7 +180,7 @@ namespace Metalsharp.Tests
 		[Fact]
         public void MarkdownGeneratesHtmlFile()
         {
-            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
+            var project = new MetalsharpProject(Logging.LogLevel.None).AddInput("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
             
             Assert.Contains(project.OutputFiles, i => i.Extension == ".html");
         }
@@ -213,7 +188,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void MarkdownCopiesMetadata()
         {
-            var project = new MetalsharpProject("Scenario\\Plugins\\FileMarkdown.md")
+            var project = new MetalsharpProject(Logging.LogLevel.None).AddInput("Scenario\\Plugins\\FileMarkdown.md")
                 .Use(proj => proj.InputFiles.ToList().ForEach(i => i.Metadata.Add("test", true)))
                 .Use<Markdown>();
 
