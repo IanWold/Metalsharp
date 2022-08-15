@@ -37,7 +37,13 @@ public class MetalsharpProject
 	public MetalsharpProject(MetalsharpConfiguration configuration = null)
 	{
 		Configuration = configuration ?? new();
-		Log.Info("Initiated Metalsharp");
+
+		Log.InfoDirect(@"  __  __   __  __         _            _        _                        ");
+		Log.InfoDirect(@" |  \/  | |  \/  |  ___  | |_   __ _  | |  ___ | |_    __ _   _ _   _ __ ");
+		Log.InfoDirect(@"  >-  -<  | |\/| | / -_) |  _| / _` | | | (_-< | ' \  / _` | | '_| | '_ \");
+		Log.InfoDirect(@" |__/\__| |_|  |_| \___|  \__| \__,_| |_| /__/ |_||_| \__,_| |_|   | .__/");
+		Log.InfoDirect(@"                                                                   |_|   ");
+		Log.InfoDirect("\n");
 	}
 
 	#endregion
@@ -78,7 +84,7 @@ public class MetalsharpProject
 	/// </summary>
 	[Newtonsoft.Json.JsonIgnore]
 	public Log Log =>
-		_log ??= new Log(Configuration.Verbosity, this);
+		_log ??= new Log(Configuration.Verbosity);
 	private Log _log;
 
 	/// <summary>
@@ -1174,17 +1180,16 @@ public class MetalsharpProject
 
 	private MetalsharpProject Use(Action<MetalsharpProject> func, string transformKind, string transformName)
 	{
-
-		Log.Info($"\nAbout to use {transformKind} {transformName}\n");
+		Log.Debug($"\nAbout to use {transformKind} {transformName}\n");
 		BeforeUse?.Invoke(this, new EventArgs());
 
-		Log.Info($"\nUsing {transformKind} {transformName}\n");
+		Log.InfoSection($"\nUsing {transformKind} {transformName}\n");
 		func(this);
 
-		Log.Info($"\nFinishing using {transformKind} {transformName}\n");
+		Log.Debug($"\nFinishing using {transformKind} {transformName}\n");
 		AfterUse?.Invoke(this, new EventArgs());
 
-		Log.Info($"\nFinished using {transformKind} {transformName}\n");
+		Log.Debug($"\nFinished using {transformKind} {transformName}\n");
 		return this;
 	}
 
