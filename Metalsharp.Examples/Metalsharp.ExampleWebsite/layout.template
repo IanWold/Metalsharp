@@ -1,8 +1,0 @@
-﻿<html>
-<head>
-<title>{{title}}</title>
-</head>
-<body style="background-color: red;">
-{{content}}
-</body>
-</html>
