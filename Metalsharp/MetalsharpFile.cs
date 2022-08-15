@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Metalsharp;
@@ -48,7 +47,6 @@ public class MetalsharpFile
 	/// <param name="metadata">
 	///     The metadata of the file, stored as a string, object dictionary.
 	/// </param>
-	[JsonConstructor]
 	public MetalsharpFile(string text, string filePath, Dictionary<string, object> metadata)
 	{
 		Text = text;

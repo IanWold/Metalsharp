@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Newtonsoft.Json.JsonConvert;
+using Utf8Json;
 
 namespace Metalsharp;
 
@@ -53,7 +52,7 @@ public class Branch : IMetalsharpPlugin
 	/// </param>
 	public void Execute(MetalsharpProject project) => _branches.ForEach(b =>
 	{
-		var projectClone = DeserializeObject<MetalsharpProject>(SerializeObject(project));
+		var projectClone = JsonSerializer.Deserialize<MetalsharpProject>(JsonSerializer.Serialize(project));
 
 		projectClone.Log.Debug("Executing new branch");
 		b(projectClone);
