@@ -20,7 +20,10 @@ public class MetalsharpConfiguration
 	/// <summary>
 	///		Instantiate configuration from command line arguments.
 	/// </summary>
-	/// <param name="args">The command line arguments</param>
+	/// 
+	/// <param name="args">
+	///		The command line arguments
+	/// </param>
 	public static MetalsharpConfiguration FromArgs(string[] args)
 	{
 		MetalsharpConfiguration configuration = null;
