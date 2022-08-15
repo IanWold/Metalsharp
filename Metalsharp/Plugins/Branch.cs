@@ -50,6 +50,11 @@ public class Branch : IMetalsharpPlugin
 	/// <param name="project">
 	///     The `MetalsharpProject` to branch.
 	/// </param>
-	public void Execute(MetalsharpProject project) =>
-		_branches.ForEach(b => b(DeserializeObject<MetalsharpProject>(SerializeObject(project))));
+	public void Execute(MetalsharpProject project) => _branches.ForEach(b =>
+	{
+		var projectClone = DeserializeObject<MetalsharpProject>(SerializeObject(project));
+
+		projectClone.Log.Debug("Executing new branch");
+		b(projectClone);
+	});
 }

@@ -43,11 +43,17 @@ public class Frontmatter : IMetalsharpPlugin
 	{
 		foreach (var file in project.InputFiles)
 		{
+			project.Log.Debug($"Looking for frontmatter in {file.FilePath}");
 			if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
 			{
+				project.Log.Debug($"    Found frontmatter:");
+
 				file.Text = text;
+
 				foreach (var pair in metadata)
 				{
+					project.Log.Debug($"    [{pair.Key}] = {pair.Value}");
+
 					if (file.Metadata.ContainsKey(pair.Key))
 					{
 						file.Metadata[pair.Key] = pair.Value;
@@ -78,7 +84,7 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	static bool TryGetFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
 	{
 		if (document.StartsWith("---") && TryGetYamlFrontmatter(document, out Dictionary<string, object> yamlFrontmatter, out string yamlRemainder))
 		{
@@ -117,7 +123,7 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
 	{
 		var split = document.Split(new[] { "---" }, StringSplitOptions.None);
 
@@ -164,7 +170,7 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
 	{
 		var split = document.Split(new[] { ";;;" }, StringSplitOptions.None);
 

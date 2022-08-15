@@ -10,7 +10,11 @@ public class BranchTests
 		var firstBranchExecuted = false;
 		var secondBranchExecuted = false;
 
-		new MetalsharpProject("Scenario\\Plugins")
+		new MetalsharpProject(new MetalsharpConfiguration()
+		{
+			LogLevel = Logging.LogLevel.None
+		})
+			.AddInput("Scenario\\Plugins")
 			.Branch(
 				proj =>
 				{

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace Metalsharp;
 
@@ -33,18 +34,17 @@ public class Markdown : IMetalsharpPlugin
 	/// </param>
 	public void Execute(MetalsharpProject project)
 	{
-		foreach (var file in project.InputFiles)
+		foreach (var file in project.InputFiles.Where(f => f.Extension == ".md" || f.Extension == ".markdown"))
 		{
-			if (file.Extension == ".md" || file.Extension == ".markdown")
-			{
-				var fileText = Markdig.Markdown.ToHtml(file.Text);
-				var filePath = Path.Combine(file.Directory, file.Name + ".html");
+			var fileText = Markdig.Markdown.ToHtml(file.Text);
+			var filePath = Path.Combine(file.Directory, file.Name + ".html");
 
-				project.OutputFiles.Add(new MetalsharpFile(fileText, filePath)
-				{
-					Metadata = file.Metadata
-				});
-			}
+			project.Log.Debug($"Converting Input file {file.FilePath} to Output file {filePath}");
+
+			project.OutputFiles.Add(new MetalsharpFile(fileText, filePath)
+			{
+				Metadata = file.Metadata
+			});
 		}
 	}
 }

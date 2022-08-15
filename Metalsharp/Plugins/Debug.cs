@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Metalsharp.Logging;
 
 namespace Metalsharp;
 
@@ -24,7 +25,7 @@ public class Debug : IMetalsharpPlugin
 	/// <summary>
 	///     The action to execute when writing a log.
 	/// </summary>
-	private Action<string> _onLog;
+	private readonly Action<string> _onLog;
 
 	/// <summary>
 	///     A count of the number of calls to .Use() against the directory.
@@ -90,9 +91,11 @@ public class Debug : IMetalsharpPlugin
 	/// <param name="project">
 	///     The `MetalsharpProject` to output debug logs for.
 	/// </param>
-	public void Execute(MetalsharpProject project) =>
+	public void Execute(MetalsharpProject project)
+	{
 		project.AfterUse += (sender, e) =>
-			_onLog("Step " + ++_useCount + "." +
+			_onLog(
+				"Step " + ++_useCount + "." +
 				"\r\n" +
 				"Input files:" +
 				"\r\n\r\n" +
@@ -105,6 +108,18 @@ public class Debug : IMetalsharpPlugin
 				"---" +
 				"\r\n\r\n"
 			);
+
+		project.Log.OnAnyLog += (sender, e) =>
+			_onLog(
+				e.Level switch {
+					LogLevel.Debug => "[DEBUG] ",
+					LogLevel.Info => "[INFO] ",
+					LogLevel.Error => "[ERROR] ",
+					_ => "[FATAL] "
+				}
+				+ e.Message
+			);
+	}
 
 	/// <summary>
 	///     Prettify the contents of a collection of files.

@@ -1,7 +1,8 @@
 ﻿using Metalsharp;
 using Metalsharp.ExamplePlugin;
 
-new MetalsharpProject("Site")
+new MetalsharpProject()
+    .AddInput("Site")
     .Use<Frontmatter>()
     .UseDrafts()
     .Use<Markdown>()
