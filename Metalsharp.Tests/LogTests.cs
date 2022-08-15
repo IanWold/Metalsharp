@@ -19,7 +19,7 @@ public class LogTests
 		var wasOnLogInvoked = false;
 		var project = new MetalsharpProject(new MetalsharpConfiguration()
 		{
-			LogLevel = projectLevel
+			Verbosity = projectLevel
 		});
 
 		project.Log.OnLog += (_, _) => wasOnLogInvoked = true;
@@ -34,7 +34,7 @@ public class LogTests
 		var wasOnAnyLogInvoked = false;
 		var project = new MetalsharpProject(new MetalsharpConfiguration()
 		{
-			LogLevel = projectLevel
+			Verbosity = projectLevel
 		});
 
 		project.Log.OnAnyLog += (_, _) => wasOnAnyLogInvoked = true;

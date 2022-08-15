@@ -21,7 +21,7 @@ namespace Metalsharp;
 ///         new MetalsharpFile("# File Header!", "Directory\\File.md", new Dictionary&lt;string, object&gt; { ["draft"] = true });
 ///     ```
 /// </example>
-public class MetalsharpFile : IMetalsharpFile
+public class MetalsharpFile
 {
 	/// <summary>
 	///     Instantiates a new MetalsharpFile with no metadata.

@@ -12,12 +12,12 @@ namespace Metalsharp;
 /// <typeparam name="T">
 ///     The type of the files. These must be of type `IMetalsharpFile`.
 /// </typeparam>
-public class MetalsharpFileCollection<T> : IMetalsharpFileCollection<T> where T : IMetalsharpFile
+public class MetalsharpFileCollection : IList<MetalsharpFile>
 {
 	/// <summary>
 	///     The Metalsharp files in the collection.
 	/// </summary>
-	readonly List<T> _items = new List<T>();
+	readonly List<MetalsharpFile> _items = new();
 
 	/// <summary>
 	///     Instantiate an empty collection.
@@ -31,7 +31,7 @@ public class MetalsharpFileCollection<T> : IMetalsharpFileCollection<T> where T 
 	/// <param name="files">
 	///     The list of files to add to the collection.
 	/// </param>
-	public MetalsharpFileCollection(IEnumerable<T> files) =>
+	public MetalsharpFileCollection(IEnumerable<MetalsharpFile> files) =>
 		_items = files.ToList();
 
 	/// <summary>
@@ -45,8 +45,8 @@ public class MetalsharpFileCollection<T> : IMetalsharpFileCollection<T> where T 
 	/// <returns>
 	///     All of the files which descend from the given directory.
 	/// </returns>
-	public IMetalsharpFileCollection<T> DescendantsOf(string directory) =>
-		_items.Where(i => i.IsDescendantOf(directory)).ToMetalsharpFileCollection();
+	public MetalsharpFileCollection DescendantsOf(string directory) =>
+		Items.Where(i => i.IsDescendantOf(directory)).ToMetalsharpFileCollection();
 
 	/// <summary>
 	///     Gets the files in the collection which are children to the given virtual directory.
@@ -59,59 +59,61 @@ public class MetalsharpFileCollection<T> : IMetalsharpFileCollection<T> where T 
 	/// <returns>
 	///     All of the files which are children of the given directory.
 	/// </returns>
-	public IMetalsharpFileCollection<T> ChildrenOf(string directory) =>
-		_items.Where(i => i.IsChildOf(directory)).ToMetalsharpFileCollection();
+	public MetalsharpFileCollection ChildrenOf(string directory) =>
+		Items.Where(i => i.IsChildOf(directory)).ToMetalsharpFileCollection();
 
 	#region Interface Implementation
 #pragma warning disable CS1591 // No XML comments on members
 
 	public bool ContainsDirectory(string directory) =>
-		_items.Exists(i => i.IsDescendantOf(directory));
+		Items.Exists(i => i.IsDescendantOf(directory));
 
-	public T this[int index]
+	public MetalsharpFile this[int index]
 	{
-		get => _items[index];
-		set => _items[index] = value;
+		get => Items[index];
+		set => Items[index] = value;
 	}
 
 	public int Count =>
-		_items.Count();
+		Items.Count();
 
 	public bool IsReadOnly =>
 		false;
 
-	public void Add(T item) =>
-		_items.Add(item);
+	public List<MetalsharpFile> Items => _items;
+
+	public void Add(MetalsharpFile item) =>
+		Items.Add(item);
 
 	public void Clear() =>
-		_items.Clear();
+		Items.Clear();
 
-	public bool Contains(T item) =>
-		_items.Contains(item);
+	public bool Contains(MetalsharpFile item) =>
+		Items.Contains(item);
 
-	public void CopyTo(T[] array, int arrayIndex) =>
-		_items.CopyTo(array, arrayIndex);
+	public void CopyTo(MetalsharpFile[] array, int arrayIndex) =>
+		Items.CopyTo(array, arrayIndex);
 
-	public IEnumerator<T> GetEnumerator() =>
-		_items.GetEnumerator();
+	public IEnumerator<MetalsharpFile> GetEnumerator() =>
+		Items.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
 
-	public int IndexOf(T item) =>
-		_items.IndexOf(item);
+	public int IndexOf(MetalsharpFile item) =>
+		Items.IndexOf(item);
 
-	public void Insert(int index, T item) =>
-		_items.Insert(index, item);
+	public void Insert(int index, MetalsharpFile item) =>
+		Items.Insert(index, item);
 
-	public bool Remove(T item) =>
-		_items.Remove(item);
+	public bool Remove(MetalsharpFile item) =>
+		Items.Remove(item);
 
 	public void RemoveAt(int index) =>
-		_items.RemoveAt(index);
+		Items.RemoveAt(index);
 
-	public int RemoveAll(Predicate<T> match) =>
-		_items.RemoveAll(match);
+	public int RemoveAll(Predicate<MetalsharpFile> match) =>
+		Items.RemoveAll(match);
 
 #pragma warning restore CS1591
 	#endregion
@@ -136,6 +138,6 @@ public static class IEnumerableExtensions
 	/// <returns>
 	///     An `IMetalsharpFileCollection` containing the files in the given list.
 	/// </returns>
-	public static IMetalsharpFileCollection<T> ToMetalsharpFileCollection<T>(this IEnumerable<T> list) where T : IMetalsharpFile =>
-		new MetalsharpFileCollection<T>(list);
+	public static MetalsharpFileCollection ToMetalsharpFileCollection(this IEnumerable<MetalsharpFile> list) =>
+		new(list);
 }

@@ -8,7 +8,7 @@ public class MarkdownTests
 	[Fact]
 	public void MarkdownGeneratesHtmlFile()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddInput("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddInput("Scenario\\Plugins\\FileMarkdown.md").UseMarkdown();
 
 		Assert.Contains(project.OutputFiles, i => i.Extension == ".html");
 	}
@@ -16,7 +16,7 @@ public class MarkdownTests
 	[Fact]
 	public void MarkdownCopiesMetadata()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddInput("Scenario\\Plugins\\FileMarkdown.md")
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddInput("Scenario\\Plugins\\FileMarkdown.md")
 			.Use(proj => proj.InputFiles.ToList().ForEach(i => i.Metadata.Add("test", true)))
 			.Use<Markdown>();
 

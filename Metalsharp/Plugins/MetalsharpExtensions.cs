@@ -75,7 +75,7 @@ public static class MetalsharpExtensions
 	/// <returns>
 	///     Combinator; returns `this` input.
 	/// </returns>
-	public static MetalsharpProject UseCollections(this MetalsharpProject project, string name, Predicate<IMetalsharpFile> predicate) =>
+	public static MetalsharpProject UseCollections(this MetalsharpProject project, string name, Predicate<MetalsharpFile> predicate) =>
 		project.Use(new Collections(name, predicate));
 
 	/// <summary>
@@ -101,7 +101,7 @@ public static class MetalsharpExtensions
 	/// <returns>
 	///     Combinator; returns `this` input.
 	/// </returns>
-	public static MetalsharpProject UseCollections(this MetalsharpProject project, params (string name, Predicate<IMetalsharpFile> predicate)[] definitions) =>
+	public static MetalsharpProject UseCollections(this MetalsharpProject project, params (string name, Predicate<MetalsharpFile> predicate)[] definitions) =>
 		project.Use(new Collections(definitions));
 
 	/// <summary>
@@ -160,7 +160,7 @@ public static class MetalsharpExtensions
 	/// <returns>
 	///     An enumerable of `IMetalsharpFile`s from the input and output lists of the collection.
 	/// </returns>
-	public static IEnumerable<IMetalsharpFile> GetFilesFromCollection(this MetalsharpProject project, string name) =>
+	public static IEnumerable<MetalsharpFile> GetFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputFilesFromCollection(name).Concat(project.GetOutputFilesFromCollection(name));
 
 	/// <summary>
@@ -216,10 +216,10 @@ public static class MetalsharpExtensions
 	/// <returns>
 	///     An enumerable containing the files from the input list in the collection.
 	/// </returns>
-	public static IEnumerable<IMetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
+	public static IEnumerable<MetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputCollection(name) is string[] files && files.Length > 0
 			? project.InputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<IMetalsharpFile>();
+			: Enumerable.Empty<MetalsharpFile>();
 
 	/// <summary>
 	///     Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpProject`.
@@ -274,10 +274,10 @@ public static class MetalsharpExtensions
 	/// <returns>
 	///     An enumerable containing the files from the output list in the collection.
 	/// </returns>
-	public static IEnumerable<IMetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
+	public static IEnumerable<MetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetOutputCollection(name) is string[] files && files.Length > 0
 			? project.OutputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<IMetalsharpFile>();
+			: Enumerable.Empty<MetalsharpFile>();
 
 	#endregion
 

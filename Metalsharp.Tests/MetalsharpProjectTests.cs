@@ -14,7 +14,7 @@ namespace Metalsharp.Tests
         [InlineData("Scenario\\Directory2", 10)]
         public void AddInputSinglePathAddsCorrectNumberOfFiles(string path, int expectedFileCount)
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddInput(path);
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddInput(path);
             Assert.True(project.InputFiles.Count == expectedFileCount);
         }
 
@@ -26,7 +26,7 @@ namespace Metalsharp.Tests
         [InlineData("Scenario\\Directory2", "Dir")]
         public void AddInputAddsFilesToCorrectDirectory(string diskPath, string virtualPath)
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddInput(diskPath, virtualPath);
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddInput(diskPath, virtualPath);
 
             foreach (var file in project.InputFiles)
             {
@@ -41,7 +41,7 @@ namespace Metalsharp.Tests
         public void AddInputThrowsGivenNonexistantPath()
         {
             var nonexistentPath = "\\Does\\Not\\Exist";
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             Assert.Throws<ArgumentException>(() => project.AddInput(nonexistentPath));
             Assert.Throws<ArgumentException>(() => project.AddInput(nonexistentPath, "Dir"));
@@ -51,7 +51,7 @@ namespace Metalsharp.Tests
         public void AddInputAddsMetalsharpFile()
         {
             var file = new MetalsharpFile("fileText", "filePath");
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddInput(file);
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddInput(file);
 
             Assert.True(project.InputFiles.Contains(file));
         }
@@ -73,7 +73,7 @@ namespace Metalsharp.Tests
         [InlineData("Scenario\\Directory2", "Dir")]
         public void AddOutputAddsFilesToCorrectDirectory(string diskPath, string virtualPath)
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddOutput(diskPath, virtualPath);
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddOutput(diskPath, virtualPath);
 
             foreach (var file in project.OutputFiles)
             {
@@ -88,7 +88,7 @@ namespace Metalsharp.Tests
         public void AddOutputThrowsGivenNonexistantPath()
         {
             var nonexistentPath = "\\Does\\Not\\Exist";
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             Assert.Throws<ArgumentException>(() => project.AddOutput(nonexistentPath));
             Assert.Throws<ArgumentException>(() => project.AddOutput(nonexistentPath, "Dir"));
@@ -98,7 +98,7 @@ namespace Metalsharp.Tests
         public void AddOutputAddsMetalsharpFile()
         {
             var file = new MetalsharpFile("fileText", "filePath");
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddOutput(file);
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddOutput(file);
 
             Assert.True(project.OutputFiles.Contains(file));
         }
@@ -115,7 +115,7 @@ namespace Metalsharp.Tests
                 File.Delete("OutputFile1.txt");
             }
 
-            new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
                 .Build();
 
@@ -130,7 +130,7 @@ namespace Metalsharp.Tests
                 File.Create("ShouldNotDelete.txt");
             }
 
-            new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
                 .Build();
 
@@ -140,7 +140,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void BuildWritesOutputFilesToOutputDirectory()
         {
-            new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(new MetalsharpFile("text", "InputFile1.txt"))
                 .AddInput(new MetalsharpFile("text", "InputDir\\InputFile2.txt"))
                 .AddOutput(new MetalsharpFile("text", "OutputFile1.txt"))
@@ -168,7 +168,7 @@ namespace Metalsharp.Tests
                 File.Delete("OutputFile2.txt");
             }
 
-            new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(new MetalsharpFile("text", "OutputFile2.txt"))
                 .Build(proj =>
                 {
@@ -189,7 +189,7 @@ namespace Metalsharp.Tests
                 File.Delete("OutputFile3.txt");
             }
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddOutput(new MetalsharpFile("text", "OutputFile3.txt"));
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddOutput(new MetalsharpFile("text", "OutputFile3.txt"));
 
             project.BeforeBuild += (sender, e) =>
             {
@@ -212,7 +212,7 @@ namespace Metalsharp.Tests
                 File.Delete("OutputFile4.txt");
             }
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).AddOutput(new MetalsharpFile("text", "OutputFile4.txt"));
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).AddOutput(new MetalsharpFile("text", "OutputFile4.txt"));
 
             project.AfterBuild += (sender, e) =>
             {
@@ -232,7 +232,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void MetadataSinglePairAddsAndOverwrites()
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             project.Meta("key", "value1");
             Assert.True(project.Metadata.ContainsKey("key"));
@@ -245,7 +245,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void MetadataMultiplePairsAddAndOverwrite()
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             project.Meta(("key1", "value1"), ("key2", "value1"), ("key3", "value1"));
             Assert.True(project.Metadata.ContainsKey("key1"));
@@ -270,7 +270,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .AddOutput(file)
                 .MoveFiles("dir1", "dir2");
@@ -284,7 +284,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .AddOutput(file)
                 .MoveFiles(f => f.Text == "text", "dir2");
@@ -298,7 +298,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .MoveInput("dir1", "dir2");
 
@@ -310,7 +310,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .MoveInput(f => f.Text == "text", "dir2");
 
@@ -322,7 +322,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(file)
                 .MoveOutput("dir1", "dir2");
 
@@ -334,7 +334,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "dir1\\File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(file)
                 .MoveOutput(f => f.Text == "text", "dir2");
 
@@ -350,7 +350,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .AddOutput(file)
                 .RemoveFiles(file.FilePath);
@@ -364,7 +364,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .AddOutput(file)
                 .RemoveFiles(f => f.Text == "text");
@@ -378,7 +378,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .RemoveInput(file.FilePath);
 
@@ -390,7 +390,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddInput(file)
                 .RemoveInput(f => f.Text == "text");
 
@@ -402,7 +402,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(file)
                 .RemoveOutput(file.FilePath);
 
@@ -414,7 +414,7 @@ namespace Metalsharp.Tests
         {
             var file = new MetalsharpFile("text", "File.txt");
 
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None })
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
                 .AddOutput(file)
                 .RemoveOutput(f => f.Text == "text");
 
@@ -428,7 +428,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void UsePluginInstanceExecutesPlugin()
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).Use(new TestPlugin());
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).Use(new TestPlugin());
 
             Assert.True((bool)project.Metadata["test"]);
         }
@@ -436,7 +436,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void UsePluginTypeExecutesPlugin()
         {
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).Use<TestPlugin>();
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).Use<TestPlugin>();
 
             Assert.True((bool)project.Metadata["test"]);
         }
@@ -445,7 +445,7 @@ namespace Metalsharp.Tests
         public void UseFuncExecutesFunc()
         {
             var wasExecuted = false;
-            new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None }).Use(proj => wasExecuted = true);
+            new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None }).Use(proj => wasExecuted = true);
 
             Assert.True(wasExecuted);
         }
@@ -454,7 +454,7 @@ namespace Metalsharp.Tests
         public void UseInvokesBeforeUseEevent()
         {
             var wasExecuted = false;
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             project.BeforeUse += (sender, e) =>
             {
@@ -468,7 +468,7 @@ namespace Metalsharp.Tests
         public void UseInvokesAfterUseEvent()
         {
             var wasExecuted = false;
-            var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
+            var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None });
 
             project.AfterUse += (sender, e) =>
             {
