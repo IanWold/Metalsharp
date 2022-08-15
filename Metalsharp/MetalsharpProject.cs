@@ -33,7 +33,7 @@ public class MetalsharpProject
 	/// 
 	/// <param name="configuration">
 	///		The configuration options for the project.
-	///	</param>
+	/// </param>
 	public MetalsharpProject(MetalsharpConfiguration configuration = null)
 	{
 		Configuration = configuration ?? new();
