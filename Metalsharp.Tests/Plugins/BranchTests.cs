@@ -12,7 +12,7 @@ public class BranchTests
 
 		new MetalsharpProject(new MetalsharpConfiguration()
 		{
-			LogLevel = Logging.LogLevel.None
+			Verbosity = Logging.LogLevel.None
 		})
 			.AddInput("Scenario\\Plugins")
 			.Branch(

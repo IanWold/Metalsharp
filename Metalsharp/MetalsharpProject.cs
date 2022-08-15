@@ -25,36 +25,20 @@ namespace Metalsharp;
 /// </example>
 public class MetalsharpProject
 {
-	private static readonly MetalsharpConfiguration _defaultConfiguration = new()
-	{
-		LogLevel = LogLevel.Error
-	};
-
 	#region Constructors
 
 	/// <summary>
 	///		Instantiate a `MetalsharpProject` with the specified configuration options.
 	/// </summary>
-	/// <param name="configuration">The configuration options for the project.</param>
-	public MetalsharpProject(MetalsharpConfiguration configuration)
+	/// 
+	/// <param name="configuration">
+	///		The configuration options for the project.
+	///	</param>
+	public MetalsharpProject(MetalsharpConfiguration configuration = null)
 	{
-		Configuration = configuration;
+		Configuration = configuration ?? new();
 		Log.Info("Initiated Metalsharp");
 	}
-
-	/// <summary>
-	///		Instantiate a `MetalsharpProject` with the configuration options derived from the build arguments.
-	/// </summary>
-	/// <param name="args">The build arguments.</param>
-	public MetalsharpProject(string[] args)
-	{
-
-	}
-
-	/// <summary>
-	///     Instantiate a an empty `MetalsharpProject` with the default log level of `Error`
-	/// </summary>
-	public MetalsharpProject() : this(_defaultConfiguration) { }
 
 	#endregion
 
@@ -94,7 +78,7 @@ public class MetalsharpProject
 	/// </summary>
 	[Newtonsoft.Json.JsonIgnore]
 	public Log Log =>
-		_log ??= new Log(Configuration.LogLevel, this);
+		_log ??= new Log(Configuration.Verbosity, this);
 	private Log _log;
 
 	/// <summary>
@@ -1075,7 +1059,7 @@ public class MetalsharpProject
 	{
 		Log.Info($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.LogLevel > LogLevel.Debug)
+		if (Configuration.Verbosity > LogLevel.Debug)
 		{
 			InputFiles.RemoveAll(predicate);
 		}
@@ -1168,7 +1152,7 @@ public class MetalsharpProject
 	{
 		Log.Info($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.LogLevel > LogLevel.Debug)
+		if (Configuration.Verbosity > LogLevel.Debug)
 		{
 			OutputFiles.RemoveAll(predicate);
 		}

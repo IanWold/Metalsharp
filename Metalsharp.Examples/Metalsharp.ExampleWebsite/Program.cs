@@ -1,7 +1,8 @@
 ﻿using Metalsharp;
 using Metalsharp.ExamplePlugin;
+using Metalsharp.Logging;
 
-new MetalsharpProject()
+new MetalsharpProject(new MetalsharpConfiguration { Verbosity = LogLevel.Debug })
     .AddInput("Site")
     .Use<Frontmatter>()
     .UseDrafts()
