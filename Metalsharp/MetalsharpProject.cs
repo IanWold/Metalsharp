@@ -25,20 +25,25 @@ namespace Metalsharp;
 /// </example>
 public class MetalsharpProject
 {
+	private static readonly MetalsharpConfiguration _defaultConfiguration = new()
+	{
+		LogLevel = LogLevel.Error
+	};
+
 	#region Constructors
 
 	/// <summary>
-	///		Instantiate a `MetalsharpProject` with the specified `logLevel`.
+	///		Instantiate a `MetalsharpProject` with the specified configuration options.
 	/// </summary>
-	/// <param name="logLevel">The lowest level of log messages to log.</param>
-	public MetalsharpProject(LogLevel logLevel)
+	/// <param name="configuration">The configuration options for the project.</param>
+	public MetalsharpProject(MetalsharpConfiguration configuration)
 	{
-		LogLevel = logLevel;
+		Configuration = configuration;
 		Log.Info("Initiated Metalsharp");
 	}
 
 	/// <summary>
-	///		Instantiate a `MetalsharpProject` with the log level derived from the build arguments.
+	///		Instantiate a `MetalsharpProject` with the configuration options derived from the build arguments.
 	/// </summary>
 	/// <param name="args">The build arguments.</param>
 	public MetalsharpProject(string[] args)
@@ -49,7 +54,7 @@ public class MetalsharpProject
 	/// <summary>
 	///     Instantiate a an empty `MetalsharpProject` with the default log level of `Error`
 	/// </summary>
-	public MetalsharpProject() : this(LogLevel.Error) { }
+	public MetalsharpProject() : this(_defaultConfiguration) { }
 
 	#endregion
 
@@ -80,16 +85,16 @@ public class MetalsharpProject
 	#region Properties
 
 	/// <summary>
-	///		The minimum level to log.
+	///		The configuration options for the project.
 	/// </summary>
-	public LogLevel LogLevel { get; init; }
+	public MetalsharpConfiguration Configuration { get; init; }
 
 	/// <summary>
 	///		The logger.
 	/// </summary>
 	[Newtonsoft.Json.JsonIgnore]
 	public Log Log =>
-		_log ??= new Log(LogLevel, this);
+		_log ??= new Log(Configuration.LogLevel, this);
 	private Log _log;
 
 	/// <summary>
@@ -1070,7 +1075,7 @@ public class MetalsharpProject
 	{
 		Log.Info($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (LogLevel > LogLevel.Debug)
+		if (Configuration.LogLevel > LogLevel.Debug)
 		{
 			InputFiles.RemoveAll(predicate);
 		}
@@ -1163,7 +1168,7 @@ public class MetalsharpProject
 	{
 		Log.Info($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (LogLevel > LogLevel.Debug)
+		if (Configuration.LogLevel > LogLevel.Debug)
 		{
 			OutputFiles.RemoveAll(predicate);
 		}

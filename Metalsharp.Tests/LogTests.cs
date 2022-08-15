@@ -17,7 +17,10 @@ public class LogTests
 	private static void TestOnLog(LogLevel projectLevel, LogLevel messageLevel, Action<bool> assert)
 	{
 		var wasOnLogInvoked = false;
-		var project = new MetalsharpProject(projectLevel);
+		var project = new MetalsharpProject(new MetalsharpConfiguration()
+		{
+			LogLevel = projectLevel
+		});
 
 		project.Log.OnLog += (_, _) => wasOnLogInvoked = true;
 
@@ -29,7 +32,10 @@ public class LogTests
 	private static void TestOnAnyLog(LogLevel projectLevel, LogLevel messageLevel)
 	{
 		var wasOnAnyLogInvoked = false;
-		var project = new MetalsharpProject(projectLevel);
+		var project = new MetalsharpProject(new MetalsharpConfiguration()
+		{
+			LogLevel = projectLevel
+		});
 
 		project.Log.OnAnyLog += (_, _) => wasOnAnyLogInvoked = true;
 

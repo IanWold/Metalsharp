@@ -10,7 +10,7 @@ public class DebugTests
 		var didLogAfterPlugin = false;
 		object testMetadataValue = null;
 
-		var project = new MetalsharpProject();
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { LogLevel = Logging.LogLevel.None });
 		project
 			.UseDebug(i =>
 			{
