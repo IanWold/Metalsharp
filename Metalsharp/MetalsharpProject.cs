@@ -89,12 +89,12 @@ public class MetalsharpProject
 	/// <summary>
 	///     The input files of the project.
 	/// </summary>
-	public IMetalsharpFileCollection<MetalsharpFile> InputFiles { get; init; } = new MetalsharpFileCollection<MetalsharpFile>();
+	public MetalsharpFileCollection InputFiles { get; init; } = new();
 
 	/// <summary>
 	///     The files to output during building.
 	/// </summary>
-	public IMetalsharpFileCollection<MetalsharpFile> OutputFiles { get; init; } = new MetalsharpFileCollection<MetalsharpFile>();
+	public MetalsharpFileCollection OutputFiles { get; init; } = new();
 
 	#endregion
 
@@ -649,7 +649,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveFiles(Predicate<IMetalsharpFile> predicate, string toDirectory)
+	public MetalsharpProject MoveFiles(Predicate<MetalsharpFile> predicate, string toDirectory)
 	{
 		MoveInput(predicate, toDirectory);
 		MoveOutput(predicate, toDirectory);
@@ -763,7 +763,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveInput(Predicate<IMetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
 		Log.Info($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -883,7 +883,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveOutput(Predicate<IMetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
 		Log.Info($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -975,7 +975,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveFiles(Predicate<IMetalsharpFile> predicate)
+	public MetalsharpProject RemoveFiles(Predicate<MetalsharpFile> predicate)
 	{
 		RemoveInput(predicate);
 		RemoveOutput(predicate);
@@ -1055,7 +1055,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveInput(Predicate<IMetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string logMessage = null)
 	{
 		Log.Info($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1065,7 +1065,7 @@ public class MetalsharpProject
 		}
 		else
 		{
-			foreach (var file in InputFiles.Where(f => predicate(f as IMetalsharpFile)))
+			foreach (var file in InputFiles.Where(f => predicate(f)))
 			{
 				Log.Debug($"    Removing file: {file.FilePath}");
 				InputFiles.Remove(file);
@@ -1148,7 +1148,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveOutput(Predicate<IMetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string logMessage = null)
 	{
 		Log.Info($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1158,7 +1158,7 @@ public class MetalsharpProject
 		}
 		else
 		{
-			foreach (var file in InputFiles.Where(f => predicate(f as IMetalsharpFile)))
+			foreach (var file in InputFiles.Where(f => predicate(f)))
 			{
 				Log.Debug($"    Removing file: {file.FilePath}");
 				OutputFiles.Remove(file);

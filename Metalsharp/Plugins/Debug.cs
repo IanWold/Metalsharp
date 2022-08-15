@@ -132,7 +132,7 @@ public class Debug : IMetalsharpPlugin
 	/// <returns>
 	///     A well-formatted string listing the paths of each file in the given collection.
 	/// </returns>
-	private static string WriteDirectory(IMetalsharpFileCollection<MetalsharpFile> directory) =>
+	private static string WriteDirectory(MetalsharpFileCollection directory) =>
 		string.Join(
 			"\r\n",
 			directory

@@ -54,7 +54,7 @@ public class Collections : IMetalsharpPlugin
 	/// <summary>
 	///     Contains the definitions of the collections.
 	/// </summary>
-	private readonly (string name, Predicate<IMetalsharpFile> predicate)[] _definitions;
+	private readonly (string name, Predicate<MetalsharpFile> predicate)[] _definitions;
 
 	/// <summary>
 	///     Instantiate the plugin with a single collection definition.
@@ -66,7 +66,7 @@ public class Collections : IMetalsharpPlugin
 	/// <param name="predicate">
 	///     The predicate to match files for the collection.
 	/// </param>
-	public Collections(string name, Predicate<IMetalsharpFile> predicate) : this((name, predicate)) { }
+	public Collections(string name, Predicate<MetalsharpFile> predicate) : this((name, predicate)) { }
 
 	/// <summary>
 	///     Instantiates the plugin with the definitions of the collections.
@@ -74,7 +74,7 @@ public class Collections : IMetalsharpPlugin
 	/// <param name="definitions">
 	///     The definitions of the collections, including the name of the collection and the predicate which matches its files.
 	/// </param>
-	public Collections(params (string name, Predicate<IMetalsharpFile> predicate)[] definitions) =>
+	public Collections(params (string name, Predicate<MetalsharpFile> predicate)[] definitions) =>
 		_definitions = definitions;
 
 	/// <summary>
