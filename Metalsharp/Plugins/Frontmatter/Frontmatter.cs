@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Utf8Json;
 
 namespace Metalsharp;
 
@@ -181,7 +182,7 @@ public class Frontmatter : IMetalsharpPlugin
 		{
 			try
 			{
-				var jsonFrontmatter = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(split[1].Trim());
+				var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(split[1].Trim());
 				var arrayRemainder = string.Join(";;;", split.Skip(2));
 
 				frontmatter = jsonFrontmatter;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using Metalsharp.Logging;
 
 namespace Metalsharp;
@@ -82,7 +83,8 @@ public class MetalsharpProject
 	/// <summary>
 	///		The logger.
 	/// </summary>
-	[Newtonsoft.Json.JsonIgnore]
+	//[Newtonsoft.Json.JsonIgnore]
+	[IgnoreDataMember]
 	public Log Log =>
 		_log ??= new Log(Configuration.Verbosity);
 	private Log _log;
