@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using Metalsharp.Logging;
 
 namespace Metalsharp;
 
@@ -26,28 +24,56 @@ namespace Metalsharp;
 /// </example>
 public class MetalsharpProject
 {
-	#region Constructors
-
 	/// <summary>
-	///		Instantiate a `MetalsharpProject` with the specified configuration options.
+	///	    Instantiate a `MetalsharpProject` with the specified configuration options.
 	/// </summary>
 	/// 
-	/// <param name="configuration">
-	///		The configuration options for the project.
+	/// <param name="options">
+	///	    The configuration options for the project.
 	/// </param>
-	public MetalsharpProject(MetalsharpConfiguration configuration = null)
+	public MetalsharpProject(MetalsharpOptions options)
 	{
-		Configuration = configuration ?? new();
+		Options = options ?? new();
 
-		Log.InfoDirect(@"  __  __   __  __         _            _        _                        ");
-		Log.InfoDirect(@" |  \/  | |  \/  |  ___  | |_   __ _  | |  ___ | |_    __ _   _ _   _ __ ");
-		Log.InfoDirect(@"  >-  -<  | |\/| | / -_) |  _| / _` | | | (_-< | ' \  / _` | | '_| | '_ \");
-		Log.InfoDirect(@" |__/\__| |_|  |_| \___|  \__| \__,_| |_| /__/ |_||_| \__,_| |_|   | .__/");
-		Log.InfoDirect(@"                                                                   |_|   ");
-		Log.InfoDirect("\n");
+		LogDirect(@"  __  __   __  __         _            _        _                        ");
+		LogDirect(@" |  \/  | |  \/  |  ___  | |_   __ _  | |  ___ | |_    __ _   _ _   _ __ ");
+		LogDirect(@"  >-  -<  | |\/| | / -_) |  _| / _` | | | (_-< | ' \  / _` | | '_| | '_ \");
+		LogDirect(@" |__/\__| |_|  |_| \___|  \__| \__,_| |_| /__/ |_||_| \__,_| |_|   | .__/");
+		LogDirect(@"                                                                   |_|   ");
+		LogDirect("\n");
 	}
 
-	#endregion
+	/// <summary>
+	///	    Instantiate a `MetalsharpProject` with the specified configuration options.
+	/// </summary>
+	/// 
+	/// <param name="clearOutputDirectory">
+	///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
+	///     
+	///     `false` by default.
+	/// </param>
+	/// <param name="outputDirectory">
+	///     The directory to which the files will be output.
+	///     
+	///     `.\` by default.
+	/// </param>
+	/// <param name="verbosity">
+	///		The minimum level to log.
+	/// </param>
+	public MetalsharpProject(
+		bool clearOutputDirectory = MetalsharpOptions.DefaultClearOutputDirectory,
+		string outputDirectory = MetalsharpOptions.DefaultOutputDirectory,
+		LogLevel verbosity = MetalsharpOptions.DefaultVerbosity
+	)
+	: this(
+		new()
+		{
+			ClearOutputDirectory = clearOutputDirectory,
+			OutputDirectory = outputDirectory,
+			Verbosity = verbosity
+		}
+	)
+	{ }
 
 	#region Events
 
@@ -71,6 +97,16 @@ public class MetalsharpProject
 	/// </summary>
 	public event EventHandler AfterBuild;
 
+	/// <summary>
+	///		Invoked when any message is sent to the logger, irrespective of the specified log level.
+	/// </summary>
+	public EventHandler<LogEventArgs> OnAnyLog;
+
+	/// <summary>
+	///		Invoked when a message is logged at or above the specified log level.
+	/// </summary>
+	public EventHandler<LogEventArgs> OnLog;
+
 	#endregion
 
 	#region Properties
@@ -78,16 +114,7 @@ public class MetalsharpProject
 	/// <summary>
 	///		The configuration options for the project.
 	/// </summary>
-	public MetalsharpConfiguration Configuration { get; init; }
-
-	/// <summary>
-	///		The logger.
-	/// </summary>
-	//[Newtonsoft.Json.JsonIgnore]
-	[IgnoreDataMember]
-	public Log Log =>
-		_log ??= new Log(Configuration.Verbosity);
-	private Log _log;
+	public MetalsharpOptions Options { get; init; }
 
 	/// <summary>
 	///     The directory-level metadata.
@@ -138,22 +165,22 @@ public class MetalsharpProject
 	MetalsharpProject AddFromFileSystem(string diskPath, string virtualPath, Action<MetalsharpFile> add, string list, int recurse = 0)
 	{
 		static MetalsharpFile GetFileWithNormalizedDirectory(string dPath, string vPath) =>
-			new(File.ReadAllText(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
+			new(File.ReadAllBytes(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
 
 		if (Directory.Exists(diskPath))
 		{
 			Action<string> log =
 				recurse > 0
-				? Log.Debug
-				: Log.Info;
+				? m => LogDebug(m)
+				: m => LogInfo(m);
 
 			log($"Adding all files from file system at {diskPath} to {list}");
 
 			foreach (var file in Directory.GetFiles(diskPath))
 			{
-				Log.Debug($"Adding file from file system: {Path.GetFileName(file)} to {list}");
+				LogDebug($"Adding file from file system: {Path.GetFileName(file)} to {list}");
 				add(GetFileWithNormalizedDirectory(file, virtualPath));
-				Log.Debug($"    Added to virtual directory {virtualPath}");
+				LogDebug($"    Added to virtual directory {virtualPath}");
 			}
 
 			foreach (var directory in Directory.GetDirectories(diskPath))
@@ -166,9 +193,9 @@ public class MetalsharpProject
 		}
 		else if (File.Exists(diskPath))
 		{
-			Log.Info($"Adding file from file system to {list}: {diskPath}");
+			LogInfo($"Adding file from file system to {list}: {diskPath}");
 			add(GetFileWithNormalizedDirectory(diskPath, virtualPath));
-			Log.Debug($"    Added to virtual directory {virtualPath}");
+			LogDebug($"    Added to virtual directory {virtualPath}");
 
 			return this;
 		}
@@ -176,7 +203,7 @@ public class MetalsharpProject
 		{
 			var message = $"Directory or file {diskPath} does not exist in file system.";
 
-			Log.Fatal(message);
+			LogFatal(message);
 			throw new ArgumentException(message, nameof(diskPath));
 		}
 	}
@@ -248,9 +275,9 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject AddInput(MetalsharpFile file)
 	{
-		Log.Info($"Adding new virtual file {file.Name} to Input");
+		LogInfo($"Adding new virtual file {file.Name} to Input");
 		InputFiles.Add(file);
-		Log.Debug($"    Added to virtual directory {file.FilePath}");
+		LogDebug($"    Added to virtual directory {file.FilePath}");
 
 		return this;
 	}
@@ -322,9 +349,9 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject AddOutput(MetalsharpFile file)
 	{
-		Log.Info($"Adding new virtual file {file.Name} to Output");
+		LogInfo($"Adding new virtual file {file.Name} to Output");
 		OutputFiles.Add(file);
-		Log.Debug($"    Added to virtual directory {file.FilePath}");
+		LogDebug($"    Added to virtual directory {file.FilePath}");
 
 		return this;
 	}
@@ -346,133 +373,190 @@ public class MetalsharpProject
 	///         .Build();
 	///     ```
 	/// </example>
-	public void Build() =>
-		Build(null, new BuildOptions());
-
-	/// <summary>
-	///     Write all the output files to the default output directory with default build options after performing a function.
-	/// </summary>
-	/// 
-	/// <example>
-	///     The following will output a single file (`NewName.md`) to the current directory:
-	///     
-	///     ```c#
-	///         new MetalsharpProject()
-	///         .AddOutput("text", "File.md")
-	///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName");
-	///     ```
-	/// </example>
-	/// 
-	/// <param name="prebuild">
-	///     The function to perform before the files are output.
-	/// </param>
-	public void Build(Action<MetalsharpProject> prebuild) =>
-		Build(prebuild, new BuildOptions());
-
-	/// <summary>
-	///     Writes all the output files to the output directory defined in the options.
-	/// </summary>
-	/// 
-	/// <example>
-	///     The following will output a single file (`File.md`) to `OutputDirectory`:
-	///     
-	///     ```c#
-	///         new MetalsharpProject()
-	///         .AddOutput("text", "File.md")
-	///         .Build(new BuildOptions { OutputDirectory = "OutputDirectory" });
-	///     ```
-	///     
-	///     If you want to clear all the files in the output directory before the files are written, set `ClearOutputDirectory` to `true`:
-	///     
-	///     ```c#
-	///         new MetalsharpProject()
-	///         .AddOutput("text", "File.md")
-	///         .Build(new BuildOptions { OutputDirectory = "OutputDirectory", ClearOutputDirectory = true });
-	///     ```
-	/// </example>
-	/// 
-	/// <param name="options">
-	///     The options to configure the building behavior.
-	/// </param>
-	public void Build(BuildOptions options) =>
-		Build(null, options);
-
-	/// <summary>
-	///     Write all the output files to the output directory defined in the options after performing a function.
-	/// </summary>
-	/// 
-	/// <example>
-	///     The following will output a single file (`NewName.md`) to `OutputDirectory`:
-	///     
-	///     ```c#
-	///         new MetalsharpProject()
-	///         .AddOutput("text", "File.md")
-	///         .Build(i => i.OutputFiles.First(file => file.Name == "File").Name = "NewName", new BuildOptions { OutputDirectory = "OutputDirectory" });
-	///     ```
-	/// </example>
-	/// 
-	/// <param name="prebuild">
-	///     The function to perform before the files are output.
-	/// </param>
-	/// <param name="options">
-	///     The options to configure the building behavior.
-	/// </param>
-	public void Build(Action<MetalsharpProject> prebuild, BuildOptions options)
+	public void Build()
 	{
-		Log.Debug("Invoking BeforeBuild");
+		LogDebug("Invoking BeforeBuild");
 		BeforeBuild?.Invoke(this, new EventArgs());
 
-		if (prebuild is not null)
+		LogInfo("\nBeginning Build");
+
+		if (!Directory.Exists(Options.OutputDirectory))
 		{
-			Log.Debug("Invoking PreBuild");
-			prebuild(this);
-		}
-		else
-		{
-			Log.Debug("Skipped PreBuild");
+			LogDebug($"Creating output directory {Options.OutputDirectory}");
+			Directory.CreateDirectory(Options.OutputDirectory);
 		}
 
-		Log.Info("\nBeginning Build");
-
-		var buildOptions = options ?? new BuildOptions();
-
-		if (!Directory.Exists(buildOptions.OutputDirectory))
+		if (Options.ClearOutputDirectory)
 		{
-			Log.Debug($"Creating output directory {buildOptions.OutputDirectory}");
-			Directory.CreateDirectory(buildOptions.OutputDirectory);
-		}
-
-		if (buildOptions.ClearOutputDirectory)
-		{
-			Log.Debug("Cleaning output directory");
-			foreach (var file in Directory.GetFiles(buildOptions.OutputDirectory))
+			LogDebug("Cleaning output directory");
+			foreach (var file in Directory.GetFiles(Options.OutputDirectory))
 			{
 				File.Delete(file);
 			}
 		}
 
-		Log.Info($"\nWriting files to {buildOptions.OutputDirectory}");
+		LogInfo($"\nWriting files to {Options.OutputDirectory}");
 
 		foreach (var file in OutputFiles)
 		{
-			var path = Path.Combine(buildOptions.OutputDirectory, file.FilePath);
+			var path = Path.Combine(Options.OutputDirectory, file.FilePath);
 			var directoryPath = Path.GetDirectoryName(path);
 
 			if (!Directory.Exists(directoryPath))
 			{
-				Log.Debug($"Creating directory {directoryPath}");
+				LogDebug($"Creating directory {directoryPath}");
 				Directory.CreateDirectory(directoryPath);
 			}
 
-			Log.Debug($"Wrting file {path}");
-			File.WriteAllText(path, file.Text);
+			LogDebug($"Wrting file {path}");
+			File.WriteAllBytes(path, file.Contents);
 		}
 
-		Log.Info("\nFinalizing Build");
-		Log.Debug("Invoking AfterBuild");
+		LogInfo("\nFinalizing Build");
+		LogDebug("Invoking AfterBuild");
 		AfterBuild?.Invoke(this, new EventArgs());
 
-		Log.Info("Finished Build");
+		LogInfo("Finished Build");
+	}
+
+	#endregion
+
+	#region Log
+
+	private bool _wasLastLogSection = false;
+
+	private void TryLog(LogEventArgs logEventArgs)
+	{
+		OnAnyLog?.Invoke(this, logEventArgs);
+
+		if (logEventArgs.Level >= Options.Verbosity)
+		{
+			Console.WriteLine(logEventArgs.Message);
+			OnLog?.Invoke(this, logEventArgs);
+
+			_wasLastLogSection = false;
+		}
+	}
+
+	private void LogSection(string message)
+	{
+		TryLog(new(LogLevel.Info, $"{(_wasLastLogSection ? "" : "\n")}{message.Trim()}\n"));
+		_wasLastLogSection = true;
+	}
+
+	private void LogDirect(string message) =>
+		TryLog(new(LogLevel.Info, message));
+
+	/// <summary>
+	///     Log a message at `Debug` level.
+	/// </summary>
+	/// 
+	/// <example>
+	///     The following will log a debug message between using two plugins:
+	///     
+	///     ```c#
+	///         new MetalsharpProject()
+	///         .UsePlugin1()
+	///         .LogDebug("About to use plugin 2...")
+	///         .UsePlugin2()
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="message">
+	///     The message to log.
+	///	</param>
+	/// 
+	/// <returns>
+	///     The current `MetalsharpProject`, allowing it to be fluent.
+	/// </returns>
+	public MetalsharpProject LogDebug(string message)
+	{
+		TryLog(new(LogLevel.Debug, message.Trim()));
+		return this;
+	}
+
+	/// <summary>
+	///     Log a message at `Info` level.
+	/// </summary>
+	/// 
+	/// <example>
+	///     The following will log a debug message between using two plugins:
+	///     
+	///     ```c#
+	///         new MetalsharpProject()
+	///         .UsePlugin1()
+	///         .LogInfo("About to use plugin 2...")
+	///         .UsePlugin2()
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="message">
+	///     The message to log.
+	///	</param>
+	/// 
+	/// <returns>
+	///     The current `MetalsharpProject`, allowing it to be fluent.
+	/// </returns>
+	public MetalsharpProject LogInfo(string message)
+	{
+		TryLog(new(LogLevel.Info, message.Trim()));
+		return this;
+	}
+
+	/// <summary>
+	///     Log a message at `Error` level.
+	/// </summary>
+	/// 
+	/// <example>
+	///     The following will log a debug message between using two plugins:
+	///     
+	///     ```c#
+	///         new MetalsharpProject()
+	///         .UsePlugin1()
+	///         .LogError("About to use plugin 2...")
+	///         .UsePlugin2()
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="message">
+	///     The message to log.
+	///	</param>
+	/// 
+	/// <returns>
+	///     The current `MetalsharpProject`, allowing it to be fluent.
+	/// </returns>
+	public MetalsharpProject LogError(string message)
+	{
+		TryLog(new(LogLevel.Error, message.Trim()));
+		return this;
+	}
+
+	/// <summary>
+	///     Log a message at `Fatal` level.
+	/// </summary>
+	/// 
+	/// <example>
+	///     The following will log a debug message between using two plugins:
+	///     
+	///     ```c#
+	///         new MetalsharpProject()
+	///         .UsePlugin1()
+	///         .LogFatal("About to use plugin 2...")
+	///         .UsePlugin2()
+	///     ```
+	/// </example>
+	/// 
+	/// <param name="message">
+	///     The message to log.
+	///	</param>
+	/// 
+	/// <returns>
+	///     The current `MetalsharpProject`, allowing it to be fluent.
+	/// </returns>
+	public MetalsharpProject LogFatal(string message)
+	{
+		TryLog(new(LogLevel.Fatal, message.Trim()));
+		return this;
 	}
 
 	#endregion
@@ -532,12 +616,12 @@ public class MetalsharpProject
 		{
 			if (Metadata.ContainsKey(key))
 			{
-				Log.Debug($"Updating metadata [{key}] = {value}");
+				LogDebug($"Updating metadata [{key}] = {value}");
 				Metadata[key] = value;
 			}
 			else
 			{
-				Log.Debug($"Adding metadata [{key}] = {value}");
+				LogDebug($"Adding metadata [{key}] = {value}");
 				Metadata.Add(key, value);
 			}
 		}
@@ -773,11 +857,11 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
-		Log.Info($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
 		foreach (var file in InputFiles.Where(i => predicate(i)))
 		{
-			Log.Debug($"    Moving file: {file.FilePath}");
+			LogDebug($"    Moving file: {file.FilePath}");
 			file.Directory = toDirectory;
 		}
 
@@ -893,11 +977,11 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
 	{
-		Log.Info($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
 		foreach (var file in OutputFiles.Where(i => predicate(i)))
 		{
-			Log.Debug($"    Moving file: {file.FilePath}");
+			LogDebug($"    Moving file: {file.FilePath}");
 			file.Directory = toDirectory;
 		}
 
@@ -1065,9 +1149,9 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string logMessage = null)
 	{
-		Log.Info($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.Verbosity > LogLevel.Debug)
+		if (Options.Verbosity > LogLevel.Debug)
 		{
 			InputFiles.RemoveAll(predicate);
 		}
@@ -1075,7 +1159,7 @@ public class MetalsharpProject
 		{
 			foreach (var file in InputFiles.Where(f => predicate(f)))
 			{
-				Log.Debug($"    Removing file: {file.FilePath}");
+				LogDebug($"    Removing file: {file.FilePath}");
 				InputFiles.Remove(file);
 			}
 		}
@@ -1158,9 +1242,9 @@ public class MetalsharpProject
 	/// </returns>
 	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string logMessage = null)
 	{
-		Log.Info($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.Verbosity > LogLevel.Debug)
+		if (Options.Verbosity > LogLevel.Debug)
 		{
 			OutputFiles.RemoveAll(predicate);
 		}
@@ -1168,7 +1252,7 @@ public class MetalsharpProject
 		{
 			foreach (var file in InputFiles.Where(f => predicate(f)))
 			{
-				Log.Debug($"    Removing file: {file.FilePath}");
+				LogDebug($"    Removing file: {file.FilePath}");
 				OutputFiles.Remove(file);
 			}
 		}
@@ -1182,16 +1266,16 @@ public class MetalsharpProject
 
 	private MetalsharpProject Use(Action<MetalsharpProject> func, string transformKind, string transformName)
 	{
-		Log.Debug($"\nAbout to use {transformKind} {transformName}\n");
+		LogDebug($"\nAbout to use {transformKind} {transformName}\n");
 		BeforeUse?.Invoke(this, new EventArgs());
 
-		Log.InfoSection($"\nUsing {transformKind} {transformName}\n");
+		LogSection($"\nUsing {transformKind} {transformName}\n");
 		func(this);
 
-		Log.Debug($"\nFinishing using {transformKind} {transformName}\n");
+		LogDebug($"\nFinishing using {transformKind} {transformName}\n");
 		AfterUse?.Invoke(this, new EventArgs());
 
-		Log.Debug($"\nFinished using {transformKind} {transformName}\n");
+		LogDebug($"\nFinished using {transformKind} {transformName}\n");
 		return this;
 	}
 

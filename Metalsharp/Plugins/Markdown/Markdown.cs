@@ -39,7 +39,7 @@ public class Markdown : IMetalsharpPlugin
 			var fileText = Markdig.Markdown.ToHtml(file.Text);
 			var filePath = Path.Combine(file.Directory, file.Name + ".html");
 
-			project.Log.Debug($"Converting Input file {file.FilePath} to Output file {filePath}");
+			project.LogDebug($"Converting Input file {file.FilePath} to Output file {filePath}");
 
 			project.OutputFiles.Add(new MetalsharpFile(fileText, filePath)
 			{

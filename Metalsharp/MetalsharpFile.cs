@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Metalsharp;
 
@@ -35,7 +36,19 @@ public class MetalsharpFile
 	public MetalsharpFile(string text, string filePath) : this(text, filePath, new Dictionary<string, object>()) { }
 
 	/// <summary>
-	///     Instantiate a new MetalsharpFile with the specified metadata
+	///     Instantiates a new MetalsharpFile with no metadata.
+	/// </summary>
+	/// 
+	/// <param name="contents">
+	///     The contents of the file.
+	/// </param>
+	/// <param name="filePath">
+	///     The virtual path of the file.
+	/// </param>
+	public MetalsharpFile(byte[] contents, string filePath) : this(contents, filePath, new Dictionary<string, object>()) { }
+
+	/// <summary>
+	///     Instantiate a new MetalsharpFile with the specified metadata.
 	/// </summary>
 	/// 
 	/// <param name="text">
@@ -47,14 +60,34 @@ public class MetalsharpFile
 	/// <param name="metadata">
 	///     The metadata of the file, stored as a string, object dictionary.
 	/// </param>
-	public MetalsharpFile(string text, string filePath, Dictionary<string, object> metadata)
+	public MetalsharpFile(string text, string filePath, Dictionary<string, object> metadata) : this(Encoding.Default.GetBytes(text), filePath, metadata) { }
+
+	/// <summary>
+	///     Instantiate a new MetalsharpFile with the specified metadata.
+	/// </summary>
+	/// 
+	/// <param name="contents">
+	///     The contents of the file.
+	/// </param>
+	/// <param name="filePath">
+	///     The virtual path of the file.
+	/// </param>
+	/// <param name="metadata">
+	///     The metadata of the file, stored as a string, object dictionary.
+	/// </param>
+	public MetalsharpFile(byte[] contents, string filePath, Dictionary<string, object> metadata)
 	{
-		Text = text;
+		Contents = contents;
 		Metadata = metadata;
 		FilePath = filePath;
 	}
 
 	#region Properties
+
+	/// <summary>
+	///     The contents of the file.
+	/// </summary>
+	public byte[] Contents { get; set; }
 
 	/// <summary>
 	///     The virtual directory the file sits in.
@@ -94,9 +127,9 @@ public class MetalsharpFile
 	}
 
 	/// <summary>
-	///     The text of the file.
+	///     The contents of the file as a string.
 	/// </summary>
-	public string Text { get; set; }
+	public string Text => Encoding.Default.GetString(Contents);
 
 	#endregion
 
