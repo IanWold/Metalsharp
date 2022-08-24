@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using Metalsharp.Logging;
 using System;
 
 namespace Metalsharp;
@@ -10,11 +9,32 @@ namespace Metalsharp;
 public class MetalsharpConfiguration
 {
 	/// <summary>
+	/// The default value for `ClearOutputDirectory`
+	/// </summary>
+	public const bool DefaultClearOutputDirectory = false;
+
+	/// <summary>
+	/// The default value for `ClearOutputDirectory`
+	/// </summary>
+	public const string DefaultOutputDirectory = @".\";
+
+	/// <summary>
+	/// The default value for `ClearOutputDirectory`
+	/// </summary>
+	public const LogLevel DefaultVerbosity = LogLevel.Error;
+
+	/// <summary>
 	///		Instantiate the default configuration.
 	/// </summary>
-	public MetalsharpConfiguration()
+	public MetalsharpConfiguration(
+		bool clearOutputDirectory = DefaultClearOutputDirectory,
+		string outputDirectory = DefaultOutputDirectory,
+		LogLevel verbosity = DefaultVerbosity
+	)
 	{
-		Verbosity = LogLevel.Error;
+		ClearOutputDirectory = clearOutputDirectory;
+		OutputDirectory = outputDirectory;
+		Verbosity = verbosity;
 	}
 
 	/// <summary>
@@ -37,8 +57,24 @@ public class MetalsharpConfiguration
 	}
 
 	/// <summary>
+	///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
+	///     
+	///     `false` by default.
+	/// </summary>
+	[Option('c', "clear", Default = DefaultClearOutputDirectory, HelpText = "Whether Metalsharp should remove all the files in the output directory before writing any to that directory.")]
+	public bool ClearOutputDirectory { get; init; }
+
+	/// <summary>
+	///     The directory to which the files will be output.
+	///     
+	///     `.\` by default.
+	/// </summary>
+	[Option('o', "output", Default = DefaultOutputDirectory, HelpText = "The directory to which the files will be output.")]
+	public string OutputDirectory { get; init; }
+
+	/// <summary>
 	///		The minimum level to log.
 	/// </summary>
-	[Option('v', "verbosity", Default = LogLevel.Error, HelpText = "The verbosity level for the log output.")]
-	public LogLevel Verbosity { get; set; }
+	[Option('v', "verbosity", Default = DefaultVerbosity, HelpText = "The verbosity level for the log output.")]
+	public LogLevel Verbosity { get; init; }
 }

@@ -40,7 +40,7 @@ public class Leveller : IMetalsharpPlugin
             var directoryLevels = file.Directory.Split(Path.DirectorySeparatorChar);
             var directoryLevelCount = directoryLevels.Length - (directoryLevels[0] == "." ? 1 : 0);
 
-            project.Log.Debug($"File {file.FilePath} is at level {directoryLevelCount}");
+            project.LogDebug($"File {file.FilePath} is at level {directoryLevelCount}");
 
             if (file.Metadata.ContainsKey("level"))
             {

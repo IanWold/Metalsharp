@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Xunit;
 
 namespace Metalsharp.Tests
@@ -102,7 +103,7 @@ namespace Metalsharp.Tests
             var file = new MetalsharpFile("text", "path", new Dictionary<string, object>());
             Assert.True(file.Text == "text");
 
-            file.Text = "newtext";
+            file.Contents = Encoding.Default.GetBytes("newtext");
             Assert.True(file.Text == "newtext");
         }
 

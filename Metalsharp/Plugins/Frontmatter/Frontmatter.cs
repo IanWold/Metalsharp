@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Utf8Json;
 
 namespace Metalsharp;
@@ -44,16 +45,16 @@ public class Frontmatter : IMetalsharpPlugin
 	{
 		foreach (var file in project.InputFiles)
 		{
-			project.Log.Debug($"Looking for frontmatter in {file.FilePath}");
+			project.LogDebug($"Looking for frontmatter in {file.FilePath}");
 			if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
 			{
-				project.Log.Debug($"    Found frontmatter:");
+				project.LogDebug($"    Found frontmatter:");
 
-				file.Text = text;
+				file.Contents = Encoding.Default.GetBytes(text);
 
 				foreach (var pair in metadata)
 				{
-					project.Log.Debug($"    [{pair.Key}] = {pair.Value}");
+					project.LogDebug($"    [{pair.Key}] = {pair.Value}");
 
 					if (file.Metadata.ContainsKey(pair.Key))
 					{
@@ -131,7 +132,7 @@ public class Frontmatter : IMetalsharpPlugin
 		frontmatter = null;
 		remainder = null;
 
-		if (split.Length >= 3 && split[0].Length == 0)
+		if (split.Length >= 3)
 		{
 			try
 			{
@@ -178,7 +179,7 @@ public class Frontmatter : IMetalsharpPlugin
 		frontmatter = null;
 		remainder = null;
 
-		if (split.Length >= 3 && split[0].Length == 0)
+		if (split.Length >= 3)
 		{
 			try
 			{

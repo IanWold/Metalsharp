@@ -1,4 +1,4 @@
-﻿namespace Metalsharp.Logging;
+﻿namespace Metalsharp;
 
 /// <summary>
 /// Event args for log events.

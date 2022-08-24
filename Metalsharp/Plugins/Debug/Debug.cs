@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Metalsharp.Logging;
 
 namespace Metalsharp;
 
@@ -109,7 +108,7 @@ public class Debug : IMetalsharpPlugin
 				"\r\n\r\n"
 			);
 
-		project.Log.OnAnyLog += (sender, e) =>
+		project.OnAnyLog += (sender, e) =>
 			_onLog(
 				e.Level switch {
 					LogLevel.Debug => "[DEBUG] ",

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Metalsharp.Logging;
+namespace Metalsharp;
 
 /// <summary>
 /// The verbosity level for log messages.

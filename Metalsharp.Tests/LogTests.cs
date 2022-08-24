@@ -1,6 +1,5 @@
-﻿using Xunit;
-using Metalsharp.Logging;
-using System;
+﻿using System;
+using Xunit;
 
 namespace Metalsharp.Tests;
 
@@ -8,10 +7,10 @@ public class LogTests
 {
 	private static Action<string> GetLogAction(MetalsharpProject project, LogLevel level) => level switch
 	{
-		LogLevel.Debug => project.Log.Debug,
-		LogLevel.Info => project.Log.Info,
-		LogLevel.Error => project.Log.Error,
-		_ => project.Log.Fatal,
+		LogLevel.Debug => m => project.LogDebug(m),
+		LogLevel.Info => m => project.LogInfo(m),
+		LogLevel.Error => m => project.LogError(m),
+		_ => m => project.LogFatal(m),
 	};
 
 	private static void TestOnLog(LogLevel projectLevel, LogLevel messageLevel, Action<bool> assert)
@@ -22,7 +21,7 @@ public class LogTests
 			Verbosity = projectLevel
 		});
 
-		project.Log.OnLog += (_, _) => wasOnLogInvoked = true;
+		project.OnLog += (_, _) => wasOnLogInvoked = true;
 
 		GetLogAction(project, messageLevel)("Test");
 
@@ -37,7 +36,7 @@ public class LogTests
 			Verbosity = projectLevel
 		});
 
-		project.Log.OnAnyLog += (_, _) => wasOnAnyLogInvoked = true;
+		project.OnAnyLog += (_, _) => wasOnAnyLogInvoked = true;
 
 		GetLogAction(project, messageLevel)("Test");
 

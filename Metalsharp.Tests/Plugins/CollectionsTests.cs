@@ -8,7 +8,7 @@ public class CollectionsTests
 	[Fact]
 	public void CollectionsCorrectlyGroupsFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddInput("Scenario\\Directory1")
 			.AddInput("Scenario\\Plugins")
 			.AddOutput("Scenario\\Directory2\\SubDirectory1")
@@ -27,7 +27,7 @@ public class CollectionsTests
 	[Fact]
 	public void GetFilesFromCollectionReturnsCorrectFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddInput("Scenario\\Directory1")
 			.AddInput("Scenario\\Plugins")
 			.AddOutput("Scenario\\Directory2\\SubDirectory1")
@@ -42,7 +42,7 @@ public class CollectionsTests
 	[Fact]
 	public void CollectionsCorrectlyGroupsInputFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddInput("Scenario\\Directory1")
 			.AddInput("Scenario\\Plugins")
 			.UseCollections("test", file => file.Name.Contains("file"));
@@ -54,7 +54,7 @@ public class CollectionsTests
 	[Fact]
 	public void CollectionsCorrectlyGroupsOutputFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddOutput("Scenario\\Directory1")
 			.AddOutput("Scenario\\Plugins")
 			.UseCollections("test", file => file.Name.Contains("file"));
@@ -66,7 +66,7 @@ public class CollectionsTests
 	[Fact]
 	public void GetInputFilesFromCollectionReturnsCorrectFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddInput("Scenario\\Directory1")
 			.AddInput("Scenario\\Plugins")
 			.UseCollections("test", file => file.Name.Contains("file"));
@@ -78,7 +78,7 @@ public class CollectionsTests
 	[Fact]
 	public void GetOutputFilesFromCollectionReturnsCorrectFiles()
 	{
-		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = Logging.LogLevel.None })
+		var project = new MetalsharpProject(new MetalsharpConfiguration() { Verbosity = LogLevel.None })
 			.AddOutput("Scenario\\Directory1")
 			.AddOutput("Scenario\\Plugins")
 			.UseCollections("test", file => file.Name.Contains("file"));
