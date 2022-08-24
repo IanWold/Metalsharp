@@ -28,12 +28,12 @@ public class MetalsharpProject
 	///	    Instantiate a `MetalsharpProject` with the specified configuration options.
 	/// </summary>
 	/// 
-	/// <param name="configuration">
+	/// <param name="options">
 	///	    The configuration options for the project.
 	/// </param>
-	public MetalsharpProject(MetalsharpConfiguration configuration)
+	public MetalsharpProject(MetalsharpOptions options)
 	{
-		Configuration = configuration ?? new();
+		Options = options ?? new();
 
 		LogDirect(@"  __  __   __  __         _            _        _                        ");
 		LogDirect(@" |  \/  | |  \/  |  ___  | |_   __ _  | |  ___ | |_    __ _   _ _   _ __ ");
@@ -61,9 +61,9 @@ public class MetalsharpProject
 	///		The minimum level to log.
 	/// </param>
 	public MetalsharpProject(
-		bool clearOutputDirectory = MetalsharpConfiguration.DefaultClearOutputDirectory,
-		string outputDirectory = MetalsharpConfiguration.DefaultOutputDirectory,
-		LogLevel verbosity = MetalsharpConfiguration.DefaultVerbosity
+		bool clearOutputDirectory = MetalsharpOptions.DefaultClearOutputDirectory,
+		string outputDirectory = MetalsharpOptions.DefaultOutputDirectory,
+		LogLevel verbosity = MetalsharpOptions.DefaultVerbosity
 	)
 	: this(
 		new()
@@ -114,7 +114,7 @@ public class MetalsharpProject
 	/// <summary>
 	///		The configuration options for the project.
 	/// </summary>
-	public MetalsharpConfiguration Configuration { get; init; }
+	public MetalsharpOptions Options { get; init; }
 
 	/// <summary>
 	///     The directory-level metadata.
@@ -380,26 +380,26 @@ public class MetalsharpProject
 
 		LogInfo("\nBeginning Build");
 
-		if (!Directory.Exists(Configuration.OutputDirectory))
+		if (!Directory.Exists(Options.OutputDirectory))
 		{
-			LogDebug($"Creating output directory {Configuration.OutputDirectory}");
-			Directory.CreateDirectory(Configuration.OutputDirectory);
+			LogDebug($"Creating output directory {Options.OutputDirectory}");
+			Directory.CreateDirectory(Options.OutputDirectory);
 		}
 
-		if (Configuration.ClearOutputDirectory)
+		if (Options.ClearOutputDirectory)
 		{
 			LogDebug("Cleaning output directory");
-			foreach (var file in Directory.GetFiles(Configuration.OutputDirectory))
+			foreach (var file in Directory.GetFiles(Options.OutputDirectory))
 			{
 				File.Delete(file);
 			}
 		}
 
-		LogInfo($"\nWriting files to {Configuration.OutputDirectory}");
+		LogInfo($"\nWriting files to {Options.OutputDirectory}");
 
 		foreach (var file in OutputFiles)
 		{
-			var path = Path.Combine(Configuration.OutputDirectory, file.FilePath);
+			var path = Path.Combine(Options.OutputDirectory, file.FilePath);
 			var directoryPath = Path.GetDirectoryName(path);
 
 			if (!Directory.Exists(directoryPath))
@@ -429,7 +429,7 @@ public class MetalsharpProject
 	{
 		OnAnyLog?.Invoke(this, logEventArgs);
 
-		if (logEventArgs.Level >= Configuration.Verbosity)
+		if (logEventArgs.Level >= Options.Verbosity)
 		{
 			Console.WriteLine(logEventArgs.Message);
 			OnLog?.Invoke(this, logEventArgs);
@@ -1151,7 +1151,7 @@ public class MetalsharpProject
 	{
 		LogInfo($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.Verbosity > LogLevel.Debug)
+		if (Options.Verbosity > LogLevel.Debug)
 		{
 			InputFiles.RemoveAll(predicate);
 		}
@@ -1244,7 +1244,7 @@ public class MetalsharpProject
 	{
 		LogInfo($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
-		if (Configuration.Verbosity > LogLevel.Debug)
+		if (Options.Verbosity > LogLevel.Debug)
 		{
 			OutputFiles.RemoveAll(predicate);
 		}

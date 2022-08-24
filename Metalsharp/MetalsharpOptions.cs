@@ -6,7 +6,7 @@ namespace Metalsharp;
 /// <summary>
 ///		Represents the configuration options for a Metalsharp project.
 /// </summary>
-public class MetalsharpConfiguration
+public class MetalsharpOptions
 {
 	/// <summary>
 	/// The default value for `ClearOutputDirectory`
@@ -26,7 +26,7 @@ public class MetalsharpConfiguration
 	/// <summary>
 	///		Instantiate the default configuration.
 	/// </summary>
-	public MetalsharpConfiguration(
+	public MetalsharpOptions(
 		bool clearOutputDirectory = DefaultClearOutputDirectory,
 		string outputDirectory = DefaultOutputDirectory,
 		LogLevel verbosity = DefaultVerbosity
@@ -44,12 +44,12 @@ public class MetalsharpConfiguration
 	/// <param name="args">
 	///		The command line arguments
 	/// </param>
-	public static MetalsharpConfiguration FromArgs(string[] args)
+	public static MetalsharpOptions FromArgs(string[] args)
 	{
-		MetalsharpConfiguration configuration = null;
+		MetalsharpOptions configuration = null;
 
 		new Parser()
-			.ParseArguments<MetalsharpConfiguration>(args)
+			.ParseArguments<MetalsharpOptions>(args)
 			.WithParsed(c => configuration = c)
 			.WithNotParsed(_ => throw new ArgumentException("Unable to parse arguments", nameof(args)));
 

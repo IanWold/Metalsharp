@@ -16,7 +16,7 @@ public class LogTests
 	private static void TestOnLog(LogLevel projectLevel, LogLevel messageLevel, Action<bool> assert)
 	{
 		var wasOnLogInvoked = false;
-		var project = new MetalsharpProject(new MetalsharpConfiguration()
+		var project = new MetalsharpProject(new MetalsharpOptions()
 		{
 			Verbosity = projectLevel
 		});
@@ -31,7 +31,7 @@ public class LogTests
 	private static void TestOnAnyLog(LogLevel projectLevel, LogLevel messageLevel)
 	{
 		var wasOnAnyLogInvoked = false;
-		var project = new MetalsharpProject(new MetalsharpConfiguration()
+		var project = new MetalsharpProject(new MetalsharpOptions()
 		{
 			Verbosity = projectLevel
 		});
