@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net8</TargetFramework>
     <RootNamespace>Metalsharp</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
-    <Version>0.9.0-rc.1</Version>
+    <Version>0.9.1-rc.6</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Ian Wold</Authors>
     <Company />
-    <Copyright>Copyright (c) 2018 Ian Wold</Copyright>
+    <Copyright>Copyright (c) Ian Wold</Copyright>
     <PackageLicenseUrl>https://github.com/IanWold/Metalsharp/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/IanWold/Metalsharp/master/Icon.png</PackageIconUrl>
@@ -23,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Metalsharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net8\Metalsharp.xml</DocumentationFile>
     <DocumentationMarkdown>..\Metalsharp.Documentation\README.md</DocumentationMarkdown>
   </PropertyGroup>
 

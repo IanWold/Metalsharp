@@ -1,98 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
-
+    <TargetFramework>net8</TargetFramework>
     <IsPackable>false</IsPackable>
-
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scenario\Directory1\file1.md" />
-    <None Remove="Scenario\Directory1\file2.md" />
-    <None Remove="Scenario\Directory1\file3.md" />
-    <None Remove="Scenario\Directory1\file4.md" />
-    <None Remove="Scenario\Directory1\file5.md" />
-    <None Remove="Scenario\Directory2\file10.md" />
-    <None Remove="Scenario\Directory2\file6.md" />
-    <None Remove="Scenario\Directory2\file7.md" />
-    <None Remove="Scenario\Directory2\file8.md" />
-    <None Remove="Scenario\Directory2\file9.md" />
-    <None Remove="Scenario\Directory2\SubDirectory1\file11.md" />
-    <None Remove="Scenario\Directory2\SubDirectory1\file12.md" />
-    <None Remove="Scenario\Directory2\SubDirectory1\file13.md" />
-    <None Remove="Scenario\Directory2\SubDirectory1\file14.md" />
-    <None Remove="Scenario\Directory2\SubDirectory1\file15.md" />
-    <None Remove="Scenario\Plugins\FileJsonFrontmatter.md" />
-    <None Remove="Scenario\Plugins\FileMarkdown.md" />
-    <None Remove="Scenario\Plugins\FileYamlFrontmatter.md" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Scenario\Plugins\FileYamlFrontmatter.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Scenario\Plugins\FileJsonFrontmatter.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Scenario\Plugins\FileMarkdown.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Scenario\Directory1\file1.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory1\file2.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory1\file3.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory1\file4.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory1\file5.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\file10.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\file6.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\file7.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\file8.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\file9.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\SubDirectory1\file11.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\SubDirectory1\file12.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\SubDirectory1\file13.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\SubDirectory1\file14.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scenario\Directory2\SubDirectory1\file15.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Scenario\**\*">
   </ItemGroup>
 
   <ItemGroup>
