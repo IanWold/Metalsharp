@@ -1,8 +1,7 @@
-﻿namespace Metalsharp.Tests
+﻿namespace Metalsharp.Tests;
+
+public class TestPlugin : IMetalsharpPlugin
 {
-    public class TestPlugin : IMetalsharpPlugin
-    {
-        public void Execute(MetalsharpProject project) =>
-            project.Meta("test", true);
-    }
+    public void Execute(MetalsharpProject project) =>
+        project.Meta("test", true);
 }

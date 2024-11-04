@@ -151,7 +151,7 @@ public static class CollectionsPluginExtensions
 		&& collectionsDictionary[name] is Dictionary<string, string[]> collection
 		&& collection["input"] is string[] inputsCollection
 			? inputsCollection
-			: Array.Empty<string>();
+			: [];
 
 	/// <summary>
 	///     Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpProject`.
@@ -179,7 +179,7 @@ public static class CollectionsPluginExtensions
 	public static IEnumerable<MetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputCollection(name) is string[] files && files.Length > 0
 			? project.InputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<MetalsharpFile>();
+			: [];
 
 	/// <summary>
 	///     Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpProject`.
@@ -209,7 +209,7 @@ public static class CollectionsPluginExtensions
 		&& collectionsDictionary[name] is Dictionary<string, string[]> collection
 		&& collection["output"] is string[] outputsCollection
 			? outputsCollection
-			: Array.Empty<string>();
+			: [];
 
 	/// <summary>
 	///     Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpProject`.
@@ -237,5 +237,5 @@ public static class CollectionsPluginExtensions
 	public static IEnumerable<MetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetOutputCollection(name) is string[] files && files.Length > 0
 			? project.OutputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<MetalsharpFile>();
+			: [];
 }

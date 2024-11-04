@@ -19,12 +19,19 @@ namespace Metalsharp;
 ///         .Use ... ;
 ///     ```
 /// </example>
-public class Debug : IMetalsharpPlugin
+/// <remarks>
+///     Instantiate `Debug` with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
+/// </remarks>
+/// 
+/// <param name="onLog">
+///     The action to execute when writing a log.
+/// </param>
+public class Debug(Action<string> onLog) : IMetalsharpPlugin
 {
 	/// <summary>
 	///     The action to execute when writing a log.
 	/// </summary>
-	private readonly Action<string> _onLog;
+	private readonly Action<string> _onLog = onLog;
 
 	/// <summary>
 	///     A count of the number of calls to .Use() against the directory.
@@ -73,24 +80,14 @@ public class Debug : IMetalsharpPlugin
 	})
 	{ }
 
-	/// <summary>
-	///     Instantiate `Debug` with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
-	/// </summary>
-	/// 
-	/// <param name="onLog">
-	///     The action to execute when writing a log.
-	/// </param>
-	public Debug(Action<string> onLog) =>
-		_onLog = onLog;
-
-	/// <summary>
-	///     Invokes the plugin.
-	/// </summary>
-	/// 
-	/// <param name="project">
-	///     The `MetalsharpProject` to output debug logs for.
-	/// </param>
-	public void Execute(MetalsharpProject project)
+    /// <summary>
+    ///     Invokes the plugin.
+    /// </summary>
+    /// 
+    /// <param name="project">
+    ///     The `MetalsharpProject` to output debug logs for.
+    /// </param>
+    public void Execute(MetalsharpProject project)
 	{
 		project.AfterUse += (sender, e) =>
 			_onLog(

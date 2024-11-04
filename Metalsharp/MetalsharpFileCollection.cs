@@ -8,16 +8,12 @@ namespace Metalsharp;
 /// <summary>
 ///     Represents a collection of Metalsharp files.
 /// </summary>
-/// 
-/// <typeparam name="T">
-///     The type of the files. These must be of type `IMetalsharpFile`.
-/// </typeparam>
 public class MetalsharpFileCollection : IList<MetalsharpFile>
 {
 	/// <summary>
 	///     The Metalsharp files in the collection.
 	/// </summary>
-	readonly List<MetalsharpFile> _items = new();
+	readonly List<MetalsharpFile> _items = [];
 
 	/// <summary>
 	///     Instantiate an empty collection.
@@ -75,7 +71,7 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 	}
 
 	public int Count =>
-		Items.Count();
+        Items.Count;
 
 	public bool IsReadOnly =>
 		false;
@@ -128,9 +124,6 @@ public static class IEnumerableExtensions
 	///     Mimic `IEnumerable.ToList`, allowing the easy conversion of an enumerable of files to an `IMetalsharpFileCollection`
 	/// </summary>
 	/// 
-	/// <typeparam name="T">
-	///     The type of the collection. Must derive from `IMetalsharpFile`.
-	/// </typeparam>
 	/// <param name="list">
 	///     The `IEnumerable` of `IMetalsharpFile`s to convert to an IMetalsharpFileCollection.
 	/// </param>

@@ -49,12 +49,18 @@ namespace Metalsharp;
 ///         project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
 ///     ```
 /// </example>
-public class Collections : IMetalsharpPlugin
+/// <remarks>
+///     Instantiates the plugin with the definitions of the collections.
+/// </remarks>
+/// <param name="definitions">
+///     The definitions of the collections, including the name of the collection and the predicate which matches its files.
+/// </param>
+public class Collections(params (string name, Predicate<MetalsharpFile> predicate)[] definitions) : IMetalsharpPlugin
 {
 	/// <summary>
 	///     Contains the definitions of the collections.
 	/// </summary>
-	private readonly (string name, Predicate<MetalsharpFile> predicate)[] _definitions;
+	private readonly (string name, Predicate<MetalsharpFile> predicate)[] _definitions = definitions;
 
 	/// <summary>
 	///     Instantiate the plugin with a single collection definition.
@@ -68,23 +74,14 @@ public class Collections : IMetalsharpPlugin
 	/// </param>
 	public Collections(string name, Predicate<MetalsharpFile> predicate) : this((name, predicate)) { }
 
-	/// <summary>
-	///     Instantiates the plugin with the definitions of the collections.
-	/// </summary>
-	/// <param name="definitions">
-	///     The definitions of the collections, including the name of the collection and the predicate which matches its files.
-	/// </param>
-	public Collections(params (string name, Predicate<MetalsharpFile> predicate)[] definitions) =>
-		_definitions = definitions;
-
-	/// <summary>
-	///     Invokes the plugin.
-	/// </summary>
-	/// 
-	/// <param name="project">
-	///     The `MetalsharpProject` on which the plugin will be invoked.
-	/// </param>
-	public void Execute(MetalsharpProject project)
+    /// <summary>
+    ///     Invokes the plugin.
+    /// </summary>
+    /// 
+    /// <param name="project">
+    ///     The `MetalsharpProject` on which the plugin will be invoked.
+    /// </param>
+    public void Execute(MetalsharpProject project)
 	{
 		var collections = new Dictionary<string, Dictionary<string, string[]>>();
 

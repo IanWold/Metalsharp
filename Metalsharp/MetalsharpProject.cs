@@ -80,32 +80,32 @@ public class MetalsharpProject
 	/// <summary>
 	///     Invoked before `Use()`
 	/// </summary>
-	public event EventHandler BeforeUse;
+	public event EventHandler? BeforeUse;
 
 	/// <summary>
 	///     Invoked after `Use()`
 	/// </summary>
-	public event EventHandler AfterUse;
+	public event EventHandler? AfterUse;
 
 	/// <summary>
 	///     Invoked before `Build()`
 	/// </summary>
-	public event EventHandler BeforeBuild;
+	public event EventHandler? BeforeBuild;
 
 	/// <summary>
 	///     Invoked after `Build()`
 	/// </summary>
-	public event EventHandler AfterBuild;
+	public event EventHandler? AfterBuild;
 
 	/// <summary>
 	///		Invoked when any message is sent to the logger, irrespective of the specified log level.
 	/// </summary>
-	public EventHandler<LogEventArgs> OnAnyLog;
+	public EventHandler<LogEventArgs>? OnAnyLog;
 
 	/// <summary>
 	///		Invoked when a message is logged at or above the specified log level.
 	/// </summary>
-	public EventHandler<LogEventArgs> OnLog;
+	public EventHandler<LogEventArgs>? OnLog;
 
 	#endregion
 
@@ -119,17 +119,17 @@ public class MetalsharpProject
 	/// <summary>
 	///     The directory-level metadata.
 	/// </summary>
-	public Dictionary<string, object> Metadata { get; init; } = new Dictionary<string, object>();
+	public Dictionary<string, object> Metadata { get; init; } = [];
 
 	/// <summary>
 	///     The input files of the project.
 	/// </summary>
-	public MetalsharpFileCollection InputFiles { get; init; } = new();
+	public MetalsharpFileCollection InputFiles { get; init; } = [];
 
 	/// <summary>
 	///     The files to output during building.
 	/// </summary>
-	public MetalsharpFileCollection OutputFiles { get; init; } = new();
+	public MetalsharpFileCollection OutputFiles { get; init; } = [];
 
 	#endregion
 
@@ -402,14 +402,14 @@ public class MetalsharpProject
 			var path = Path.Combine(Options.OutputDirectory, file.FilePath);
 			var directoryPath = Path.GetDirectoryName(path);
 
-			if (!Directory.Exists(directoryPath))
+			if (directoryPath is not null && !Directory.Exists(directoryPath))
 			{
 				LogDebug($"Creating directory {directoryPath}");
 				Directory.CreateDirectory(directoryPath);
 			}
 
 			LogDebug($"Wrting file {path}");
-			File.WriteAllBytes(path, file.Contents);
+			File.WriteAllBytes(path, file.Bytes);
 		}
 
 		LogInfo("\nFinalizing Build");
@@ -614,7 +614,7 @@ public class MetalsharpProject
 	{
 		foreach (var (key, value) in pairs)
 		{
-			if (Metadata.ContainsKey(key))
+			if (!Metadata.TryAdd(key, value))
 			{
 				LogDebug($"Updating metadata [{key}] = {value}");
 				Metadata[key] = value;
@@ -622,7 +622,6 @@ public class MetalsharpProject
 			else
 			{
 				LogDebug($"Adding metadata [{key}] = {value}");
-				Metadata.Add(key, value);
 			}
 		}
 
@@ -855,7 +854,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string? logMessage = null)
 	{
 		LogInfo($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -975,7 +974,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string? logMessage = null)
 	{
 		LogInfo($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1147,7 +1146,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string? logMessage = null)
 	{
 		LogInfo($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1240,7 +1239,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string? logMessage = null)
 	{
 		LogInfo($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1301,7 +1300,7 @@ public class MetalsharpProject
 	/// <returns>
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject Use(Action<MetalsharpProject> func, string functionName = null) =>
+	public MetalsharpProject Use(Action<MetalsharpProject> func, string? functionName = null) =>
 		Use(func, "function", functionName ?? "<anonymous>");
 
 	/// <summary>
@@ -1323,7 +1322,7 @@ public class MetalsharpProject
 	///     The current `MetalsharpProject`, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Use(IMetalsharpPlugin plugin) =>
-		Use(i => plugin.Execute(i), "plugin", plugin.GetType().Name);
+		Use(plugin.Execute, "plugin", plugin.GetType().Name);
 
 	/// <summary>
 	///     Invoke a plugin by type. The plugin must have a default (no arguments) constructor.

@@ -13,7 +13,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html")]
         public void DirectoryReturnsCorrectResult(string path)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
 
             Assert.True(file.Directory == Path.GetDirectoryName(path));
         }
@@ -24,7 +24,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html", "Dir")]
         public void DirectoryAssignsCorrectValue(string path, string directoryToAssign)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
             file.Directory = directoryToAssign;
 
             Assert.True(file.FilePath == Path.Combine(directoryToAssign, Path.GetFileName(file.FilePath)));
@@ -36,7 +36,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html")]
         public void ExtensionReturnsCorrectResult(string path)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
 
             Assert.True(file.Extension == Path.GetExtension(path));
         }
@@ -47,7 +47,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html", ".h")]
         public void ExtensionAssignsCorrectValue(string path, string extensionToAssign)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
             file.Extension = extensionToAssign;
 
             Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + extensionToAssign));
@@ -56,7 +56,7 @@ namespace Metalsharp.Tests
         [Fact]
         public void FilePathWorks()
         {
-            var file = new MetalsharpFile("text", "path", new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", "path", []);
             Assert.True(file.FilePath == "path");
 
             file.FilePath = "newpath";
@@ -80,7 +80,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html")]
         public void NameReturnsCorrectResult(string path)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
 
             Assert.True(file.Name == Path.GetFileNameWithoutExtension(path));
         }
@@ -91,7 +91,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.html", "newfile3")]
         public void NameAssignsCorrectValue(string path, string nameToAssign)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
             file.Name = nameToAssign;
 
             Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path), nameToAssign + Path.GetExtension(path)));
@@ -100,10 +100,10 @@ namespace Metalsharp.Tests
         [Fact]
         public void TextWorks()
         {
-            var file = new MetalsharpFile("text", "path", new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", "path", []);
             Assert.True(file.Text == "text");
 
-            file.Contents = Encoding.Default.GetBytes("newtext");
+            file.Bytes = Encoding.Default.GetBytes("newtext");
             Assert.True(file.Text == "newtext");
         }
 
@@ -116,7 +116,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory3", false)]
         public void IsDescendantOfReturnsCorrectResult(string path, string ancestorDirectory, bool expectedResult)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
 
             Assert.True(file.IsDescendantOf(ancestorDirectory) == expectedResult);
         }
@@ -131,7 +131,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory3", false)]
         public void IsChildOfReturnsCorrectResult(string path, string parentDirectory, bool expectedResult)
         {
-            var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
+            var file = new MetalsharpFile("text", path, []);
 
             Assert.True(file.IsChildOf(parentDirectory) == expectedResult);
         }

@@ -6,7 +6,14 @@ namespace Metalsharp;
 /// <summary>
 ///		Represents the configuration options for a Metalsharp project.
 /// </summary>
-public class MetalsharpOptions
+/// <remarks>
+///		Instantiate the default configuration.
+/// </remarks>
+public class MetalsharpOptions(
+    bool clearOutputDirectory = MetalsharpOptions.DefaultClearOutputDirectory,
+    string outputDirectory = MetalsharpOptions.DefaultOutputDirectory,
+    LogLevel verbosity = MetalsharpOptions.DefaultVerbosity
+)
 {
 	/// <summary>
 	/// The default value for `ClearOutputDirectory`
@@ -23,30 +30,16 @@ public class MetalsharpOptions
 	/// </summary>
 	public const LogLevel DefaultVerbosity = LogLevel.Error;
 
-	/// <summary>
-	///		Instantiate the default configuration.
-	/// </summary>
-	public MetalsharpOptions(
-		bool clearOutputDirectory = DefaultClearOutputDirectory,
-		string outputDirectory = DefaultOutputDirectory,
-		LogLevel verbosity = DefaultVerbosity
-	)
+    /// <summary>
+    ///		Instantiate configuration from command line arguments.
+    /// </summary>
+    /// 
+    /// <param name="args">
+    ///		The command line arguments
+    /// </param>
+    public static MetalsharpOptions FromArgs(string[] args)
 	{
-		ClearOutputDirectory = clearOutputDirectory;
-		OutputDirectory = outputDirectory;
-		Verbosity = verbosity;
-	}
-
-	/// <summary>
-	///		Instantiate configuration from command line arguments.
-	/// </summary>
-	/// 
-	/// <param name="args">
-	///		The command line arguments
-	/// </param>
-	public static MetalsharpOptions FromArgs(string[] args)
-	{
-		MetalsharpOptions configuration = null;
+		MetalsharpOptions configuration = new();
 
 		new Parser()
 			.ParseArguments<MetalsharpOptions>(args)
@@ -56,25 +49,25 @@ public class MetalsharpOptions
 		return configuration;
 	}
 
-	/// <summary>
-	///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
-	///     
-	///     `false` by default.
-	/// </summary>
-	[Option('c', "clear", Default = DefaultClearOutputDirectory, HelpText = "Whether Metalsharp should remove all the files in the output directory before writing any to that directory.")]
-	public bool ClearOutputDirectory { get; init; }
+    /// <summary>
+    ///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
+    ///     
+    ///     `false` by default.
+    /// </summary>
+    [Option('c', "clear", Default = DefaultClearOutputDirectory, HelpText = "Whether Metalsharp should remove all the files in the output directory before writing any to that directory.")]
+    public bool ClearOutputDirectory { get; init; } = clearOutputDirectory;
 
-	/// <summary>
-	///     The directory to which the files will be output.
-	///     
-	///     `.\` by default.
-	/// </summary>
-	[Option('o', "output", Default = DefaultOutputDirectory, HelpText = "The directory to which the files will be output.")]
-	public string OutputDirectory { get; init; }
+    /// <summary>
+    ///     The directory to which the files will be output.
+    ///     
+    ///     `.\` by default.
+    /// </summary>
+    [Option('o', "output", Default = DefaultOutputDirectory, HelpText = "The directory to which the files will be output.")]
+    public string OutputDirectory { get; init; } = outputDirectory;
 
-	/// <summary>
-	///		The minimum level to log.
-	/// </summary>
-	[Option('v', "verbosity", Default = DefaultVerbosity, HelpText = "The verbosity level for the log output.")]
-	public LogLevel Verbosity { get; init; }
+    /// <summary>
+    ///		The minimum level to log.
+    /// </summary>
+    [Option('v', "verbosity", Default = DefaultVerbosity, HelpText = "The verbosity level for the log output.")]
+    public LogLevel Verbosity { get; init; } = verbosity;
 }

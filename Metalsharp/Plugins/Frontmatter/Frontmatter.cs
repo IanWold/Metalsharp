@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -46,11 +47,11 @@ public class Frontmatter : IMetalsharpPlugin
 		foreach (var file in project.InputFiles)
 		{
 			project.LogDebug($"Looking for frontmatter in {file.FilePath}");
-			if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
+			if (TryGetFrontmatter(file.Text, out var metadata, out var text))
 			{
 				project.LogDebug($"    Found frontmatter:");
 
-				file.Contents = Encoding.Default.GetBytes(text);
+				file.Bytes = Encoding.Default.GetBytes(text);
 
 				foreach (var pair in metadata)
 				{
@@ -86,15 +87,15 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	private static bool TryGetFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		if (document.StartsWith("---") && TryGetYamlFrontmatter(document, out Dictionary<string, object> yamlFrontmatter, out string yamlRemainder))
+		if (document.StartsWith("---") && TryGetYamlFrontmatter(document, out var yamlFrontmatter, out var yamlRemainder))
 		{
 			frontmatter = yamlFrontmatter;
 			remainder = yamlRemainder;
 			return true;
 		}
-		else if (document.StartsWith(";;;") && TryGetJsonFrontmatter(document, out Dictionary<string, object> jsonFrontmatter, out string jsonRemainder))
+		else if (document.StartsWith(";;;") && TryGetJsonFrontmatter(document, out var jsonFrontmatter, out var jsonRemainder))
 		{
 			frontmatter = jsonFrontmatter;
 			remainder = jsonRemainder;
@@ -125,9 +126,9 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	private static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetYamlFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split(new[] { "---" }, StringSplitOptions.None);
+		var split = document.Split(["---"], StringSplitOptions.None);
 
 		frontmatter = null;
 		remainder = null;
@@ -172,9 +173,9 @@ public class Frontmatter : IMetalsharpPlugin
 	/// <returns>
 	///     `true` if frontmatter text was found and parsed; `false` otherwise.
 	/// </returns>
-	private static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetJsonFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split(new[] { ";;;" }, StringSplitOptions.None);
+		var split = document.Split([";;;"], StringSplitOptions.None);
 
 		frontmatter = null;
 		remainder = null;
