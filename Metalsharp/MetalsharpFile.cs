@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 
 namespace Metalsharp;
 
@@ -9,17 +7,17 @@ namespace Metalsharp;
 /// </summary>
 /// 
 /// <example>
-///     Create a file called `File.md` in the directory `Directory` with the content `# File Header!`:
+///     Create a file called <c>File.md</c> in the directory <c>Directory</c> with the content <c># File Header!</c>:
 ///     
-///     ```c#
+///     <code>
 ///         new MetalsharpFile("# File Header!", "Directory\\File.md");
-///     ```
+///     </code>
 ///     
-///     The `Metadata` in this file will be empty. Metadata can be used to store inormation related to the file that doesn't relate to its path or content. This creates the same file, but with a metadata value "draft" = true:
+///     The <c>Metadata</c> in this file will be empty. Metadata can be used to store inormation related to the file that doesn't relate to its path or content. This creates the same file, but with a metadata value "draft" = true:
 ///     
-///     ```c#
+///     <code>
 ///         new MetalsharpFile("# File Header!", "Directory\\File.md", new Dictionary&lt;string, object&gt; { ["draft"] = true });
-///     ```
+///     </code>
 /// </example>
 public class MetalsharpFile
 {
@@ -33,7 +31,7 @@ public class MetalsharpFile
 	/// <param name="filePath">
 	///     The virtual path of the file.
 	/// </param>
-	public MetalsharpFile(string text, string filePath) : this(text, filePath, new Dictionary<string, object>()) { }
+	public MetalsharpFile(string text, string filePath) : this(text, filePath, []) { }
 
 	/// <summary>
 	///     Instantiates a new MetalsharpFile with no metadata.
@@ -45,7 +43,7 @@ public class MetalsharpFile
 	/// <param name="filePath">
 	///     The virtual path of the file.
 	/// </param>
-	public MetalsharpFile(byte[] contents, string filePath) : this(contents, filePath, new Dictionary<string, object>()) { }
+	public MetalsharpFile(byte[] contents, string filePath) : this(contents, filePath, []) { }
 
 	/// <summary>
 	///     Instantiate a new MetalsharpFile with the specified metadata.
@@ -94,7 +92,7 @@ public class MetalsharpFile
 	/// </summary>
 	public string Directory
 	{
-		get => Path.GetDirectoryName(FilePath);
+		get => Path.GetDirectoryName(FilePath) ?? string.Empty;
 		set => FilePath = Path.Combine(value, Name + Extension);
 	}
 
@@ -115,7 +113,7 @@ public class MetalsharpFile
 	/// <summary>
 	///     Metadata from the file.
 	/// </summary>
-	public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+	public Dictionary<string, object> Metadata { get; set; } = [];
 
 	/// <summary>
 	///     The name of the file, without the extension.
@@ -136,32 +134,79 @@ public class MetalsharpFile
 	#region Methods
 
 	/// <summary>
-	///     Checks whether a directory is an ancestor of the file.
+	///     Checks whether a directory is an ancestor of the file, i.e. whether <paramref name="directory"/>'s path
+	///     segments appear as a contiguous, aligned run anywhere in the file's path.
 	/// </summary>
-	/// 
+	///
 	/// <param name="directory">
 	///     The directory in question.
 	/// </param>
-	/// 
+	/// <param name="comparisonType">
+	///     The kind of string comparison to use when comparing path segments.
+	///
+	///     <see cref="StringComparison.OrdinalIgnoreCase"/> by default.
+	/// </param>
+	///
 	/// <returns>
-	///     `true` if the file is a descendant of the directory, `false` otherwise.
+	///     <c>true</c> if the file is a descendant of the directory, <c>false</c> otherwise.
 	/// </returns>
-	public bool IsDescendantOf(string directory) =>
-		FilePath.Contains(directory + Path.DirectorySeparatorChar);
+	public bool IsDescendantOf(string directory, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	{
+		var fileSegments = SplitSegments(FilePath);
+		var directorySegments = SplitSegments(directory);
+		var comparer = StringComparer.FromComparison(comparisonType);
+
+		for (var start = 0; start <= fileSegments.Length - directorySegments.Length - 1; start++)
+		{
+			if (fileSegments.Skip(start).Take(directorySegments.Length).SequenceEqual(directorySegments, comparer))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/// <summary>
-	///     Checks whether a directory is the parent of the file.
+	///     Checks whether a directory is the immediate parent of the file, i.e. whether <paramref name="directory"/>'s
+	///     path segments exactly match the trailing segments of the file's own directory.
 	/// </summary>
-	/// 
+	///
 	/// <param name="directory">
 	///     The directory in question.
 	/// </param>
-	/// 
+	/// <param name="comparisonType">
+	///     The kind of string comparison to use when comparing path segments.
+	///
+	///     <see cref="StringComparison.OrdinalIgnoreCase"/> by default.
+	/// </param>
+	///
 	/// <returns>
-	///     `true` if the file is a child of the directory, `false` otherwise.
+	///     <c>true</c> if the file is a child of the directory, <c>false</c> otherwise.
 	/// </returns>
-	public bool IsChildOf(string directory) =>
-		FilePath.Contains(Path.Combine(directory, Name + Extension));
+	public bool IsChildOf(string directory, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	{
+		var fileDirectorySegments = SplitSegments(Directory);
+		var directorySegments = SplitSegments(directory);
+		var comparer = StringComparer.FromComparison(comparisonType);
+
+		return directorySegments.Length <= fileDirectorySegments.Length
+			&& fileDirectorySegments.Skip(fileDirectorySegments.Length - directorySegments.Length).SequenceEqual(directorySegments, comparer);
+	}
+
+	/// <summary>
+	///     Splits a virtual path into its individual directory/file segments.
+	/// </summary>
+	///
+	/// <param name="path">
+	///     The path to split.
+	/// </param>
+	///
+	/// <returns>
+	///     The non-empty segments of the path.
+	/// </returns>
+	private static string[] SplitSegments(string path) =>
+		path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
 
 	#endregion
 }

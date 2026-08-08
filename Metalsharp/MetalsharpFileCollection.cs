@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 
 namespace Metalsharp;
 
 /// <summary>
 ///     Represents a collection of Metalsharp files.
 /// </summary>
-/// 
-/// <typeparam name="T">
-///     The type of the files. These must be of type `IMetalsharpFile`.
-/// </typeparam>
 public class MetalsharpFileCollection : IList<MetalsharpFile>
 {
 	/// <summary>
@@ -37,36 +30,46 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 	/// <summary>
 	///     Gets the files in the collection which descend from the given virtual directory.
 	/// </summary>
-	/// 
+	///
 	/// <param name="directory">
 	///     The ancestor directory.
 	/// </param>
-	/// 
+	/// <param name="comparisonType">
+	///     The kind of string comparison to use when comparing path segments.
+	///
+	///     <see cref="StringComparison.OrdinalIgnoreCase"/> by default.
+	/// </param>
+	///
 	/// <returns>
 	///     All of the files which descend from the given directory.
 	/// </returns>
-	public MetalsharpFileCollection DescendantsOf(string directory) =>
-		Items.Where(i => i.IsDescendantOf(directory)).ToMetalsharpFileCollection();
+	public MetalsharpFileCollection DescendantsOf(string directory, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
+		Items.Where(i => i.IsDescendantOf(directory, comparisonType)).ToMetalsharpFileCollection();
 
 	/// <summary>
 	///     Gets the files in the collection which are children to the given virtual directory.
 	/// </summary>
-	/// 
+	///
 	/// <param name="directory">
 	///     The parent directory.
 	/// </param>
-	/// 
+	/// <param name="comparisonType">
+	///     The kind of string comparison to use when comparing path segments.
+	///
+	///     <see cref="StringComparison.OrdinalIgnoreCase"/> by default.
+	/// </param>
+	///
 	/// <returns>
 	///     All of the files which are children of the given directory.
 	/// </returns>
-	public MetalsharpFileCollection ChildrenOf(string directory) =>
-		Items.Where(i => i.IsChildOf(directory)).ToMetalsharpFileCollection();
+	public MetalsharpFileCollection ChildrenOf(string directory, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
+		Items.Where(i => i.IsChildOf(directory, comparisonType)).ToMetalsharpFileCollection();
 
 	#region Interface Implementation
 #pragma warning disable CS1591 // No XML comments on members
 
-	public bool ContainsDirectory(string directory) =>
-		Items.Exists(i => i.IsDescendantOf(directory));
+	public bool ContainsDirectory(string directory, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
+		Items.Exists(i => i.IsDescendantOf(directory, comparisonType));
 
 	public MetalsharpFile this[int index]
 	{
@@ -75,7 +78,7 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 	}
 
 	public int Count =>
-		Items.Count();
+		Items.Count;
 
 	public bool IsReadOnly =>
 		false;
@@ -120,23 +123,20 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 }
 
 /// <summary>
-///     `MetalsharpFileCollection` extensions for `IEnumerable`.
+///     <c>MetalsharpFileCollection</c> extensions for <c>IEnumerable</c>.
 /// </summary>
 public static class IEnumerableExtensions
 {
 	/// <summary>
-	///     Mimic `IEnumerable.ToList`, allowing the easy conversion of an enumerable of files to an `IMetalsharpFileCollection`
+	///     Mimic <c>IEnumerable.ToList</c>, allowing the easy conversion of an enumerable of files to an <c>IMetalsharpFileCollection</c>
 	/// </summary>
-	/// 
-	/// <typeparam name="T">
-	///     The type of the collection. Must derive from `IMetalsharpFile`.
-	/// </typeparam>
+	///
 	/// <param name="list">
-	///     The `IEnumerable` of `IMetalsharpFile`s to convert to an IMetalsharpFileCollection.
+	///     The <c>IEnumerable</c> of <c>IMetalsharpFile</c>s to convert to an IMetalsharpFileCollection.
 	/// </param>
 	/// 
 	/// <returns>
-	///     An `IMetalsharpFileCollection` containing the files in the given list.
+	///     An <c>IMetalsharpFileCollection</c> containing the files in the given list.
 	/// </returns>
 	public static MetalsharpFileCollection ToMetalsharpFileCollection(this IEnumerable<MetalsharpFile> list) =>
 		new(list);

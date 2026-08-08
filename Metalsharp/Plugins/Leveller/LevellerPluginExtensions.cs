@@ -6,23 +6,23 @@
 public static class LevellerPluginExtensions
 {
 	/// <summary>
-	///     Invoke the `Leveller` plugin.
+	///     Invoke the <c>Leveller</c> plugin.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add files
 	///         .UseLeveller();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseLeveller(this MetalsharpProject project) =>
 		project.Use(new Leveller());

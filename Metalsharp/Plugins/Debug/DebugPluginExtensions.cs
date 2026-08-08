@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
 /// Extensions for the Debug plugin.
@@ -12,18 +10,18 @@ public static class DebugPluginExtensions
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseDebug();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseDebug(this MetalsharpProject project) =>
 		project.Use(new Debug());
@@ -33,21 +31,21 @@ public static class DebugPluginExtensions
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseDebug("debug.log");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// <param name="logPath">
 	///     The path to the log file.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseDebug(this MetalsharpProject project, string logPath) =>
 		project.Use(new Debug(logPath));
@@ -57,21 +55,21 @@ public static class DebugPluginExtensions
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseDebug(log => Console.WriteLine(log));
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// <param name="onLog">
 	///     The action to execute to log a debug line.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseDebug(this MetalsharpProject project, Action<string> onLog) =>
 		project.Use(new Debug(onLog));

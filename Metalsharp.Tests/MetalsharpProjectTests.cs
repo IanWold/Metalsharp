@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Xunit;
-
-namespace Metalsharp.Tests
+﻿namespace Metalsharp.Tests
 {
     public class MetalsharpProjectTests
     {
@@ -398,6 +393,30 @@ namespace Metalsharp.Tests
                 .RemoveOutput(f => f.Text == "text");
 
             Assert.DoesNotContain(file, project.OutputFiles);
+        }
+
+        [Fact]
+        public void RemoveInputAtDebugVerbosityRemovesAllMatches()
+        {
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.Debug })
+                .AddInput(new MetalsharpFile("a", "a.txt"))
+                .AddInput(new MetalsharpFile("b", "b.txt"))
+                .AddInput(new MetalsharpFile("c", "c.txt"))
+                .RemoveInput(f => true);
+
+            Assert.Empty(project.InputFiles);
+        }
+
+        [Fact]
+        public void RemoveOutputAtDebugVerbosityRemovesAllMatches()
+        {
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.Debug })
+                .AddOutput(new MetalsharpFile("a", "a.txt"))
+                .AddOutput(new MetalsharpFile("b", "b.txt"))
+                .AddOutput(new MetalsharpFile("c", "c.txt"))
+                .RemoveOutput(f => true);
+
+            Assert.Empty(project.OutputFiles);
         }
 
         #endregion

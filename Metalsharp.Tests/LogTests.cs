@@ -1,7 +1,4 @@
-﻿using System;
-using Xunit;
-
-namespace Metalsharp.Tests;
+﻿namespace Metalsharp.Tests;
 
 public class LogTests
 {

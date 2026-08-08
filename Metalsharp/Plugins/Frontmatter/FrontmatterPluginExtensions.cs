@@ -6,23 +6,23 @@
 public static class FrontmatterPluginExtensions
 {
 	/// <summary>
-	///     Invoke the `Frontmatter` plugin.
+	///     Invoke the <c>Frontmatter</c> plugin.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add files
 	///         .UseFrontmatter();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseFrontmatter(this MetalsharpProject project) =>
 		project.Use(new Frontmatter());

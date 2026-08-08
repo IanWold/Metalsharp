@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Xunit;
+﻿using System.Text;
 
 namespace Metalsharp.Tests
 {
@@ -50,7 +47,7 @@ namespace Metalsharp.Tests
             var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
             file.Extension = extensionToAssign;
 
-            Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + extensionToAssign));
+            Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path)!, Path.GetFileNameWithoutExtension(path) + extensionToAssign));
         }
 
         [Fact]
@@ -94,7 +91,7 @@ namespace Metalsharp.Tests
             var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
             file.Name = nameToAssign;
 
-            Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path), nameToAssign + Path.GetExtension(path)));
+            Assert.True(file.FilePath == Path.Combine(Path.GetDirectoryName(path)!, nameToAssign + Path.GetExtension(path)));
         }
 
         [Fact]
@@ -114,6 +111,7 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory2", true)]
         [InlineData("Directory1\\Directory2\\file.txt", "Directory3", false)]
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory3", false)]
+        [InlineData("OtherDirectory1\\file.txt", "Directory1", false)]
         public void IsDescendantOfReturnsCorrectResult(string path, string ancestorDirectory, bool expectedResult)
         {
             var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
@@ -129,11 +127,46 @@ namespace Metalsharp.Tests
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory2", true)]
         [InlineData("Directory1\\Directory2\\file.txt", "Directory3", false)]
         [InlineData("Directory1\\Directory2\\file.txt", "Directory1\\Directory3", false)]
+        [InlineData("XDirectory2\\file.txt", "Directory2", false)]
         public void IsChildOfReturnsCorrectResult(string path, string parentDirectory, bool expectedResult)
         {
             var file = new MetalsharpFile("text", path, new Dictionary<string, object>());
 
             Assert.True(file.IsChildOf(parentDirectory) == expectedResult);
+        }
+
+        [Fact]
+        public void IsDescendantOfIsCaseInsensitiveByDefault()
+        {
+            var file = new MetalsharpFile("text", "Directory1\\file.txt");
+
+            Assert.True(file.IsDescendantOf("directory1"));
+        }
+
+        [Fact]
+        public void IsDescendantOfCanBeMadeCaseSensitive()
+        {
+            var file = new MetalsharpFile("text", "Directory1\\file.txt");
+
+            Assert.False(file.IsDescendantOf("directory1", StringComparison.Ordinal));
+            Assert.True(file.IsDescendantOf("Directory1", StringComparison.Ordinal));
+        }
+
+        [Fact]
+        public void IsChildOfIsCaseInsensitiveByDefault()
+        {
+            var file = new MetalsharpFile("text", "Directory1\\file.txt");
+
+            Assert.True(file.IsChildOf("directory1"));
+        }
+
+        [Fact]
+        public void IsChildOfCanBeMadeCaseSensitive()
+        {
+            var file = new MetalsharpFile("text", "Directory1\\file.txt");
+
+            Assert.False(file.IsChildOf("directory1", StringComparison.Ordinal));
+            Assert.True(file.IsChildOf("Directory1", StringComparison.Ordinal));
         }
     }
 }

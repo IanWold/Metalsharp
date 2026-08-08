@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace Metalsharp.Tests;
+﻿namespace Metalsharp.Tests;
 
 public class DebugTests
 {
@@ -8,13 +6,13 @@ public class DebugTests
 	public void DebugLogsAftereUse()
 	{
 		var didLogAfterPlugin = false;
-		object testMetadataValue = null;
+		object? testMetadataValue = null;
 
 		var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None });
 		project
 			.UseDebug(i =>
 			{
-				if (project.Metadata.TryGetValue("test", out object value))
+				if (project.Metadata.TryGetValue("test", out var value))
 				{
 					didLogAfterPlugin = true;
 					testMetadataValue = value;

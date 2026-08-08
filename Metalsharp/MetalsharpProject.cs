@@ -1,37 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
-///     This is the root of a Metalsharp project. `MetalsharpProject` controls the use of plugins against a project, the files input and output by the project, and the building of the project.
+///     This is the root of a Metalsharp project. <c>MetalsharpProject</c> controls the use of plugins against a project, the files input and output by the project, and the building of the project.
 /// </summary>
 /// 
 /// <example>
-///     The best example is always the example at the top of the [README](https://github.com/ianwold/metalsharp/):
+///     The best example is always the example at the top of the <see href="https://github.com/ianwold/metalsharp/">README</see>:
 ///     
-///     ```c#
+///     <code>
 ///     new MetalsharpProject("Site")
 ///         .UseFrontmatter()
 ///         .UseDrafts()
 ///         .Use(new Markdown())
 ///         .Build();
-///     ```
+///     </code>
 ///     
-///     Here, `MetalsharpProject` is instantiated with a set of files from the on-disk directory `Site`. Then, the plugins `Frontmatter`, `Drafts`, and `Markdown` are invoked against the project. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
+///     Here, <c>MetalsharpProject</c> is instantiated with a set of files from the on-disk directory <c>Site</c>. Then, the plugins <c>Frontmatter</c>, <c>Drafts</c>, and <c>Markdown</c> are invoked against the project. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
 /// </example>
 public class MetalsharpProject
 {
 	/// <summary>
-	///	    Instantiate a `MetalsharpProject` with the specified configuration options.
+	///	    Instantiate a <c>MetalsharpProject</c> with the specified configuration options.
 	/// </summary>
 	/// 
 	/// <param name="options">
 	///	    The configuration options for the project.
 	/// </param>
-	public MetalsharpProject(MetalsharpOptions options)
+	public MetalsharpProject(MetalsharpOptions? options)
 	{
 		Options = options ?? new();
 
@@ -44,18 +39,18 @@ public class MetalsharpProject
 	}
 
 	/// <summary>
-	///	    Instantiate a `MetalsharpProject` with the specified configuration options.
+	///	    Instantiate a <c>MetalsharpProject</c> with the specified configuration options.
 	/// </summary>
 	/// 
 	/// <param name="clearOutputDirectory">
 	///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
 	///     
-	///     `false` by default.
+	///     <c>false</c> by default.
 	/// </param>
 	/// <param name="outputDirectory">
 	///     The directory to which the files will be output.
 	///     
-	///     `.\` by default.
+	///     <c>.\</c> by default.
 	/// </param>
 	/// <param name="verbosity">
 	///		The minimum level to log.
@@ -78,34 +73,34 @@ public class MetalsharpProject
 	#region Events
 
 	/// <summary>
-	///     Invoked before `Use()`
+	///     Invoked before <c>Use()</c>
 	/// </summary>
-	public event EventHandler BeforeUse;
+	public event EventHandler? BeforeUse;
 
 	/// <summary>
-	///     Invoked after `Use()`
+	///     Invoked after <c>Use()</c>
 	/// </summary>
-	public event EventHandler AfterUse;
+	public event EventHandler? AfterUse;
 
 	/// <summary>
-	///     Invoked before `Build()`
+	///     Invoked before <c>Build()</c>
 	/// </summary>
-	public event EventHandler BeforeBuild;
+	public event EventHandler? BeforeBuild;
 
 	/// <summary>
-	///     Invoked after `Build()`
+	///     Invoked after <c>Build()</c>
 	/// </summary>
-	public event EventHandler AfterBuild;
+	public event EventHandler? AfterBuild;
 
 	/// <summary>
 	///		Invoked when any message is sent to the logger, irrespective of the specified log level.
 	/// </summary>
-	public EventHandler<LogEventArgs> OnAnyLog;
+	public EventHandler<LogEventArgs>? OnAnyLog;
 
 	/// <summary>
 	///		Invoked when a message is logged at or above the specified log level.
 	/// </summary>
-	public EventHandler<LogEventArgs> OnLog;
+	public EventHandler<LogEventArgs>? OnLog;
 
 	#endregion
 
@@ -119,7 +114,7 @@ public class MetalsharpProject
 	/// <summary>
 	///     The directory-level metadata.
 	/// </summary>
-	public Dictionary<string, object> Metadata { get; init; } = new Dictionary<string, object>();
+	public Dictionary<string, object> Metadata { get; init; } = [];
 
 	/// <summary>
 	///     The input files of the project.
@@ -140,7 +135,7 @@ public class MetalsharpProject
 	/// <summary>
 	///     Adds an existing directory or file to the input or output and place the files in a specific virtual path.
 	///     
-	///     This method is called internally by `AddInput` and `AddOutput`.
+	///     This method is called internally by <c>AddInput</c> and <c>AddOutput</c>.
 	/// </summary>
 	/// 
 	/// <param name="diskPath">
@@ -150,7 +145,7 @@ public class MetalsharpProject
 	///     The path to the virtual directory to place the files in.
 	/// </param>
 	/// <param name="add">
-	///     The function to perform on each file. The intent is that this function will add the file to `InputFiles` or `OutputFiles`.
+	///     The function to perform on each file. The intent is that this function will add the file to <c>InputFiles</c> or <c>OutputFiles</c>.
 	/// </param>
 	/// <param name="list">
 	///		The list to which the files are being added - "Input" or "Output"
@@ -160,7 +155,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     Returns `this` - the current `MetalsharpProject`. This value is passed through `AddInput` and `AddOutput` and allows them to be fluent.
+	///     Returns <c>this</c> - the current <c>MetalsharpProject</c>. This value is passed through <c>AddInput</c> and <c>AddOutput</c> and allows them to be fluent.
 	/// </returns>
 	MetalsharpProject AddFromFileSystem(string diskPath, string virtualPath, Action<MetalsharpFile> add, string list, int recurse = 0)
 	{
@@ -213,11 +208,11 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddInput("Path\\To\\Directory") // Add all files in Path\To\Directory to input.
 	///         .AddInput("Path\\To\\File.md"); // Add Path\To\File.md to input.
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="path">
@@ -225,7 +220,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddInput(string path) =>
 		AddInput(path, path);
@@ -235,11 +230,11 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddInput("Path\\To\\Directory", "New\\Path") // Add all files in Path\To\Directory to input in the New\Path directory.
 	///         .AddInput("Path\\To\\File.md", "New\\Path"); // Add Path\To\File.md to input. Its path will be New\Path\File.md.
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="diskPath">
@@ -250,7 +245,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddInput(string diskPath, string virtualPath) =>
 		AddFromFileSystem(diskPath, virtualPath, InputFiles.Add, "Input");
@@ -260,10 +255,10 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddInput(new MetalsharpFile("# File Text", "path\\to\\file.md");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="file">
@@ -271,7 +266,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddInput(MetalsharpFile file)
 	{
@@ -287,11 +282,11 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddOutput("Path\\To\\Directory") // Add all files in Path\To\Directory to output
 	///         .AddOutput("Path\\To\\File.md"); // Add Path\To\File.md to output
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="path">
@@ -299,7 +294,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddOutput(string path) =>
 		AddOutput(path, path);
@@ -309,11 +304,11 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddOutput("Path\\To\\Directory", "New\\Path") // Add all files in Path\To\Directory to the output in the New\Path directory.
 	///         .AddOutput("Path\\To\\File.md", "New\\Path"); // Add Path\To\File.md to the output. Its path will be New\Path\File.md.
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="diskPath">
@@ -324,28 +319,28 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddOutput(string diskPath, string virtualPath) =>
 		AddFromFileSystem(diskPath, virtualPath, OutputFiles.Add, "Output");
 
 	/// <summary>
-	///     Add a MetalsharpFile to the input files
+	///     Add a MetalsharpFile to the output files
 	/// </summary>
-	/// 
+	///
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
-	///         .AddInput(new MetalsharpFile("# File Text", "path\\to\\file.md");
-	///     ```
+	///         .AddOutput(new MetalsharpFile("# File Text", "path\\to\\file.md");
+	///     </code>
 	/// </example>
-	/// 
+	///
 	/// <param name="file">
 	///     The file to add.
 	/// </param>
-	/// 
+	///
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddOutput(MetalsharpFile file)
 	{
@@ -365,18 +360,18 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     The following will output a single file (`File.md`) to the current directory:
+	///     The following will output a single file (<c>File.md</c>) to the current directory:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .AddOutput("text", "File.md")
 	///         .Build();
-	///     ```
+	///     </code>
 	/// </example>
 	public void Build()
 	{
 		LogDebug("Invoking BeforeBuild");
-		BeforeBuild?.Invoke(this, new EventArgs());
+		BeforeBuild?.Invoke(this, EventArgs.Empty);
 
 		LogInfo("\nBeginning Build");
 
@@ -400,7 +395,7 @@ public class MetalsharpProject
 		foreach (var file in OutputFiles)
 		{
 			var path = Path.Combine(Options.OutputDirectory, file.FilePath);
-			var directoryPath = Path.GetDirectoryName(path);
+			var directoryPath = Path.GetDirectoryName(path)!;
 
 			if (!Directory.Exists(directoryPath))
 			{
@@ -414,7 +409,7 @@ public class MetalsharpProject
 
 		LogInfo("\nFinalizing Build");
 		LogDebug("Invoking AfterBuild");
-		AfterBuild?.Invoke(this, new EventArgs());
+		AfterBuild?.Invoke(this, EventArgs.Empty);
 
 		LogInfo("Finished Build");
 	}
@@ -423,7 +418,7 @@ public class MetalsharpProject
 
 	#region Log
 
-	private bool _wasLastLogSection = false;
+	private bool _wasLastLogSection;
 
 	private void TryLog(LogEventArgs logEventArgs)
 	{
@@ -448,18 +443,18 @@ public class MetalsharpProject
 		TryLog(new(LogLevel.Info, message));
 
 	/// <summary>
-	///     Log a message at `Debug` level.
+	///     Log a message at <c>Debug</c> level.
 	/// </summary>
 	/// 
 	/// <example>
 	///     The following will log a debug message between using two plugins:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UsePlugin1()
 	///         .LogDebug("About to use plugin 2...")
 	///         .UsePlugin2()
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="message">
@@ -467,7 +462,7 @@ public class MetalsharpProject
 	///	</param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject LogDebug(string message)
 	{
@@ -476,18 +471,18 @@ public class MetalsharpProject
 	}
 
 	/// <summary>
-	///     Log a message at `Info` level.
+	///     Log a message at <c>Info</c> level.
 	/// </summary>
 	/// 
 	/// <example>
 	///     The following will log a debug message between using two plugins:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UsePlugin1()
 	///         .LogInfo("About to use plugin 2...")
 	///         .UsePlugin2()
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="message">
@@ -495,7 +490,7 @@ public class MetalsharpProject
 	///	</param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject LogInfo(string message)
 	{
@@ -504,18 +499,18 @@ public class MetalsharpProject
 	}
 
 	/// <summary>
-	///     Log a message at `Error` level.
+	///     Log a message at <c>Error</c> level.
 	/// </summary>
 	/// 
 	/// <example>
 	///     The following will log a debug message between using two plugins:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UsePlugin1()
 	///         .LogError("About to use plugin 2...")
 	///         .UsePlugin2()
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="message">
@@ -523,7 +518,7 @@ public class MetalsharpProject
 	///	</param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject LogError(string message)
 	{
@@ -532,18 +527,18 @@ public class MetalsharpProject
 	}
 
 	/// <summary>
-	///     Log a message at `Fatal` level.
+	///     Log a message at <c>Fatal</c> level.
 	/// </summary>
 	/// 
 	/// <example>
 	///     The following will log a debug message between using two plugins:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UsePlugin1()
 	///         .LogFatal("About to use plugin 2...")
 	///         .UsePlugin2()
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="message">
@@ -551,7 +546,7 @@ public class MetalsharpProject
 	///	</param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject LogFatal(string message)
 	{
@@ -570,11 +565,11 @@ public class MetalsharpProject
 	/// <example>
 	///     The following will add a single item to the metadata, and will then overwrite that value:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .Meta("key", "value")
 	///         .Meta("key", "new value"); // The new value overwrites the old value.
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="key">
@@ -585,7 +580,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Meta(string key, object value) =>
 		Meta((key, value));
@@ -597,10 +592,10 @@ public class MetalsharpProject
 	/// <example>
 	///     The following will add several items to the metadata:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .Meta(("key1", "value1"), ("key2", "value2"), ("key3", "value3"));
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="pairs">
@@ -608,7 +603,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Meta(params (string key, object value)[] pairs)
 	{
@@ -638,9 +633,9 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Suppose we have, for the sake of argument, input *and* output files in the following virtual directory structure:
+	///     Suppose we have, for the sake of argument, input and output files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -649,20 +644,20 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the files in `Content` one level in each the input and output. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveFiles`:
+	///     And we want to elevate all the files in <c>Content</c> one level in each the input and output. Effectively we need to replace "\\Content" with ".\\". We can do that with <c>MoveFiles</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `InputFiles` with the files
 	///         ... // Populate `OutputFiles` with the files
 	///         .MoveFiles("Content", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be (in both input and output):
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Posts
 	///         │   ├── Post1.md
@@ -670,7 +665,7 @@ public class MetalsharpProject
 	///         ├── Index.md
 	///         ├── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="fromDirectory">
@@ -681,7 +676,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject MoveFiles(string fromDirectory, string toDirectory)
 	{
@@ -695,9 +690,9 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Suppose we have, for the sake of argument, input *and* output files in the following virtual directory structure:
+	///     Suppose we have, for the sake of argument, input and output files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -706,20 +701,20 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the `html` files to the root directory in each the input and output. We use `MoveFiles` to match those files with a predicate and rewrite their directory:
+	///     And we want to elevate all the <c>html</c> files to the root directory in each the input and output. We use <c>MoveFiles</c> to match those files with a predicate and rewrite their directory:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `InputFiles` with the files
 	///         ... // Populate `OutputFiles` with the files
 	///         .MoveFiles(file => file.Extension == ".html", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be (in both the input and output):
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -728,7 +723,7 @@ public class MetalsharpProject
 	///         ├── About.html
 	///         ├── Post2.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -739,7 +734,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject MoveFiles(Predicate<MetalsharpFile> predicate, string toDirectory)
 	{
@@ -755,7 +750,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Suppose we have input files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -764,19 +759,19 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the files in `Content` one level. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveInput`:
+	///     And we want to elevate all the files in <c>Content</c> one level. Effectively we need to replace "\\Content" with ".\\". We can do that with <c>MoveInput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `InputFiles` with the files
 	///         .MoveInput("Content", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Posts
 	///         │   ├── Post1.md
@@ -784,7 +779,7 @@ public class MetalsharpProject
 	///         ├── Index.md
 	///         ├── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="fromDirectory">
@@ -795,7 +790,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject MoveInput(string fromDirectory, string toDirectory) =>
 		MoveInput(file => file.Directory == fromDirectory, toDirectory, $"Matching path {fromDirectory}");
@@ -807,7 +802,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Suppose we have input files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -816,19 +811,19 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the `html` files to the root directory. We use `MoveInput` to match those files with a predicate and rewrite their directory:
+	///     And we want to elevate all the <c>html</c> files to the root directory. We use <c>MoveInput</c> to match those files with a predicate and rewrite their directory:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `InputFiles` with the files
 	///         .MoveInput(file => file.Extension == ".html", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -837,7 +832,7 @@ public class MetalsharpProject
 	///         ├── About.html
 	///         ├── Post2.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -853,11 +848,11 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveInput(Predicate<MetalsharpFile> predicate, string toDirectory, string? logMessage = null)
 	{
-		LogInfo($"Removing files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Moving files in Input to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
 		foreach (var file in InputFiles.Where(i => predicate(i)))
 		{
@@ -875,7 +870,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Suppose we have output files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -884,19 +879,19 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the files in `Content` one level. Effectively we need to replace "\\Content" with ".\\". We can do that with `MoveOutput`:
+	///     And we want to elevate all the files in <c>Content</c> one level. Effectively we need to replace "\\Content" with ".\\". We can do that with <c>MoveOutput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `OutputFiles` with the files
 	///         .MoveOutput("Content", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Posts
 	///         │   ├── Post1.md
@@ -904,7 +899,7 @@ public class MetalsharpProject
 	///         ├── Index.md
 	///         ├── About.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="fromDirectory">
@@ -915,7 +910,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject MoveOutput(string fromDirectory, string toDirectory) =>
 		MoveOutput(file => file.Directory == fromDirectory, toDirectory, $"Matching path {fromDirectory}");
@@ -927,7 +922,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Suppose we have output files in the following virtual directory structure:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -936,19 +931,19 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     And we want to elevate all the `html` files to the root directory. We use `MoveOutput` to match those files with a predicate and rewrite their directory:
+	///     And we want to elevate all the <c>html</c> files to the root directory. We use <c>MoveOutput</c> to match those files with a predicate and rewrite their directory:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Populate `OutputFiles` with the files
 	///         .MoveOutput(file => file.Extension == ".html", ".\\");
-	///     ```
+	///     </code>
 	///     
 	///     After this, our virtual directory structure will be:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -957,7 +952,7 @@ public class MetalsharpProject
 	///         ├── About.html
 	///         ├── Post2.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -973,11 +968,11 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string logMessage = null)
+	public MetalsharpProject MoveOutput(Predicate<MetalsharpFile> predicate, string toDirectory, string? logMessage = null)
 	{
-		LogInfo($"Removing files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
+		LogInfo($"Moving files in Output to {toDirectory} from{(logMessage is not null ? $": {logMessage}" : "")}");
 
 		foreach (var file in OutputFiles.Where(i => predicate(i)))
 		{
@@ -997,14 +992,14 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Supposing we have `Directory\File.md` in the input and output, we can remove it from both with `RemoveFiles`:
+	///     Supposing we have <c>Directory\File.md</c> in the input and output, we can remove it from both with <c>RemoveFiles</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file to input
 	///         ... // Add file to output
 	///         .RemoveFiles("Directory\\File.md");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="path">
@@ -1012,7 +1007,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveFiles(string path)
 	{
@@ -1026,9 +1021,9 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Supposing we have, for the sake of argument, the following virtual directory structure in the input *and* output:
+	///     Supposing we have, for the sake of argument, the following virtual directory structure in the input and output:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -1037,27 +1032,27 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     We can remove all the `html` files with `RemoveFiles`:
+	///     We can remove all the <c>html</c> files with <c>RemoveFiles</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file to input
 	///         ... // Add file to output
 	///         .RemoveFiles(file => file.Extension == ".html");
-	///     ```
+	///     </code>
 	///     
 	///     Our virtual directory structure will then look like the following in the input and output:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
 	///         │   │   ├── Post1.md
 	///         │   ├── Index.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -1065,7 +1060,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveFiles(Predicate<MetalsharpFile> predicate)
 	{
@@ -1079,13 +1074,13 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Supposing we have `Directory\File.md` in the input, we can remove it with `RemoveInput`:
+	///     Supposing we have <c>Directory\File.md</c> in the input, we can remove it with <c>RemoveInput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file
 	///         .RemoveInput("Directory\\File.md");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="path">
@@ -1093,7 +1088,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveInput(string path) =>
 		RemoveInput(file => file.FilePath.StartsWith(path), $"Matching path {path}");
@@ -1105,7 +1100,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Supposing we have the following virtual directory structure in the input:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -1114,26 +1109,26 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     We can remove all the `html` files with `RemoveInput`:
+	///     We can remove all the <c>html</c> files with <c>RemoveInput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file
 	///         .RemoveInput(file => file.Extension == ".html");
-	///     ```
+	///     </code>
 	///     
 	///     Our virtual directory structure will then look like the following:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
 	///         │   │   ├── Post1.md
 	///         │   ├── Index.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -1145,9 +1140,9 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveInput(Predicate<MetalsharpFile> predicate, string? logMessage = null)
 	{
 		LogInfo($"Removing files from Input{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1157,7 +1152,7 @@ public class MetalsharpProject
 		}
 		else
 		{
-			foreach (var file in InputFiles.Where(f => predicate(f)))
+			foreach (var file in InputFiles.Where(f => predicate(f)).ToList())
 			{
 				LogDebug($"    Removing file: {file.FilePath}");
 				InputFiles.Remove(file);
@@ -1172,13 +1167,13 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     Supposing we have `Directory\File.md` in the output, we can remove it with `RemoveOutput`:
+	///     Supposing we have <c>Directory\File.md</c> in the output, we can remove it with <c>RemoveOutput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file
 	///         .RemoveOutput("Directory\\File.md");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="path">
@@ -1186,7 +1181,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject RemoveOutput(string path) =>
 		RemoveOutput(file => file.FilePath.StartsWith(path), $"Matching path {path}");
@@ -1198,7 +1193,7 @@ public class MetalsharpProject
 	/// <example>
 	///     Supposing we have the following virtual directory structure in the output:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
@@ -1207,26 +1202,26 @@ public class MetalsharpProject
 	///         │   ├── Index.md
 	///         │   └── About.html
 	///         └── README.md
-	///     ```
+	///     </code>
 	///     
-	///     We can remove all the `html` files with `RemoveOutput`:
+	///     We can remove all the <c>html</c> files with <c>RemoveOutput</c>:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add file
 	///         .RemoveOutput(file => file.Extension == ".html");
-	///     ```
+	///     </code>
 	///     
 	///     Our virtual directory structure will then look like the following:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         .
 	///         ├── Content
 	///         │   ├── Posts
 	///         │   │   ├── Post1.md
 	///         │   ├── Index.md
 	///         └── README.md
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="predicate">
@@ -1238,9 +1233,9 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string logMessage = null)
+	public MetalsharpProject RemoveOutput(Predicate<MetalsharpFile> predicate, string? logMessage = null)
 	{
 		LogInfo($"Removing files from Output{(logMessage is not null ? $": {logMessage}" : "")}");
 
@@ -1250,7 +1245,7 @@ public class MetalsharpProject
 		}
 		else
 		{
-			foreach (var file in InputFiles.Where(f => predicate(f)))
+			foreach (var file in OutputFiles.Where(f => predicate(f)).ToList())
 			{
 				LogDebug($"    Removing file: {file.FilePath}");
 				OutputFiles.Remove(file);
@@ -1267,13 +1262,13 @@ public class MetalsharpProject
 	private MetalsharpProject Use(Action<MetalsharpProject> func, string transformKind, string transformName)
 	{
 		LogDebug($"\nAbout to use {transformKind} {transformName}\n");
-		BeforeUse?.Invoke(this, new EventArgs());
+		BeforeUse?.Invoke(this, EventArgs.Empty);
 
 		LogSection($"\nUsing {transformKind} {transformName}\n");
 		func(this);
 
 		LogDebug($"\nFinishing using {transformKind} {transformName}\n");
-		AfterUse?.Invoke(this, new EventArgs());
+		AfterUse?.Invoke(this, EventArgs.Empty);
 
 		LogDebug($"\nFinished using {transformKind} {transformName}\n");
 		return this;
@@ -1284,10 +1279,10 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .Use(dir => dir.Meta("Hello", "World!"));
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="func">
@@ -1299,9 +1294,9 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
-	public MetalsharpProject Use(Action<MetalsharpProject> func, string functionName = null) =>
+	public MetalsharpProject Use(Action<MetalsharpProject> func, string? functionName = null) =>
 		Use(func, "function", functionName ?? "<anonymous>");
 
 	/// <summary>
@@ -1309,10 +1304,10 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .Use(new Debug()); // Invokes the Debug plugin
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="plugin">
@@ -1320,7 +1315,7 @@ public class MetalsharpProject
 	/// </param>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Use(IMetalsharpPlugin plugin) =>
 		Use(i => plugin.Execute(i), "plugin", plugin.GetType().Name);
@@ -1330,10 +1325,10 @@ public class MetalsharpProject
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .Use&lt;Debug&gt;(); // Invokes the Debug plugin
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <typeparam name="T">
@@ -1341,7 +1336,7 @@ public class MetalsharpProject
 	/// </typeparam>
 	/// 
 	/// <returns>
-	///     The current `MetalsharpProject`, allowing it to be fluent.
+	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject Use<T>() where T : IMetalsharpPlugin, new() =>
 		Use(new T());

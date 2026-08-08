@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Utf8Json;
+using System.Text.Json;
 
 namespace Metalsharp;
 
@@ -14,39 +11,44 @@ namespace Metalsharp;
 /// </summary>
 /// 
 /// <example>
-///     Given the following `file.txt`:
+///     Given the following <c>file.txt</c>:
 ///     
-///     ```plaintext
+///     <code>
 ///     ---
 ///     draft: true
 ///     ---
 ///     Hello, World!
-///     ```
+///     </code>
 ///     
-///     The assertion in the following will evaluate to `true`:
+///     The assertion in the following will evaluate to <c>true</c>:
 ///     
-///     ```c#
+///     <code>
 ///         var project = new MetalsharpProject("file.txt")
 ///         .UseFrontmatter();
 ///         
 ///         Assert.True((bool)project.InputFiles[0].Metadata["draft"])
-///     ```
+///     </code>
 /// </example>
 public class Frontmatter : IMetalsharpPlugin
 {
+	private static readonly JsonSerializerOptions s_jsonOptions = new()
+	{
+		Converters = { new InferredTypeJsonConverter() }
+	};
+
 	/// <summary>
 	///     Invokes the plugin.
 	/// </summary>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` to invoke the plugin on.
+	///     The <c>MetalsharpProject</c> to invoke the plugin on.
 	/// </param>
 	public void Execute(MetalsharpProject project)
 	{
 		foreach (var file in project.InputFiles)
 		{
 			project.LogDebug($"Looking for frontmatter in {file.FilePath}");
-			if (TryGetFrontmatter(file.Text, out Dictionary<string, object> metadata, out string text))
+			if (TryGetFrontmatter(file.Text, out var metadata, out var text))
 			{
 				project.LogDebug($"    Found frontmatter:");
 
@@ -84,17 +86,17 @@ public class Frontmatter : IMetalsharpPlugin
 	/// </param>
 	/// 
 	/// <returns>
-	///     `true` if frontmatter text was found and parsed; `false` otherwise.
+	///     <c>true</c> if frontmatter text was found and parsed; <c>false</c> otherwise.
 	/// </returns>
-	private static bool TryGetFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		if (document.StartsWith("---") && TryGetYamlFrontmatter(document, out Dictionary<string, object> yamlFrontmatter, out string yamlRemainder))
+		if (document.StartsWith("---") && TryGetYamlFrontmatter(document, out var yamlFrontmatter, out var yamlRemainder))
 		{
 			frontmatter = yamlFrontmatter;
 			remainder = yamlRemainder;
 			return true;
 		}
-		else if (document.StartsWith(";;;") && TryGetJsonFrontmatter(document, out Dictionary<string, object> jsonFrontmatter, out string jsonRemainder))
+		else if (document.StartsWith(";;;") && TryGetJsonFrontmatter(document, out var jsonFrontmatter, out var jsonRemainder))
 		{
 			frontmatter = jsonFrontmatter;
 			remainder = jsonRemainder;
@@ -123,11 +125,11 @@ public class Frontmatter : IMetalsharpPlugin
 	/// </param>
 	/// 
 	/// <returns>
-	///     `true` if frontmatter text was found and parsed; `false` otherwise.
+	///     <c>true</c> if frontmatter text was found and parsed; <c>false</c> otherwise.
 	/// </returns>
-	private static bool TryGetYamlFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetYamlFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split(new[] { "---" }, StringSplitOptions.None);
+		var split = document.Split("---", StringSplitOptions.None);
 
 		frontmatter = null;
 		remainder = null;
@@ -144,7 +146,7 @@ public class Frontmatter : IMetalsharpPlugin
 
 				return true;
 			}
-			catch (Exception)
+			catch
 			{
 				return false;
 			}
@@ -170,11 +172,11 @@ public class Frontmatter : IMetalsharpPlugin
 	/// </param>
 	/// 
 	/// <returns>
-	///     `true` if frontmatter text was found and parsed; `false` otherwise.
+	///     <c>true</c> if frontmatter text was found and parsed; <c>false</c> otherwise.
 	/// </returns>
-	private static bool TryGetJsonFrontmatter(string document, out Dictionary<string, object> frontmatter, out string remainder)
+	private static bool TryGetJsonFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split(new[] { ";;;" }, StringSplitOptions.None);
+		var split = document.Split(";;;", StringSplitOptions.None);
 
 		frontmatter = null;
 		remainder = null;
@@ -183,15 +185,19 @@ public class Frontmatter : IMetalsharpPlugin
 		{
 			try
 			{
-				var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(split[1].Trim());
-				var arrayRemainder = string.Join(";;;", split.Skip(2));
+				var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(split[1].Trim(), s_jsonOptions);
+
+				if (jsonFrontmatter is null)
+				{
+					return false;
+				}
 
 				frontmatter = jsonFrontmatter;
-				remainder = arrayRemainder;
+				remainder = string.Join(";;;", split.Skip(2));
 
 				return true;
 			}
-			catch (Exception)
+			catch
 			{
 				return false;
 			}

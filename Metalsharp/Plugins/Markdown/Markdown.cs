@@ -1,27 +1,24 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
 ///     The Markdown plugin
 ///     
-///     Converts any markdown files in the input to HTML with [Markdig](https://github.com/lunet-io/markdig). HTML files are placed in the output.
+///     Converts any markdown files in the input to HTML with <see href="https://github.com/lunet-io/markdig">Markdig</see>. HTML files are placed in the output.
 /// </summary>
 /// 
 /// <example>
-///     ```c#
+///     <code>
 ///         new MetalsharpProject()
 ///         .AddInput(new MetalsharpFile("# Header 1", "file.md")
 ///         .UseMarkdown()
 ///         .Build();
-///     ```
+///     </code>
 ///     
-///     Will output the file `file.html` to the output directory. The contents of `file.html` will be:
+///     Will output the file <c>file.html</c> to the output directory. The contents of <c>file.html</c> will be:
 ///     
-///     ```html
+///     <code>
 ///     &lt;h1&gt;Header 1&lt;/h1&gt;
-///     ```
+///     </code>
 /// </example>
 public class Markdown : IMetalsharpPlugin
 {
@@ -30,11 +27,11 @@ public class Markdown : IMetalsharpPlugin
 	/// </summary>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` to invoke the plugin on.
+	///     The <c>MetalsharpProject</c> to invoke the plugin on.
 	/// </param>
 	public void Execute(MetalsharpProject project)
 	{
-		foreach (var file in project.InputFiles.Where(f => f.Extension == ".md" || f.Extension == ".markdown"))
+		foreach (var file in project.InputFiles.Where(f => f.Extension is ".md" or ".markdown"))
 		{
 			var fileText = Markdig.Markdown.ToHtml(file.Text);
 			var filePath = Path.Combine(file.Directory, file.Name + ".html");
@@ -43,7 +40,7 @@ public class Markdown : IMetalsharpPlugin
 
 			project.OutputFiles.Add(new MetalsharpFile(fileText, filePath)
 			{
-				Metadata = file.Metadata
+				Metadata = new Dictionary<string, object>(file.Metadata)
 			});
 		}
 	}

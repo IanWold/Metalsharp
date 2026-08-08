@@ -1,5 +1,4 @@
-﻿using Xunit;
-using static System.Convert;
+﻿using static System.Convert;
 
 namespace Metalsharp.Tests;
 

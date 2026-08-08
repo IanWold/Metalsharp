@@ -1,80 +1,95 @@
 ﻿using CommandLine;
-using System;
 
 namespace Metalsharp;
 
 /// <summary>
 ///		Represents the configuration options for a Metalsharp project.
 /// </summary>
-public class MetalsharpOptions
+///
+/// <param name="clearOutputDirectory">
+///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
+///
+///     <c>false</c> by default.
+/// </param>
+/// <param name="outputDirectory">
+///     The directory to which the files will be output.
+///
+///     <c>.\</c> by default.
+/// </param>
+/// <param name="verbosity">
+///		The minimum level to log.
+/// </param>
+public class MetalsharpOptions(
+	bool clearOutputDirectory = MetalsharpOptions.DefaultClearOutputDirectory,
+	string outputDirectory = MetalsharpOptions.DefaultOutputDirectory,
+	LogLevel verbosity = MetalsharpOptions.DefaultVerbosity
+)
 {
 	/// <summary>
-	/// The default value for `ClearOutputDirectory`
+	///     Instantiate the default configuration.
+	/// </summary>
+	///
+	/// <remarks>
+	///     This overload exists because <c>CommandLineParser</c> constructs instances via reflection using
+	///     <c>Activator.CreateInstance&lt;T&gt;()</c>, which requires a genuinely parameterless constructor -
+	///     a constructor whose parameters merely all have default values does not qualify. Without this,
+	///     <see cref="FromArgs"/> throws <see cref="MissingMethodException"/>.
+	/// </remarks>
+	public MetalsharpOptions() : this(DefaultClearOutputDirectory, DefaultOutputDirectory, DefaultVerbosity) { }
+
+	/// <summary>
+	/// The default value for <c>ClearOutputDirectory</c>
 	/// </summary>
 	public const bool DefaultClearOutputDirectory = false;
 
 	/// <summary>
-	/// The default value for `ClearOutputDirectory`
+	/// The default value for <c>OutputDirectory</c>
 	/// </summary>
 	public const string DefaultOutputDirectory = @".\";
 
 	/// <summary>
-	/// The default value for `ClearOutputDirectory`
+	/// The default value for <c>Verbosity</c>
 	/// </summary>
 	public const LogLevel DefaultVerbosity = LogLevel.Error;
 
 	/// <summary>
-	///		Instantiate the default configuration.
-	/// </summary>
-	public MetalsharpOptions(
-		bool clearOutputDirectory = DefaultClearOutputDirectory,
-		string outputDirectory = DefaultOutputDirectory,
-		LogLevel verbosity = DefaultVerbosity
-	)
-	{
-		ClearOutputDirectory = clearOutputDirectory;
-		OutputDirectory = outputDirectory;
-		Verbosity = verbosity;
-	}
-
-	/// <summary>
 	///		Instantiate configuration from command line arguments.
 	/// </summary>
-	/// 
+	///
 	/// <param name="args">
 	///		The command line arguments
 	/// </param>
 	public static MetalsharpOptions FromArgs(string[] args)
 	{
-		MetalsharpOptions configuration = null;
+		MetalsharpOptions? configuration = null;
 
 		new Parser()
 			.ParseArguments<MetalsharpOptions>(args)
 			.WithParsed(c => configuration = c)
 			.WithNotParsed(_ => throw new ArgumentException("Unable to parse arguments", nameof(args)));
 
-		return configuration;
+		return configuration!;
 	}
 
 	/// <summary>
 	///     Whether Metalsharp should remove all the files in the output directory before writing any to that directory.
-	///     
-	///     `false` by default.
+	///
+	///     <c>false</c> by default.
 	/// </summary>
 	[Option('c', "clear", Default = DefaultClearOutputDirectory, HelpText = "Whether Metalsharp should remove all the files in the output directory before writing any to that directory.")]
-	public bool ClearOutputDirectory { get; init; }
+	public bool ClearOutputDirectory { get; init; } = clearOutputDirectory;
 
 	/// <summary>
 	///     The directory to which the files will be output.
-	///     
-	///     `.\` by default.
+	///
+	///     <c>.\</c> by default.
 	/// </summary>
 	[Option('o', "output", Default = DefaultOutputDirectory, HelpText = "The directory to which the files will be output.")]
-	public string OutputDirectory { get; init; }
+	public string OutputDirectory { get; init; } = outputDirectory;
 
 	/// <summary>
 	///		The minimum level to log.
 	/// </summary>
 	[Option('v', "verbosity", Default = DefaultVerbosity, HelpText = "The verbosity level for the log output.")]
-	public LogLevel Verbosity { get; init; }
+	public LogLevel Verbosity { get; init; } = verbosity;
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
 /// Extensions for the Collections plugin.
@@ -14,16 +10,16 @@ public static class CollectionsPluginExtensions
 	/// </summary>
 	/// 
 	/// <example>
-	///     Only add `.md` files to a collection named `myCollection`:
+	///     Only add <c>.md</c> files to a collection named <c>myCollection</c>:
 	/// 
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseCollections("myCollection", file => file.Extension == ".md");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection to define.
@@ -33,7 +29,7 @@ public static class CollectionsPluginExtensions
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseCollections(this MetalsharpProject project, string name, Predicate<MetalsharpFile> predicate) =>
 		project.Use(new Collections(name, predicate));
@@ -43,33 +39,33 @@ public static class CollectionsPluginExtensions
 	/// </summary>
 	/// 
 	/// <example>
-	///     Add `.md` files to a collection named `mdFiles` and `.html` files to a collection named `htmlFiles`:
+	///     Add <c>.md</c> files to a collection named <c>mdFiles</c> and <c>.html</c> files to a collection named <c>htmlFiles</c>:
 	/// 
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseCollections(("mdFiles", file => file.Extension == ".md"), ("htmlFiles", file => file.Extension == ".html"));
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// <param name="definitions">
 	///     The definitions of each collection.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseCollections(this MetalsharpProject project, params (string name, Predicate<MetalsharpFile> predicate)[] definitions) =>
 		project.Use(new Collections(definitions));
 
 	/// <summary>
-	///     Given the name of a collection, returns that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         Dictionary&lt;string, string[]&gt; collection = new MetalsharpProject()
 	///         ... // Add Files
 	///         ... // Create a collection named "myCollection"
@@ -77,7 +73,7 @@ public static class CollectionsPluginExtensions
 	///         
 	///         string[] collectionInputFilesArray = collection["input"];
 	///         string[] collectionOutputFilesArray = collection["output"];
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -88,7 +84,7 @@ public static class CollectionsPluginExtensions
 	/// </param>
 	/// 
 	/// <returns>
-	///     A `Dictionary` containing the input and output lists of file paths in the collection.
+	///     A <c>Dictionary</c> containing the input and output lists of file paths in the collection.
 	/// </returns>
 	public static Dictionary<string, string[]> GetCollection(this MetalsharpProject project, string name) =>
 		new()
@@ -98,16 +94,16 @@ public static class CollectionsPluginExtensions
 		};
 
 	/// <summary>
-	///     Given the name of a collection, returns the input *and* output files in that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns the input and output files in that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         IMetalsharpFile[] collectionFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetFilesFromCollection("myCollection").ToArray();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -118,22 +114,22 @@ public static class CollectionsPluginExtensions
 	/// </param>
 	/// 
 	/// <returns>
-	///     An enumerable of `IMetalsharpFile`s from the input and output lists of the collection.
+	///     An enumerable of <c>IMetalsharpFile</c>s from the input and output lists of the collection.
 	/// </returns>
 	public static IEnumerable<MetalsharpFile> GetFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputFilesFromCollection(name).Concat(project.GetOutputFilesFromCollection(name));
 
 	/// <summary>
-	///     Given the name of a collection, returns the input file paths in that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns the input file paths in that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         string[] collectionInputFilePaths = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetInputCollection("myCollection");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -151,19 +147,19 @@ public static class CollectionsPluginExtensions
 		&& collectionsDictionary[name] is Dictionary<string, string[]> collection
 		&& collection["input"] is string[] inputsCollection
 			? inputsCollection
-			: Array.Empty<string>();
+			: [];
 
 	/// <summary>
-	///     Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns the input files in that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         IMetalsharpFile[] collectionInputFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetInputFilesFromCollection("myCollection").ToArray();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -179,19 +175,19 @@ public static class CollectionsPluginExtensions
 	public static IEnumerable<MetalsharpFile> GetInputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputCollection(name) is string[] files && files.Length > 0
 			? project.InputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<MetalsharpFile>();
+			: [];
 
 	/// <summary>
-	///     Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns the output file paths in that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         string[] collectionoutputFilePaths = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetOutputCollection("myCollection");
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -209,19 +205,19 @@ public static class CollectionsPluginExtensions
 		&& collectionsDictionary[name] is Dictionary<string, string[]> collection
 		&& collection["output"] is string[] outputsCollection
 			? outputsCollection
-			: Array.Empty<string>();
+			: [];
 
 	/// <summary>
-	///     Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpProject`.
+	///     Given the name of a collection, returns the output files in that collection from the metadata of the <c>MetalsharpProject</c>.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         IMetalsharpFile[] collectionoutputFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetOutputFilesFromCollection("myCollection").ToArray();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
@@ -237,5 +233,5 @@ public static class CollectionsPluginExtensions
 	public static IEnumerable<MetalsharpFile> GetOutputFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetOutputCollection(name) is string[] files && files.Length > 0
 			? project.OutputFiles.Where(file => files.Contains(file.FilePath))
-			: Enumerable.Empty<MetalsharpFile>();
+			: [];
 }

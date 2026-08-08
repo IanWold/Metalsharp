@@ -6,7 +6,7 @@
 /// <example>
 ///     Implementing a Metalsharp plugin is as easy as implementing this interface:
 ///     
-///     ```c#
+///     <code>
 ///         public class DeleteEverything : IMetalsharpPlugin
 ///         {
 ///         
@@ -14,24 +14,24 @@
 ///         project.RemoveFiles(file => true);
 /// 
 ///         }
-///     ```
+///     </code>
 ///     
 ///     This plugin can then be used like any other:
 ///     
-///     ```c#
+///     <code>
 ///         new MetalsharpProject()
 ///         ... // Add files
 ///         .Use&lt;DeleteEverything&gt;();
-///     ```
+///     </code>
 /// </example>
 public interface IMetalsharpPlugin
 {
     /// <summary>
-    ///     Invokes the plugin. `Called by Metalsharp.Use`.
+    ///     Invokes the plugin. <c>Called by Metalsharp.Use</c>.
     /// </summary>
     /// 
     /// <param name="project">
-    ///     The `MetalsharpProject` to alter.
+    ///     The <c>MetalsharpProject</c> to alter.
     /// </param>
     void Execute(MetalsharpProject project);
 }

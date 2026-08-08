@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
 ///     The Debug plugin.
@@ -11,13 +7,13 @@ namespace Metalsharp;
 /// </summary>
 /// 
 /// <example>
-///     `Debug` is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
+///     <c>Debug</c> is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
 ///     
-///     ```c#
+///     <code>
 ///         new MetalsharpProject("Path\\To\\Dir")
 ///         .Debug()
 ///         .Use ... ;
-///     ```
+///     </code>
 /// </example>
 public class Debug : IMetalsharpPlugin
 {
@@ -32,26 +28,26 @@ public class Debug : IMetalsharpPlugin
 	private int _useCount;
 
 	/// <summary>
-	///     By default, write debug logs with `Debug.WriteLine()`.
+	///     By default, write debug logs with <c>Debug.WriteLine()</c>.
 	/// </summary>
 	public Debug() : this(message => System.Diagnostics.Debug.WriteLine(message)) { }
 
 	/// <summary>
-	///     Instantiate `Debug` with a log file path to output the debug log to a log file.
+	///     Instantiate <c>Debug</c> with a log file path to output the debug log to a log file.
 	/// </summary>
 	/// 
 	/// <example>
 	///     Given the following Metalsharp project:
 	///     
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         .UseDebug("output.log")
 	///         .Use(i => i.AddInput(new MetalsharpFile("text", "file.md")));
-	///     ```
+	///     </code>
 	///     
-	///     A file called `output.log` will be generated, and will look like the following:
+	///     A file called <c>output.log</c> will be generated, and will look like the following:
 	///     
-	///     ```plaintext
+	///     <code>
 	///         Step 1.
 	///         Input files:
 	///         
@@ -60,7 +56,7 @@ public class Debug : IMetalsharpPlugin
 	///         Output files:
 	///         
 	///         ---
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="logPath">
@@ -69,12 +65,12 @@ public class Debug : IMetalsharpPlugin
 	public Debug(string logPath) : this(message =>
 	{
 		using var writer = new StreamWriter(logPath, true);
-		writer.WriteLineAsync(message);
+		writer.WriteLine(message);
 	})
 	{ }
 
 	/// <summary>
-	///     Instantiate `Debug` with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
+	///     Instantiate <c>Debug</c> with a custom action to perform each time a log is written. This can be used to output to different sources or execute different debug actions.
 	/// </summary>
 	/// 
 	/// <param name="onLog">
@@ -88,11 +84,11 @@ public class Debug : IMetalsharpPlugin
 	/// </summary>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` to output debug logs for.
+	///     The <c>MetalsharpProject</c> to output debug logs for.
 	/// </param>
 	public void Execute(MetalsharpProject project)
 	{
-		project.AfterUse += (sender, e) =>
+		project.AfterUse += (_, _) =>
 			_onLog(
 				"Step " + ++_useCount + "." +
 				"\r\n" +
@@ -108,7 +104,7 @@ public class Debug : IMetalsharpPlugin
 				"\r\n\r\n"
 			);
 
-		project.OnAnyLog += (sender, e) =>
+		project.OnAnyLog += (_, e) =>
 			_onLog(
 				e.Level switch {
 					LogLevel.Debug => "[DEBUG] ",

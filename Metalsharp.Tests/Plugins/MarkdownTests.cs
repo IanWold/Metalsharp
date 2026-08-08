@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Xunit;
-
-namespace Metalsharp.Tests;
+﻿namespace Metalsharp.Tests;
 
 public class MarkdownTests
 {
@@ -21,6 +18,18 @@ public class MarkdownTests
 			.Use<Markdown>();
 
 		Assert.True((bool)project.OutputFiles[0].Metadata["test"]);
+	}
+
+	[Fact]
+	public void MarkdownOutputMetadataIsIndependentOfInputMetadata()
+	{
+		var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None })
+			.AddInput("Scenario\\Plugins\\FileMarkdown.md")
+			.UseMarkdown();
+
+		project.InputFiles[0].Metadata["addedAfterConversion"] = true;
+
+		Assert.False(project.OutputFiles[0].Metadata.ContainsKey("addedAfterConversion"));
 	}
 }
 

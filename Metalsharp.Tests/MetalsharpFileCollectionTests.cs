@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Xunit;
-
-namespace Metalsharp.Tests
+﻿namespace Metalsharp.Tests
 {
     public class MetalsharpFileCollectionTests
     {

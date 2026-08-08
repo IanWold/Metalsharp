@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace Metalsharp;
+﻿namespace Metalsharp;
 
 /// <summary>
 /// The Leveller plugin
@@ -12,7 +9,7 @@ namespace Metalsharp;
 /// <example>
 /// The following will add a file at a directory, use leveller, and demonstrate the resulting metadata in the file:
 /// 
-/// ```c#
+/// <code>
 ///     var file = new MetalsharpFile("Hello, World!", "dir1\dir2\file");
 ///     new MetalsharpProject().AddInput(file).UseLeveller();
 ///     
@@ -20,9 +17,9 @@ namespace Metalsharp;
 ///     {
 ///         Console.WriteLine($"{metadata.Key}: {metadata.Value});
 ///     }
-/// ```
+/// </code>
 /// 
-/// The output of the run will be "level: 3", since `file` is at the third directory from root.
+/// The output of the run will be "level: 3", since <c>file</c> is at the third directory from root.
 /// </example>
 public class Leveller : IMetalsharpPlugin
 {
@@ -31,7 +28,7 @@ public class Leveller : IMetalsharpPlugin
     /// </summary>
     /// 
     /// <param name="project">
-    ///     The `MetalsharpProject` to level.
+    ///     The <c>MetalsharpProject</c> to level.
     /// </param>
     public void Execute(MetalsharpProject project)
     {

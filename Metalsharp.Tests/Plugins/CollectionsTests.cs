@@ -1,7 +1,4 @@
-﻿using System.IO;
-using Xunit;
-
-namespace Metalsharp.Tests;
+﻿namespace Metalsharp.Tests;
 
 public class CollectionsTests
 {

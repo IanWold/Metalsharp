@@ -6,23 +6,23 @@ namespace Metalsharp;
 public static class MarkdownPluginExtensions
 {
 	/// <summary>
-	///     Invoke the `Markdown` plugin.
+	///     Invoke the <c>Markdown</c> plugin.
 	/// </summary>
 	/// 
 	/// <example>
-	///     ```c#
+	///     <code>
 	///         new MetalsharpProject()
 	///         ... // Add files
 	///         .UseMarkdown();
-	///     ```
+	///     </code>
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The `MetalsharpProject` on which this method will be called.
+	///     The <c>MetalsharpProject</c> on which this method will be called.
 	/// </param>
 	/// 
 	/// <returns>
-	///     Combinator; returns `this` input.
+	///     Combinator; returns <c>this</c> input.
 	/// </returns>
 	public static MetalsharpProject UseMarkdown(this MetalsharpProject project) =>
 		project.Use(new Markdown());
