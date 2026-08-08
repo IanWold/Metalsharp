@@ -18,7 +18,7 @@ internal class InferredTypeJsonConverter : JsonConverter<object>
 		{
 			JsonTokenType.True => true,
 			JsonTokenType.False => false,
-			JsonTokenType.Number => reader.TryGetInt64(out var integer) ? integer : reader.GetDouble(),
+			JsonTokenType.Number => reader.TryGetInt64(out var integer) ? (object)integer : reader.GetDouble(),
 			JsonTokenType.String => reader.GetString(),
 			JsonTokenType.Null => null,
 			JsonTokenType.StartArray => ReadArray(ref reader),

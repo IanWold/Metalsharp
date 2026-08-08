@@ -154,6 +154,32 @@
         }
 
         [Fact]
+        public void BuildWithClearOutputDirectoryDeletesExistingFiles()
+        {
+            var outputDirectory = "ClearOutputDir";
+            var staleFilePath = Path.Combine(outputDirectory, "StaleFile.txt");
+            var newFilePath = Path.Combine(outputDirectory, "NewFile.txt");
+
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            File.WriteAllText(staleFilePath, "stale");
+
+            new MetalsharpProject(
+                clearOutputDirectory: true,
+                outputDirectory: outputDirectory,
+                verbosity: LogLevel.None
+            )
+            .AddOutput(new MetalsharpFile("text", "NewFile.txt"))
+            .Build();
+
+            Assert.False(File.Exists(staleFilePath));
+            Assert.True(File.Exists(newFilePath));
+        }
+
+        [Fact]
         public void BuildInvokesBeforeBuildEvent()
         {
             var wasInvoked = false;

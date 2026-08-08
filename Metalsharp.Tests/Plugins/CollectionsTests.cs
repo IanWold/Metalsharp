@@ -83,4 +83,32 @@ public class CollectionsTests
 		Assert.Contains(project.GetOutputFilesFromCollection("test"), i => i.Name == "file1");
 		Assert.DoesNotContain(project.GetOutputFilesFromCollection("test"), i => i.Name == "FileMarkdown");
 	}
+
+	[Fact]
+	public void UseCollectionsWithMultipleDefinitionsCreatesEachCollection()
+	{
+		var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None })
+			.AddInput(new MetalsharpFile("text", "a.md"))
+			.AddInput(new MetalsharpFile("text", "b.html"))
+			.UseCollections(("mdFiles", file => file.Extension == ".md"), ("htmlFiles", file => file.Extension == ".html"));
+
+		Assert.Contains(project.GetInputCollection("mdFiles"), i => i == "a.md");
+		Assert.DoesNotContain(project.GetInputCollection("mdFiles"), i => i == "b.html");
+
+		Assert.Contains(project.GetInputCollection("htmlFiles"), i => i == "b.html");
+		Assert.DoesNotContain(project.GetInputCollection("htmlFiles"), i => i == "a.md");
+	}
+
+	[Fact]
+	public void RepeatedUseCollectionsMergesIntoExistingCollectionsMetadata()
+	{
+		var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None })
+			.AddInput(new MetalsharpFile("text", "a.md"))
+			.AddInput(new MetalsharpFile("text", "b.html"))
+			.UseCollections("mdFiles", file => file.Extension == ".md")
+			.UseCollections("htmlFiles", file => file.Extension == ".html");
+
+		Assert.Contains(project.GetInputCollection("mdFiles"), i => i == "a.md");
+		Assert.Contains(project.GetInputCollection("htmlFiles"), i => i == "b.html");
+	}
 }

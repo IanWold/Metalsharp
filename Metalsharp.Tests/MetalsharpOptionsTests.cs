@@ -21,4 +21,10 @@ public class MetalsharpOptionsTests
 		Assert.Equal(MetalsharpOptions.DefaultOutputDirectory, options.OutputDirectory);
 		Assert.Equal(MetalsharpOptions.DefaultVerbosity, options.Verbosity);
 	}
+
+	[Fact]
+	public void FromArgsThrowsForUnparseableArguments()
+	{
+		Assert.Throws<ArgumentException>(() => MetalsharpOptions.FromArgs(["--verbosity", "NotARealLevel"]));
+	}
 }
