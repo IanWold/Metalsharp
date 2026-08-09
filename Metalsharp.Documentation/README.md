@@ -11,3 +11,9 @@ New to Metalsharp? Start here.
 ## API Reference
 
 * [Generated API Documentation](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md) — a full reference generated from the XML comments in the source.
+
+`api.md` is generated, not hand-written — don't edit it directly. If you spot an inaccuracy, fix the corresponding XML doc comment in `Metalsharp/`, then regenerate from the repo root:
+
+```plaintext
+dotnet run Metalsharp.Documentation/GenerateApiDoc.cs
+```
