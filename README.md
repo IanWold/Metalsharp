@@ -1,16 +1,17 @@
-![Metalsharp](https://raw.githubusercontent.com/IanWold/Metalsharp/master/Metalsharp.png)
+<div align="center">
+    
+# <img src="https://raw.githubusercontent.com/IanWold/Metalsharp/refs/heads/master/Icon.png" height="23"> Metalsharp
 
 [![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=flat-square)](https://www.nuget.org/packages/Metalsharp/)
 [![Build](https://img.shields.io/github/actions/workflow/status/IanWold/Metalsharp/build.yml?branch=master&logo=github&logoColor=white&style=flat-square)](https://github.com/IanWold/Metalsharp/actions/workflows/build.yml)
-[![Discord](https://img.shields.io/discord/517023630224523274.svg?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/KwBtSan)
 
-A tiny, extendable C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/). Metalsharp is guided by three principles:
+A **small**, **simple**, and **extendable** C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/)
 
-1. **Small footprint** — use the smallest amount of code necessary to get the job done.
-2. **Extendable** — make it as easy as possible for anyone to develop and publish plugins.
-3. **Approachable** — maintain thorough documentation so the library is easy to learn and the code is easy to read.
+</div>
 
-Generating a website from a directory is as simple as this:
+---
+
+Generating a static website from a directory is as simple as this:
 
 ```c#
 new MetalsharpProject()
@@ -20,6 +21,12 @@ new MetalsharpProject()
     .AddOutput("Static")
     .Build();
 ```
+
+Metalsharp is:
+
+1. **Small** — uses the smallest amount of code necessary to get the job done,
+2. **Simple** — straightforward API with easy-to-understand documentation, and
+3. **Extendable** — creating and publishing plugins is as easy as possible.
 
 ## Getting Started
 
