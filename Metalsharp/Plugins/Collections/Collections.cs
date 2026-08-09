@@ -19,14 +19,15 @@
 ///     And then I create a Metalsharp project, import these into the inputs, and then use the <c>Markdown</c> plugin to generate their HTML in the outputs:
 ///     
 ///     <code>
-///         var project = new MetalsharpProject("Path\\To\\My\\Files")
-///         .UseMarkdown();
+///         var project = new MetalsharpProject()
+///             .AddInput("Path\\To\\My\\Files")
+///             .UseMarkdown();
 ///     </code>
-///     
+///
 ///     And then say that from here I want to add extra metadata to my posts, but not my <c>About</c> or <c>Index</c> files. It would be easy to be able to group those files into a collection for easy reference:
-///     
+///
 ///     <code>
-///         directory.UseCollections("posts", file => file.Name.ToLower().Contains("post"))
+///         project.UseCollections("posts", file => file.Name.ToLower().Contains("post"))
 ///     </code>
 ///     
 ///     This will match all the files in the input and output whose names contain the word "post", and will create a collection of them in the metadata of the <c>MetalsharpProject</c>. This metadata object, named <c>collections</c> will look like the following:

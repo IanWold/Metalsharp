@@ -5,17 +5,18 @@
 /// </summary>
 /// 
 /// <example>
-///     The best example is always the example at the top of the <see href="https://github.com/ianwold/metalsharp/">README</see>:
-///     
+///     The best example is always the example at the top of the <see href="https://github.com/IanWold/Metalsharp/blob/master/README.md">README</see>:
+///
 ///     <code>
-///     new MetalsharpProject("Site")
+///     new MetalsharpProject()
+///         .AddInput("Site")
 ///         .UseFrontmatter()
-///         .UseDrafts()
-///         .Use(new Markdown())
+///         .UseMarkdown()
+///         .AddOutput("Static")
 ///         .Build();
 ///     </code>
-///     
-///     Here, <c>MetalsharpProject</c> is instantiated with a set of files from the on-disk directory <c>Site</c>. Then, the plugins <c>Frontmatter</c>, <c>Drafts</c>, and <c>Markdown</c> are invoked against the project. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
+///
+///     Here, <c>MetalsharpProject</c> is instantiated and given a set of files from the on-disk directory <c>Site</c>. Then, the plugins <c>Frontmatter</c> and <c>Markdown</c> are invoked against the project, and the on-disk directory <c>Static</c> is added straight to the output. Finally, the project is built with default settings. The intent is that this resulting code is easy to read and easy to understand.
 /// </example>
 public class MetalsharpProject
 {

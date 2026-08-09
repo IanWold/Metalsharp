@@ -10,9 +10,10 @@
 ///     <c>Debug</c> is best invoked at the beginning of a stack of plugins, so as to capture each of the events related to the project:
 ///     
 ///     <code>
-///         new MetalsharpProject("Path\\To\\Dir")
-///         .Debug()
-///         .Use ... ;
+///         new MetalsharpProject()
+///             .AddInput("Path\\To\\Dir")
+///             .UseDebug()
+///             .Use ... ;
 ///     </code>
 /// </example>
 public class Debug : IMetalsharpPlugin

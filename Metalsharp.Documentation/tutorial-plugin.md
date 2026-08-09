@@ -1,137 +1,123 @@
 # Create a Plugin for Metalsharp
 
-Plugins manipulate files in small and understandable ways. Metalsharp works best with many plugins, and it will get better with more plugins made by more people. No matter how simple or complicated, creating (and maybe even publishing) your own plugin could be very beneficial to others. This tutorial will show how to develop and publish a plugin. As an example, this tutorial will create a version of the `Collections` plugin that only acts on input files.
-
-> Side note: a practical demo plugin that is more generic than the Collections plugin should probably be made for this tutorial. If you might want to do that and submit a PR, that would be a great way to contribute to Metalsharp!
+Plugins manipulate files in small, understandable ways, and Metalsharp gets more useful with every plugin the community builds. No matter how simple or complex, developing — and maybe publishing — your own plugin can be a real contribution to the ecosystem. This tutorial walks through developing and publishing a plugin. As an example, we'll build a simplified version of the `Collections` plugin that only acts on input files.
 
 ## Contents
 
 * [Developing the Plugin](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#developing-the-plugin)
   * [Implementing `IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#implementing-imetalsharpplugin)
-  * [Extending `MetalsharpProject`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#extending-metalsharpdirectory)
+  * [Extending `MetalsharpProject`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#extending-metalsharpproject)
 * [Publishing the Plugin](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md#publishing-the-plugin)
 
 ## Developing the Plugin
 
-Metalsharp is developed as a .NET Standard library, and your library would be the most portable if you are able to target .NET Standard as well. However, there is nothing stopping you from exclusively targeting .NET Core or Framework. If you are planning on publishing your plugin - which you definitely should - your plugin should be in a class library.
+Metalsharp targets .NET 10. If you're planning on publishing your plugin — and you should — it should live in its own class library project, targeting .NET 10 or later.
 
-It is recommended that your plugin sit in a namespace within the `Metalsharp` namespace. In this tutorial, we'll call our version of the `Collections` plugin `MyPlugin`, so your plugin should sit in the namespace `Metalsharp.MyPlugin`. It is easiest if this is also the name of your project (for example, [`Metalsharp.FluidTemplate`](https://github.com/IanWold/Metalsharp.FluidTemplate)). This project will obviously need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
+It's conventional for a plugin to sit in a namespace nested under `Metalsharp`, matching the name of the project. In this tutorial we'll call our version of the `Collections` plugin `MyPlugin`, so our code will live in the `Metalsharp.MyPlugin` namespace (this mirrors real published plugins, such as [`Metalsharp.FluidTemplate`](https://github.com/IanWold/Metalsharp.FluidTemplate)). Your project will, of course, need a reference to Metalsharp:
 
 ```plaintext
-PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+dotnet add package Metalsharp
 ```
 
 ### Implementing `IMetalsharpPlugin`
 
-This interface is easy to implement - it has one method, `Execute`, and that's where our code will go. Visual Studio's automatic implementation gets us most of the way here.
+This interface is easy to implement — it has a single method, `Execute`, and that's where our logic goes.
 
 ```c#
-namespace Metalsharp.MyPlugin
+namespace Metalsharp.MyPlugin;
+
+public class MyPlugin : IMetalsharpPlugin
 {
-    public class MyPlugin : IMetalsharpPlugin
+    public void Execute(MetalsharpProject project)
     {
-        public void Execute(MetalsharpProject directory)
-        {
-        
-        }
+
     }
 }
 ```
 
-Considering the collections plugin, which is documented [here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md#collections), we will need a constructor to accept the definition of the collection, and our plugin won't be able to be invoked by referencing its type. The definition is a string to name the collection and a `Predicate<IMetalsharpFile>` to select the files that will go into the collection.
+Looking at how the real `Collections` plugin works (documented [here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md#collections)), we'll need a constructor that accepts the collection's definition: a name, and a `Predicate<MetalsharpFile>` to select which files belong in it. Since our plugin needs constructor arguments, it can't be invoked by referencing its type alone (`Use<MyPlugin>()`) — callers will need to pass an instance.
 
 ```c#
-namespace Metalsharp.MyPlugin
+namespace Metalsharp.MyPlugin;
+
+public class MyPlugin(string name, Predicate<MetalsharpFile> predicate) : IMetalsharpPlugin
 {
-    public class MyPlugin : IMetalsharpPlugin
+    public void Execute(MetalsharpProject project)
     {
-        private string _name;
-        private Predicate<IMetalsharpFile> _predicate;
 
-        public MyPlugin(string name, Predicate<IMetalsharpFile> predicate)
-        {
-            _name = name;
-            _predicate = predicate;
-        }
-
-        public void Execute(MetalsharpProject project)
-        {
-            
-        }
     }
 }
 ```
 
-Now, we want to select each of the files from the input matching the predicate. `MetalsharpProject.InputFiles` and `LINQ` gives us this access.
+Now we want to select every file from the input matching the predicate. `MetalsharpProject.InputFiles` combined with LINQ gets us there:
 
 ```c#
 public void Execute(MetalsharpProject project)
 {
-    ...
-    project.InputFiles.Where(file => _predicate(file));
-    ...
+    var matches = project.InputFiles.Where(file => predicate(file));
 }
 ```
 
-The `Collections` plugin stores the full path of each file in an array in the `MetalsharpProject`'s metadata, so we want to select the `FilePath` from each matching file, and we want to add a record to the metadata of `directory` keyed by the name of the collection.
-
+For this simplified version of `Collections`, we'll store the matching files' paths as a string array directly in the project's metadata, keyed by the collection's name:
 
 ```c#
 public void Execute(MetalsharpProject project) =>
-    project.Meta(_name, project.InputFiles.Where(file => _predicate(file)).Select(file => file.FilePath).ToArray());
+    project.Meta(name, project.InputFiles.Where(file => predicate(file)).Select(file => file.FilePath).ToArray());
 ```
 
-And that's all for the `Execute` method! Ideally, all Metalsharp plugins should be this simple. Truthfully though, most plugins are *slightly* more complicated and will need more functionality in the `Execute` method. We can, however, add more functionality by adding extensions to `MetalsharpProject` for this plugin.
+And that's the entire `Execute` method! Ideally, every Metalsharp plugin should be about this simple — though in practice, most plugins need a bit more than a one-liner. We can add that extra functionality without touching `Execute` at all, by adding extension methods to `MetalsharpProject`.
 
 ### Extending `MetalsharpProject`
 
-As the plugins that come with Metalsharp demonstrate, it's easy to add an extension to `MetalsharpProject` to invoke the plugin,
+As the plugins that ship with Metalsharp demonstrate, it's easy to add an extension method to `MetalsharpProject` for invoking your plugin:
 
 ```c#
-public static class MetalsharpExtensions
+public static class MyPluginExtensions
 {
-    public static MetalsharpProject UseMyPlugin(this MetalsharpProject project, string name, Predicate<IMetalsharpFile> predicate) =>
+    public static MetalsharpProject UseMyPlugin(this MetalsharpProject project, string name, Predicate<MetalsharpFile> predicate) =>
         project.Use(new MyPlugin(name, predicate));
 }
 ```
 
-This is nice to include because you can add more customization to the construction of your plugin if you need. Another use case specific to the `Collections` plugin is that we can introduce more methods to help our user use the collections stored in the `MetalsharpProject`. It is not too useful to our users to have an array of the paths of files in the collections - most of the time they are going to want to access the actual file objects themselves. We can add an extension to deliver this for us:
+This is worth doing even beyond convenience, since it gives you room to customize how the plugin is constructed later without a breaking change. It's also a good place to add helper methods for consuming what your plugin produces. An array of file paths isn't very useful on its own — users will usually want the actual `MetalsharpFile` objects. We can provide that:
 
 ```c#
-public static class MetalsharpExtensions
+public static class MyPluginExtensions
 {
-    // Dumb method name but call it what you want!
-    public static IMetalsharpFile[] GetMyPluginFiles(this MetalsharpProject project, string name) =>
+    public static MetalsharpProject UseMyPlugin(this MetalsharpProject project, string name, Predicate<MetalsharpFile> predicate) =>
+        project.Use(new MyPlugin(name, predicate));
+
+    public static IEnumerable<MetalsharpFile> GetMyPluginFiles(this MetalsharpProject project, string name) =>
         project.Metadata[name] is string[] filePaths
             ? project.InputFiles.Where(file => filePaths.Contains(file.FilePath))
-            : throw new ArgumentException("There is no collection by the name " + name);
+            : throw new ArgumentException($"There is no collection by the name {name}");
 }
 ```
 
-And now we have a useful plugin that is easy for our users to consume!
+And now we have a small but genuinely useful plugin.
 
 ## Publishing the Plugin
 
-Before considering publishing your plugin, make sure you have suitable documentation. Metalsharp is billed as an easy-to-use and well-documented library, and your plugin will surely benefit from good documentation too.
+Before publishing, make sure your plugin is well documented. Metalsharp is billed as an easy-to-use, well-documented library, and your plugin should hold to the same standard.
 
-There is a small handful of plugins that comes with Metalsharp, but your plugin almost certainly doesn't belong there. If you develop a plugin for Metalsharp, that should be your own project. In fact, it would be desirable for there to be no plugins that come with Metalsharp (and, to that end, if you think you can redo a plugin that comes with Metalsharp and make it better - do it, and then we can shave one more off of Metalsharp). The reason is to keep Metalsharp as slim as possible and to make it a sort of platform for plugins - Metalsharp is not a solution, it enables solutions.
+Only a small handful of plugins ship with Metalsharp itself, and that's intentional — your plugin almost certainly belongs in its own package rather than in core. If you can write a better version of one of the built-in plugins, we'd genuinely welcome that; the goal is for Metalsharp to stay as small as possible and act as a platform other plugins build on, rather than a monolith that tries to solve everything itself.
 
-From here, there are several ways to get your plugin into the world
+From here, there are a few ways to get your plugin out into the world.
 
 **Open Source**
 
-If you want to keep your source closed (or if you're in an enterprise and you need to keep your source closed) by all means do so, and publish your plugin elsewhere. However, if you can, you should consider making your plugin open source on a platform like GitHub. This enables a greater level of community involvement around Metalsharp.
+If you need to keep your source closed — for example, in an enterprise setting — that's fine, distribute it however makes sense for you. But if you're able to, consider open-sourcing your plugin on a platform like GitHub. It makes it easier for the community to contribute back and builds a stronger ecosystem around Metalsharp as a whole.
 
 **NuGet**
 
-NuGet is the de facto package manager for .NET, and that's how Metalsharp is released. Releasing your package on NuGet gives other users an easier time consuming your plugin. If you are planning on releasing your plugin on NuGet, it's best practice for your C# project to reference Metalsharp from NuGet.
+NuGet is the standard package manager for .NET, and it's how Metalsharp itself is distributed. Publishing your plugin there gives other developers the easiest possible path to using it — a single `dotnet add package` away.
 
-**DLL Download**
+**Direct Distribution**
 
-This option kind of sucks, but sometimes your hands are tied and the only way to release a library is by allowing others to download a DLL from your site. Unless totally necessary, this practice is discouraged.
+Sometimes circumstances mean the only practical option is to distribute a compiled DLL directly. This works, but it's discouraged unless it's genuinely your only option — it loses you the discoverability and dependency management that NuGet provides.
 
 ---
 
 Now you've developed and published your own Metalsharp plugin! Congrats!
 
-Did you notice something odd with this tutorial - a typo, old information, or just something that could make it a bit better? [Editing this tutorial](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/tutorial-plugin.md) and submitting a PR would be a great way to contribute to Metalsharp!
+Did you notice something odd with this tutorial — a typo, outdated information, or something that could be explained better? [Editing this page](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/tutorial-plugin.md) and submitting a PR would be a great way to contribute to Metalsharp!
