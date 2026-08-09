@@ -99,7 +99,7 @@ public static class CollectionsPluginExtensions
 	/// 
 	/// <example>
 	///     <code>
-	///         IMetalsharpFile[] collectionFiles = new MetalsharpProject()
+	///         MetalsharpFile[] collectionFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetFilesFromCollection("myCollection").ToArray();
@@ -114,7 +114,7 @@ public static class CollectionsPluginExtensions
 	/// </param>
 	/// 
 	/// <returns>
-	///     An enumerable of <c>IMetalsharpFile</c>s from the input and output lists of the collection.
+	///     An enumerable of <c>MetalsharpFile</c>s from the input and output lists of the collection.
 	/// </returns>
 	public static IEnumerable<MetalsharpFile> GetFilesFromCollection(this MetalsharpProject project, string name) =>
 		project.GetInputFilesFromCollection(name).Concat(project.GetOutputFilesFromCollection(name));
@@ -155,7 +155,7 @@ public static class CollectionsPluginExtensions
 	/// 
 	/// <example>
 	///     <code>
-	///         IMetalsharpFile[] collectionInputFiles = new MetalsharpProject()
+	///         MetalsharpFile[] collectionInputFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetInputFilesFromCollection("myCollection").ToArray();
@@ -213,7 +213,7 @@ public static class CollectionsPluginExtensions
 	/// 
 	/// <example>
 	///     <code>
-	///         IMetalsharpFile[] collectionoutputFiles = new MetalsharpProject()
+	///         MetalsharpFile[] collectionoutputFiles = new MetalsharpProject()
 	///         ... // Add files
 	///         ... // Create a collection named "myCollection"
 	///         .GetOutputFilesFromCollection("myCollection").ToArray();

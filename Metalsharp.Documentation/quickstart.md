@@ -1,8 +1,8 @@
 # Quickstart your Metalsharp Project
 
-Metalsharp is a C# library for creating static websites that claims to be all the good things - easy to use, easy to extend, light, fast, so on and so forth. Metalsharp work by reading in your source files and then invoking several plugins which each manipulate those files in small ways. Further, Metalsharp provides something called a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) to allow you to do this - that means that you can invoke all the plugins you need to by chaining method calls together. If you like this coding style, that's great! But if you don't like it, no pressure, you can code in a more traditional manner if you like.
+Metalsharp is a C# library for creating static websites, and it aims to be all the good things — easy to use, easy to extend, and light on ceremony. Metalsharp works by reading in your source files and then invoking a series of plugins, each of which manipulates those files in some small way. Metalsharp exposes a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface), which lets you chain together all the plugins you need in a single expression. If you like that coding style, great — and if you don't, nothing stops you from writing more traditional, imperative code instead.
 
-This quickstart will walk you through all the basics in Metalsharp. The tutorial [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) goes into more detail on a practical project.
+This quickstart walks through the basics of Metalsharp. [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) goes into more depth with a practical project.
 
 ## Content
 
@@ -19,72 +19,69 @@ This quickstart will walk you through all the basics in Metalsharp. The tutorial
 
 ## Acquiring Metalsharp
 
-You'll need a C# console application (let's call it `MyProject`). This can be either .NET Core or .NET Framework, it shouldn't matter which.This project will also, of course need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
+You'll need a C# project targeting .NET 10 or later (a console application works well, but Metalsharp doesn't care what kind of project hosts it). Add a reference to Metalsharp with the .NET CLI:
 
 ```plaintext
-PM> Install-Package Metalsharp -Version 0.9.0-rc.1
+dotnet add package Metalsharp
 ```
+
+If you'd rather not set up a full project just to experiment, a [file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview) is a great fit for Metalsharp — you can reference the package and run a single `.cs` file directly with `dotnet run`. The [Create a Website tutorial](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) uses exactly this approach.
 
 ## Project Structure
 
-The files for your website content could/should fall into a structure like the following:
+The files for your website's content will typically fall into a structure similar to this:
 
 ```plaintext
 MyProject
 ├── Site
-│   └── The content files of your website (eg. index.md).
+│   └── The content files of your website (e.g. index.md).
 ├── Static
-│   └── Files that will be copied directly to the output directory (eg. style.css).
+│   └── Files that are copied directly to the output directory (e.g. style.css).
 ├── Templates
-│   └── Files that will be used by your project but not output should be placed in top-level directories (like templates).
-├── Files and folders irrelevant to your website can go at the top-level
-└── Your C# Metalsharp application should execute at this level.
+│   └── Files used by your project but not included in the output, such as templates.
+├── (Any files and folders irrelevant to your website can live at the top level.)
+└── Your C# Metalsharp program executes at this level.
 ```
 
 ## Using Metalsharp
 
-Everything you'll do towards generating your website will be with the `MetalsharpProject` object. This object has a list of input files, a list of output files, and metadata, as well as several methods detailed below.
+Everything you'll do to generate your website revolves around the `MetalsharpProject` object. It holds a list of input files, a list of output files, and project-level metadata, along with the methods described below.
 
 ### Files
 
-The first step is to add files. We can do that right when we instantiate `MetalsharpProject`:
+The first step is to add files. `AddInput` reads all the files in a directory (or a single file) from disk and places them into the input list:
 
 ```c#
-new MetalsharpProject("Site")
+new MetalsharpProject()
+    .AddInput("Site")
 ```
 
-This reads all the files in the `Site` directory on disk and places them into the input list. If you want to change the directory stored with the file in Metalsharp, you can do that to:
+If you want Metalsharp to remember the files under a different virtual directory than the one they're read from, supply a second argument:
 
 ```c#
-new MetalsharpProject("Site", "New\\Path\\In\\Metalsharp")
+.AddInput("Site", "New\\Path\\In\\Metalsharp")
 ```
 
-If you need to add more files to the input:
-
-```c#
-.AddInput("Directory\\On\\Disk")
-```
-
-And if you need to add files to the output list:
+Files destined for the output list — content that should pass through to the built site without further processing — are added the same way, but with `AddOutput`:
 
 ```c#
 .AddOutput("Directory\\On\\Disk")
 ```
 
-You can move files inside Metalsharp from one directory to another:
+You can also move files from one virtual directory to another:
 
 ```c#
 .MoveFiles("Directory\\On\\Disk", "New\\Path\\In\\Metalsharp")
 ```
 
-This work on files in both the input and output list. If you want to segregate which list you're working with:
+This affects files in both the input and output lists. If you only want to move files in one list, use `MoveInput` or `MoveOutput` instead:
 
 ```c#
 .MoveInput("Directory\\On\\Disk", "New\\Path\\In\\Metalsharp")
 .MoveOutput("Directory\\On\\Disk", "New\\Path\\In\\Metalsharp")
 ```
 
-And deleting files works very much the same:
+Removing files works the same way:
 
 ```c#
 .RemoveFiles("delete-this-file.md")
@@ -94,15 +91,15 @@ And deleting files works very much the same:
 
 ### Metadata
 
-*Metadata* is data associated with a file that does not belong in the text of the file. Each `MetalsharpFile` has a `Dictionary<string, object>` property called `Metadata` to store metadata records. `MetalsharpProject` also has a `Metadata` property to store metadata for the whole project.
+*Metadata* is data associated with a file that isn't part of the file's own text. Every `MetalsharpFile` has a `Dictionary<string, object>` property called `Metadata`, and `MetalsharpProject` has a `Metadata` property of its own for metadata that applies to the whole project.
 
-`MetalsharpProject.Meta` allows you to create metadata for the project:
+`MetalsharpProject.Meta` lets you set project-level metadata:
 
 ```c#
 .Meta("my metadata", "hello!")
 ```
 
-The `Frontmatter` plugin parses each file's frontmatter from its text and insert it into the file's metadata.
+The `Frontmatter` plugin parses each file's YAML or JSON frontmatter out of its text and merges it into that file's metadata:
 
 ```c#
 .UseFrontmatter()
@@ -112,58 +109,55 @@ Which brings us to...
 
 ### Plugins
 
-Plugins are invoked by calling `MetalsharpProject.Use`. Using the `Frontmatter` plugin as an example, there are three ways to call a plugin:
+Plugins are invoked by calling `MetalsharpProject.Use`. Using `Frontmatter` as an example, there are three ways to invoke a plugin:
 
-1. By referencing its type
+1. By referencing its type, if it has a public parameterless constructor:
 
-```c#
-.Use<Frontmatter>()
-```
+    ```c#
+    .Use<Frontmatter>()
+    ```
 
-2. By using an instance
+2. By passing an instance:
 
-```c#
-.Use(new Frontmatter())
-```
+    ```c#
+    .Use(new Frontmatter())
+    ```
 
-3. By using an extension method provided by the plugin
+3. By using an extension method the plugin provides, if one exists:
 
-```c#
-.UseFrontmatter()
-```
+    ```c#
+    .UseFrontmatter()
+    ```
 
-Metalsharp comes with a few fundamental plugins, described here.
+Metalsharp ships with a handful of fundamental plugins, described below.
 
-> Side note: if you think you can create a better plugin to replace one of the built-in ones, please do make it and publish it! It would be better for Metalsharp as a whole if all of the plugins are community-made. These just exist to give Metalsharp a footing in the early stages.
+> If you think you can write a better version of one of these plugins, please do — and consider publishing it! Metalsharp is meant to be a platform for plugins built by the community; the built-in plugins exist mainly to give the library a useful footing out of the box.
 
-`Branch` allows you to copy the `MetalsharpProject` you're working with a number of times for different functions. The following will build the project to two separate files.
-
-```c#
-.Branch(
-    proj => proj.Build(new BuildOptions { OutputDirectory = "output" }),
-    proj => proj.Build(new BuildOptions { OutputDirectory = "build" })
-)
-```
-
-`Collections` allows you to create collections of your files. The following creates a collection of all markdown files.
+`Collections` groups files matching a predicate into named collections, stored in the project's metadata. The following creates a collection of all Markdown files:
 
 ```c#
 .UseCollections("markdown", file => file.Extension == ".md")
 ```
 
-`Debug` allows you to log Metalsharp events to make it easier to debug.
+`Debug` logs Metalsharp's internal events, which makes plugin pipelines easier to troubleshoot:
 
 ```c#
 .UseDebug(log => Console.WriteLine(log));
 ```
 
-`Frontmatter`, as we discussed, parses the frontmatter out of the text of each of your files and inserts it into that file's metadata.
+`Frontmatter`, as covered above, parses frontmatter out of each file's text and merges it into that file's metadata:
 
 ```c#
 .UseFrontmatter()
 ```
 
-`Markdown` searches for any Markdown files in the input list and creates an HTML file for each in the output list.
+`Leveller` adds a `level` metadata record to every file, indicating how many directories deep it sits — handy for computing relative links in templates:
+
+```c#
+.UseLeveller()
+```
+
+`Markdown` converts Markdown files in the input into HTML files in the output:
 
 ```c#
 .UseMarkdown()
@@ -171,56 +165,57 @@ Metalsharp comes with a few fundamental plugins, described here.
 
 ### Building
 
-To build the project after you've invoked all the plugins you need, just call `MetalsharpProject.Build`. This writes the files in the output list to the current directory.
+Once you've invoked all the plugins you need, call `MetalsharpProject.Build` to write the files in the output list to disk:
 
 ```c#
 .Build();
 ```
 
-Optionally, you can execute a function on the directory before you build.
+By default, `Build` writes to the current directory and leaves any existing files in place. To change the output directory, or to clear it before writing, configure `MetalsharpProject` when you construct it:
 
 ```c#
-.Build(proj => proj.AddOutput("my-last-minute-file.txt"));
-```
-
-And if you want to change which directory the files write to, or if you want to delete all the files in the output directory before you write any, you can give `Build` a `BuildOptions` object with the settings you want:
-
-```c#
-.Build(new BuildOptions { OutputDirectory = "my\\output\\directory", ClearOutputDirectory = true });
+new MetalsharpProject(clearOutputDirectory: true, outputDirectory: "my\\output\\directory")
 ```
 
 ## Custom Plugins
 
-Let's develop a plugin that inserts the text "Hello" into every `.txt` file called `SayHi`. The tutorial [Create a Plugin for Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) goes into more detail on creating and publishing a practical plugin.
+Let's write a plugin that appends the text "Hello" to every `.txt` file. [Create a Plugin for Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) goes into more detail on developing and publishing a practical plugin.
 
 ### Via `IMetalsharpPlugin`
 
-Every published Metalsharp plugin is (or at least should be) implemented by implementing `IMetalsharpPlugin`. This interface requires one method, `Execute`, which is called when the plugin is invoked.
+Every published Metalsharp plugin implements (or at least should implement) `IMetalsharpPlugin`. This interface requires a single method, `Execute`, which is called when the plugin is invoked.
 
 ```c#
+using System.Text;
+
 public class SayHi : IMetalsharpPlugin
 {
     public void Execute(MetalsharpProject project)
     {
         foreach (var file in project.InputFiles.Concat(project.OutputFiles))
         {
-            if (file.Extension == ".txt") file.Text += "Hello";
+            if (file.Extension == ".txt")
+            {
+                file.Contents = Encoding.Default.GetBytes(file.Text + "Hello");
+            }
         }
     }
 }
 ```
 
-And then this can be invoked as you regularly would:
+> `MetalsharpFile.Text` is a read-only view over `MetalsharpFile.Contents` — to change a file's text, assign new bytes to `Contents` instead.
+
+This can then be invoked like any other plugin:
 
 ```c#
 .Use(new SayHi())
 .Use<SayHi>()
 ```
 
-And we can write an extension to support it:
+And you can write an extension method to support the fluent style:
 
 ```c#
-public static class Extensions
+public static class SayHiPluginExtensions
 {
     public static MetalsharpProject UseSayHi(this MetalsharpProject project) =>
         project.Use(new SayHi());
@@ -229,38 +224,44 @@ public static class Extensions
 
 ### Via Function
 
-`MetalsharpProject.Use` has an overload that allows us to pass in a function. If we didn't want to publish this plugin, we could just make it a function.
+`MetalsharpProject.Use` has an overload that accepts a plain function, so if you don't intend to publish a plugin, you don't need a class at all.
 
 ```c#
-public void SayHi(MetalsharpProject project)
+static void SayHi(MetalsharpProject project)
 {
     foreach (var file in project.InputFiles.Concat(project.OutputFiles))
     {
-        if (file.Extension == ".txt") file.Text += "Hello";
+        if (file.Extension == ".txt")
+        {
+            file.Contents = Encoding.Default.GetBytes(file.Text + "Hello");
+        }
     }
 }
 ```
 
-And we can use it as a delegate.
+And use it as a method group:
 
 ```c#
 .Use(SayHi)
 ```
 
-Or, we could even write it as a lambda.
+Or write it inline as a lambda:
 
 ```c#
 .Use(project =>
 {
     foreach (var file in project.InputFiles.Concat(project.OutputFiles))
     {
-        if (file.Extension == ".txt") file.Text += "Hello";
+        if (file.Extension == ".txt")
+        {
+            file.Contents = Encoding.Default.GetBytes(file.Text + "Hello");
+        }
     }
 })
 ```
 
 ---
 
-Now you've mastered the basics of Metalsharp! Congrats!
+Now you've covered the basics of Metalsharp! Ready for more? [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) puts all of this together into a complete project.
 
-Did you notice something odd with this tutorial - a typo, old information, or just something that could make it a bit better? [Editing this tutorial](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/quickstart.md) and submitting a PR would be a great way to contribute to Metalsharp!
+Noticed a typo, an outdated example, or anything else that could make this clearer? [Editing this page](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/quickstart.md) and submitting a PR is a great way to contribute to Metalsharp!

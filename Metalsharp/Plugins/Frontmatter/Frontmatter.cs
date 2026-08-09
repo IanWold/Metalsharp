@@ -23,11 +23,16 @@ namespace Metalsharp;
 ///     The assertion in the following will evaluate to <c>true</c>:
 ///     
 ///     <code>
-///         var project = new MetalsharpProject("file.txt")
-///         .UseFrontmatter();
-///         
-///         Assert.True((bool)project.InputFiles[0].Metadata["draft"])
+///         var project = new MetalsharpProject()
+///             .AddInput("file.txt")
+///             .UseFrontmatter();
+///
+///         Assert.True(Convert.ToBoolean(project.InputFiles[0].Metadata["draft"]))
 ///     </code>
+///
+///     Note that YAML frontmatter values are parsed as strings (here, the literal string <c>"true"</c>), while
+///     JSON frontmatter values are parsed into their inferred CLR types (here, an actual <c>bool</c>) - so
+///     <see cref="Convert.ToBoolean(object)"/> is used above for portability between the two frontmatter formats.
 /// </example>
 public class Frontmatter : IMetalsharpPlugin
 {

@@ -1,23 +1,23 @@
 # Create a Website with Metalsharp
 
-This tutorial will walk you through (almost) all the components of Metalsharp you might use in the regular course of making a website. This tutorial will make a personal/blog website similar to https://ianwold.com. Some layout/style content will be referenced from this project.
+This tutorial walks through (almost) all the pieces of Metalsharp you're likely to use in the regular course of building a website. We'll build a small personal site with a homepage, a couple of static pages, and a blog — using nothing but the core Metalsharp library and a single C# file.
 
-> Side note: a demo website that is not an actual personal website for anybody should probably be made for this tutorial. If you might want to do that and submit a PR, that would be a great way to contribute to Metalsharp!
+We'll write the whole project as a [.NET file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview): one `.cs` file, run directly with `dotnet run`, no `.csproj` or solution required. This is a great fit for a static site generator — you get a real, compiled C# program with full IntelliSense and no build ceremony to maintain.
 
-The website we'll be making will have a homepage, a few text pages, and several blog posts. We'll use the [Metalsharp.FluidTemplate](https://github.com/IanWold/Metalsharp.FluidTemplate) plugin to use templates for our site. First, we'll walk through adding each of the pages and the design decisions behind doing things the way they are presented (hopefully allowing you to easier change this structure if you desire). Then, we'll write the Metalsharp code to do all the generation.
+First, we'll walk through adding each of the site's pages and the reasoning behind the layout. Then we'll write the Metalsharp program that turns them into a website.
 
 ## Content
 
 * [Project Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#project-files)
   * [Website Content](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#website-content)
   * [Static Content](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#static-content)
-  * [Templates](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#templates)
 * [Build it with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#build-it-with-metalsharp)
+  * [Starting the Script](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#starting-the-script)
   * [Adding Files](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#adding-files)
   * [Using our First Plugins](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#using-our-first-plugins)
   * [Handling the Blog Posts](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#handling-the-blog-posts)
   * [Generating the Blog Page](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#generating-the-blog-page)
-  * [Using the Templates](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#using-the-templates)
+  * [Rendering the Layout](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#rendering-the-layout)
   * [Building the Site](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#building-the-site)
   * [Conclusion](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md#conclusion)
 
@@ -25,7 +25,7 @@ The website we'll be making will have a homepage, a few text pages, and several 
 
 ### Website Content
 
-We'll write our website in Markdown, and the first file we'll need is `index.md`, which will be translated to `index.html` by Metalsharp. We will first need to create a project folder (let's call it `MyProject`), and in there we'll include a `Site` folder for all the content of the website - that's where `index.md` will go.
+We'll write our website content in Markdown. The first file we need is `index.md`, which Metalsharp will translate to `index.html`. Let's create a project folder — we'll call it `MyProject` — and inside it a `Site` folder to hold all of the site's content. That's where `index.md` will go.
 
 ```plaintext
 MyProject
@@ -33,9 +33,7 @@ MyProject
     └── index.md
 ```
 
-And we can write whatever we want in `index.md`.
-
-Let's also inclue an `about.md` page and a `contact.md` page, again with whatever content you want:
+Write whatever you like in `index.md`. Let's also add an `about.md` page and a `contact.md` page:
 
 ```plaintext
 MyProject
@@ -45,165 +43,140 @@ MyProject
     └── index.md
 ```
 
-Now, let's put our blog posts in a sub-directory. That's both so that it's easier for us to categorize, but also so that we can easily separate them out when we need to work with them in Metalsharp. In addition, let's include some frontmatter with our posts. Author, date, and title information would go well in the Metadata. Here's an example post:
+Now let's put our blog posts in their own subdirectory. This makes them easy to categorize, and just as importantly, easy to select as a group once we start writing Metalsharp code. Each post will also carry some frontmatter — an author, a date, and a title are natural fits for metadata rather than page content. Here's an example post:
 
-> If you're unfamiliar with the concept of "frontmatter", it is a common way to include metadata with files. It's used by [Jekyll](https://jekyllrb.com/docs/front-matter/), for example. Metalsharp's frontmatter plugin supports YAML and JSON frontmatter.
+> If you're unfamiliar with frontmatter, it's a common convention for attaching metadata to a content file, popularized by tools like [Jekyll](https://jekyllrb.com/docs/front-matter/). Metalsharp's `Frontmatter` plugin understands both YAML and JSON frontmatter.
 
 ```markdown
 ---
 author: Some Body
-date: 1 January 1990
+date: 2024-01-15
 title: My First Post
-description: The first post in my blog
+description: The first post on my new blog
 ---
 
-# This is my First Post
+# This Is My First Post
 
 How exciting!
 ```
 
-We'll include this and a couple other posts in a `Posts` folder:
+> Using an ISO 8601 date (`YYYY-MM-DD`) keeps dates sortable as plain strings, which is what we'll do later in this tutorial.
+
+Let's add this post and a couple of others to a `Posts` folder:
 
 ```plaintext
 MyProject
 └── Site
     ├── Posts
-    │   ├── my_first_post.md
-    │   ├── i_love_blogging.md
-    │   └── on_writers_block.html
+    │   ├── my-first-post.md
+    │   └── i-love-blogging.md
     ├── about.md
     ├── contact.md
     └── index.md
 ```
 
-This covers all the content we need to write for our website. Notice we have not written a `blog.md` file. This is because it would be better to generate that page from the posts we've added. This way, when we need to add a new post, we just need to put the post in the `Posts` folder, and we don't need to update anything else (besides regenerating the website, of course).
+That covers all the content we need to write by hand. Notice there's no `blog.md` — we'll generate that page from the posts themselves. This way, adding a new post is as simple as dropping a file into `Posts`; nothing else needs to change.
 
 ### Static Content
 
-There are some files (for example, a `css` style) that we don't want to manipulate in any way, we just want it to go straight to the output directory. Let's add another folder alongside `Site` for these. This makes it easier both to maintain a nice directory structure and to handle in Metalsharp. For now, we just need our `MainStyle.css`:
+Some files — a stylesheet, for example — shouldn't be touched at all; they should just be copied straight to the output. Let's add a `Static` folder alongside `Site` for exactly that. For now we just need a `style.css`:
 
 ```plaintext
 MyProject
 ├── Site
 │   ├── Posts
-│   │   ├── my_first_post.md
-│   │   ├── i_love_blogging.md
-│   │   └── on_writers_block.html
+│   │   ├── my-first-post.md
+│   │   └── i-love-blogging.md
 │   ├── about.md
 │   ├── contact.md
 │   └── index.md
 └── Static
-    └── MainStyle.css
+    └── style.css
 ```
 
-For the content of `MainStyle.css`, let's just go ahead and use the style directly [from the reference site](https://github.com/IanWold/ianwold.github.io/blob/master/MainStyle.css).
+Write whatever styling you like — this tutorial doesn't depend on any particular CSS.
 
-### Templates
-
-This tutorial assumes we're using [Metalsharp.FluidTemplate](https://github.com/IanWold/Metalsharp.FluidTemplate) to handle templating, but you could certainly use another system for templating [or create your own](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md).
-
-We'll place our template files in a `Template` directory alongside the `Site` and `Static` directories, once again because this is a nice directory structure and because it will be easier in Metalsharp. We'll need three templates - a layout file for all of the pages, an article template to provide extra styling for the blog posts, and a blog template to help generate the blog page. This tutorial is going to lift the [template folder of the reference site](https://github.com/IanWold/ianwold.github.io/tree/master/src/Templates), but of course you are welcome to develop your own. Later in the tutorial we'll go over some of the specific structures in these templates.
-
-Here's our directory structure now:
+This concludes the content for the site itself. All that's left is the Metalsharp program that builds it, which we'll write as a single `app.cs` file at the root of `MyProject`.
 
 ```plaintext
 MyProject
 ├── Site
-│   ├── Posts
-│   │   ├── my_first_post.md
-│   │   ├── i_love_blogging.md
-│   │   └── on_writers_block.html
-│   ├── about.md
-│   ├── contact.md
-│   └── index.md
+│   └── ...
 ├── Static
-│   └── MainStyle.css
-└── Templates
-    ├── article.liquid
-    ├── blog.liquid
-    └── layout.liquid
+│   └── style.css
+└── app.cs
 ```
-
-This concludes all of the files for the website project. You will, in addition, need to have a C# Metalsharp project which will build this site. How you configure that project and where you put it is up to you. For this tutorial, we'll assume that the Metalsharp program will execute at the `MyProject` directory.
 
 ## Build it with Metalsharp
 
-To start using Metalsharp, you'll need a new C# console application. Metalsharp is written in .NET Standard, so you can choose whether you want to create a .NET Framework or a .NET Core console application. In general, if you are running Windows and you will need to rely on the robustness and future-compatibility of .NET Framework (this would probably be in an enterprise environment), then choose .NET Framework. Otherwise, Microsoft really wants you to choose .NET Core. This tutorial will use .NET Core, though it will (probably) make no difference to you. We'll call the C# app `MyProject`.
+A [file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview) is just a C# file with top-level statements — the same code you'd put in `Program.cs` in a console project — plus an optional set of directives at the top of the file for things like package references. `dotnet run app.cs` compiles and runs it directly, with no project file needed.
 
-Your project will have a `Program.cs` file with a `Main` method inside. In the main method, we will instantiate a `MetalsharpProject` object, add our files, apply several plugins to it, and built it to an output directory. Each step of the way this tutorial will explain parts of the Metalsharp API. Full generated API documentation [is available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md). This project will also, of course need a reference to Metalsharp. You can build Metalsharp from source if you like, but you can also install Metalsharp from NuGet.
-
-```plaintext
-PM> Install-Package Metalsharp -Version 0.9.0-rc.1
-```
-
-### Adding files
-
-> Note that this tutorial will use Windows directory separator characters (i.e. `\`). Metalsharp is written to handle the directory separator characters specific to your platform. So, if you're not using Windows, use the character(s) native to your platform. If you want to use universal directory separator characters, use `Path.DirectorySeparatorCharacter` and/or `Path.Combine` from .NET.
-
-So, we need to get our Metalsharp project up and going, and we'll want to add the site contents (in `/Site`) right off the bat. When we instantiate our `MetalsharpProject`, we can read in the files in that directory right away:
+To pull in Metalsharp, add a `#:package` directive at the top of `app.cs`:
 
 ```c#
-var project = new MetalsharpProject("Site");
+#:package Metalsharp@1.0.0
 ```
 
-When Metalsharp reads files in, it stores them in a single list. That is, there is no `Folder` object now storing our files. All the files are `MetalsharpFile` objects, and they're all stored in a single list. Each `MetalsharpFile` object has a `FilePath` property. Here is what our list of files looks like now, having read all the files in the `Site` directory:
+This tutorial will build up `app.cs` piece by piece. Each step of the way, this tutorial will explain a bit more of the Metalsharp API — the full generated API reference is [available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md).
 
-- `Site\about.md`
-- `Site\contact.md`
-- `Site\index.md`
-- `Site\Posts\my_first_post.md`
-- `Site\Posts\i_love_blogging.md`
-- `Site\Posts\on_writers_block.md`
+### Starting the Script
 
-They have a virtual directory structure which resembles that of the files on disk (we call this a "virtual directory structure" to reinforce the fact that they're really in a single list). There's a slight problem here, and that is that when we output our website, we don't want the website inside a `Site` directory within our output directory. To fix that, we want to move the contents of `Site` up one directory. We can do that by using a different constructor for `MetalsharpProject`:
+Let's start with the package directive and the `using` statements we'll need throughout:
 
 ```c#
-var directory = new MetalsharpProject("Site", ".");
+#:package Metalsharp@1.0.0
+
+using Metalsharp;
+using System.Text;
 ```
 
-This will still read all the files in `Site`, but instead of remembering them in a `Site` directory, Metalsharp will remember them in the "." directory. Windows (and other OSes?) understand "." as a "root" directory - at output there will be no directory created named ".". Thus, our new list of files looks like this:
+`System.Text` is needed later, for `Encoding`, when we rewrite a file's contents.
+
+### Adding Files
+
+> This tutorial uses Windows-style directory separators (`\`) in strings passed to Metalsharp, since Metalsharp accepts whatever separator you give it and stores it as-is in a file's virtual path. If you'd rather write platform-independent code, use `Path.DirectorySeparatorChar` or `Path.Combine` instead of a literal `\` or `/`.
+
+First, we need a `MetalsharpProject` with our site content read in. We also know we want to build to a `build` directory and clear it out on every run, and both of those are configured when the project is constructed:
+
+```c#
+var project = new MetalsharpProject(clearOutputDirectory: true, outputDirectory: "build")
+    .AddInput("Site", ".");
+```
+
+`AddInput`'s second argument is the virtual directory Metalsharp should use for the files it reads — here, `.`, so the contents of `Site` land at the root of our virtual file list instead of nested inside a `Site` directory. Once this runs, our input list looks like this:
 
 - `.\about.md`
 - `.\contact.md`
 - `.\index.md`
-- `.\Posts\my_first_post.md`
-- `.\Posts\i_love_blogging.md`
-- `.\Posts\on_writers_block.md`
+- `.\Posts\my-first-post.md`
+- `.\Posts\i-love-blogging.md`
 
-It's important to note here that `MetalsharpProject` keeps two lists of files, in fact. These are the input and output files (`MetalsharpProject.InputFiles` and `MetalsharpProject.OutputFiles`, respectively). The distinction is that files in the output list will be written to disk during build, and the input files won't be. When we instantiate `MetalsharpProject` and tell it to read in a directory, it places those files in the input list only. This gives us a staging area and allows us to more precisely control which files we output, and how we do so.
+This virtual directory structure mirrors the one on disk, but it's worth remembering that it's just that — virtual. `MetalsharpFile` objects aren't tied to real files on disk; they simply carry a `FilePath` that Metalsharp uses when it eventually writes output.
 
-Once we've instantiated our `MetalsharpProject`, we can continue adding files to the input and output lists. We still need to add our `Templates` and `Static` directories.
+It's important to note that `MetalsharpProject` keeps two lists of files: `InputFiles` and `OutputFiles`. Only files in `OutputFiles` are written to disk when we build. Reading a directory into the project (via `AddInput`) only ever populates the input list — this gives us a staging area, so we can decide precisely which files make it into the output and in what shape.
 
-`Templates` needs to go in the inputs (because they won't be included with the final site):
-
-```c#
-directory.AddInput("Templates");
-```
-
-And `Static` can go straight to the output list - we just want to copy them over as-is:
+Next, let's add `Static`. Since we want those files copied straight through, they go directly into the output list with `AddOutput`:
 
 ```c#
-directory.AddOutput("Static", ".");
+project.AddOutput("Static", ".");
 ```
 
-Notice that as we add `Templates`, it will be placed in a virtual directory called `Templates`, while `Static` will be placed in our root (`.`) directory.
-
-Now that you've added several files to the project, you may need to move some files from one directory to another, or you may need to remove a file or two. `MetalsharpProject` includes methods to move and remove files from the input and output. We don't need to do that on this project, but here are some examples in case you do:
+Now that we've added our files, it's worth knowing that `MetalsharpProject` also has methods to move or remove files after the fact, in case you need to restructure things mid-pipeline. We won't need them for this project, but here's what they look like:
 
 ```c#
 project
-    // Move files in Posts directory to Articles directory
+    // Move files from the Posts directory to an Articles directory
     .MoveInput(".\\Posts", ".\\Articles")
     .MoveOutput(".\\Posts", ".\\Articles")
 
-    // Delete .txt files
+    // Remove any .txt files
     .RemoveInput(file => file.Extension == ".txt")
     .RemoveOutput(file => file.Extension == ".txt");
 ```
 
 ### Using our First Plugins
 
-We've got our files in, now we need to start processing them. Let's run these two plugins first:
+With our files in place, it's time to start processing them. Let's run two plugins:
 
 ```c#
 project
@@ -211,11 +184,11 @@ project
     .UseMarkdown();
 ```
 
-These two plugins come with Metalsharp and they're pretty self-descriptive. `Frontmatter` parses the frontmatter of a file and places it in the file's metadata, and `Markdown` parses Markdown files into HTML, and places the resulting HTML files in the output list. The order of these two are important: when the markdown is parsed, the generated HTML files are given their source file's metadata. Thus, we need to populate the metadata before we generate the HTML files.
+`Frontmatter` parses each file's frontmatter and merges it into that file's metadata. `Markdown` converts Markdown files in the input into HTML files in the output. The order matters here: when `Markdown` generates an HTML file, it copies over the metadata that was already on the source file — so `Frontmatter` needs to run first.
 
-> *Metadata* is any data associated with the file that isn't part of the file's actual text. Metalsharp uses a `Dictionary<string, object>` to store metadata.
+> *Metadata* is any data associated with a file that isn't part of the file's own text. `MetalsharpFile.Metadata` is a plain `Dictionary<string, object>`.
 
-There are a few ways to invoke a plugin. Above, the plugins are invoked using extension methods to `MetalsharpProject`. Each plugin is a class (which implements `IMetalsharpPlugin`), and these plugins can also be accessed by referencing their type with the `MetalsharpProject.Use<T>()` method. The above is equivalent to the following:
+There's more than one way to invoke a plugin. Above, we used the extension methods that ship alongside each plugin. Every plugin is a class implementing `IMetalsharpPlugin`, so you can also invoke one by referencing its type:
 
 ```c#
 project
@@ -223,7 +196,7 @@ project
     .Use<Markdown>();
 ```
 
-This can be desirable if you prefer that style of coding. Note though that this only works for plugins with default constructors (a constructor with no arguments). What both the extension methods and generic-type `Use` methods do, though, is they create an instance of the plugin object and call its `Execute` method. You can invoke a plugin by supplying an instance of the plugin object, if that makes more logical sense to you. Again, the above are each equivalent to the following:
+This only works for plugins with a public parameterless constructor. What both of the forms above actually do is construct an instance of the plugin and call its `Execute` method — you can do that yourself directly, too:
 
 ```c#
 project
@@ -231,269 +204,222 @@ project
     .Use(new Markdown());
 ```
 
-This latter form is much more akin to the `Metalsmith` library on which Metalsharp is based. If you are not sure which form to choose, the following principle may help: invoking a plugin by instance will be the most consistent and robust, though verbose, way because every plugin is a class, while invoking a plugin by extension method may be a more expressive, though inconsistent, way because the plugin author has more control over the extension method(s).
+None of these forms is more "correct" than the others; pick whichever reads best to you. A reasonable rule of thumb: invoking by instance is the most explicit and consistent way, since every plugin is a class either way, while an extension method may read more naturally because the plugin author had the chance to design a purpose-built API around it.
 
-What is important is that after running our `Markdown` plugin, we get the following files in the output directory, while the input remains just as we left it:
+After running `Frontmatter` and `Markdown`, our output list looks like this, while the input remains untouched:
 
 - `.\about.html`
 - `.\contact.html`
 - `.\index.html`
-- `.\Posts\my_first_post.html`
-- `.\Posts\i_love_blogging.html`
-- `.\Posts\on_writers_block.html`
+- `.\Posts\my-first-post.html`
+- `.\Posts\i-love-blogging.html`
+- `.\style.css` *(copied through from `Static`)*
 
 ### Handling the Blog Posts
 
-Just like each file has its own metadata, `MetalsharpProject` also has it's own metadata to pass information about the whole project from plugin to plugin. The `Collections` plugin uses this project-level directory to store collections of files, in both the input and the output lists. This can be useful if you have several files that each need some operations performed on them. In our case, we need to do some additional processing to the blog post files, so we will use the `Collections` plugin to group the posts together.
-
-To create a collection, we need a name for the collection and a function to choose which files to include in that collection. Here's how we'll collect the blog post files:
+Just as each file carries its own metadata, `MetalsharpProject` carries project-level metadata to pass information between plugins. The `Collections` plugin uses this to group related files — in both the input and output lists — under a name you choose. We'll use it to gather our blog posts.
 
 ```c#
-project
-    .UseCollections("posts", file => file.IsChildOf("Posts"));
+project.UseCollections("posts", file => file.IsChildOf("Posts"));
 ```
 
-This will add a new record to the metadata in our `project` object, which will look like the following mess (using the C# literal dictionary notation):
-
-```c#
-["posts"] =
-{
-    ["input"] =
-    {
-        ".\\Posts\\my_first_post.md"
-        ".\\Posts\\i_love_blogging.md"
-        ".\\Posts\\on_writers_block.md"
-    },
-    ["output"] =
-    {
-        ".\\Posts\\my_first_post.html"
-        ".\\Posts\\i_love_blogging.html"
-        ".\\Posts\\on_writers_block.html"
-    }
-}
-```
-
-This selected each of the files, in each the input and output lists, which are children of the "Posts" directory, and put them into a metadata record with the key "posts-collection", which was the name of the collection. If you were to recall the metadata value for the key "posts-collection" from the `MetalsharpProject` metadata (as follows), you would be able to get this object, but there are better ways to get this information.
+`IsChildOf` checks whether a file's immediate parent directory matches the one given — so this selects every file directly inside `Posts`, in both the input and output lists, and stores them in the project's metadata under the key `"collections"`. If you wanted to reach in and grab this yourself, you could:
 
 ```c#
 // Getting at your collection - the hard way
-var postsCollection = project.Metadata["posts-collection"] as Dictionary<string, string[]>;
+var postsCollection = project.Metadata["collections"] as Dictionary<string, Dictionary<string, string[]>>;
+var postPaths = postsCollection["posts"]["output"];
 ```
 
-Now we need to add metadata to each post. Specifically, we want each post to reference the `article` template (from our `Templates` directory) in its metadata. The reason for this is specific to the `FluentTemplates` plugin and is explained below. If you are using a different system for templating, your mileage here may vary.
+But Metalsharp gives us a much friendlier way to do this:
 
 ```c#
-project.GetOutputFilesFromCollection("posts-collection").ToList().ForEach(file => file.Metadata.Add("template", ".\\Templates\\article.liquid"));
+var posts = project.GetOutputFilesFromCollection("posts")
+    .OrderByDescending(file => (string)file.Metadata["date"])
+    .ToList();
 ```
 
-This method, `GetOutputFilesFromCollection` is an extension method for the `Collections` plugin. It does all the typecasting and file-matching for you so that you have all of your files from the "posts-collection" collection - and specifically the outputs, at that. There is also `GetInputFilesFromCollection` and `GetFilesFromCollection`, for the input files and all files, respectively.
+`GetOutputFilesFromCollection` handles the lookup and casting for us and hands back the actual `MetalsharpFile` objects from the `"posts"` collection's output list. There's also `GetInputFilesFromCollection` and `GetFilesFromCollection`, for the input files and all files respectively. Since our post dates are plain ISO 8601 strings, sorting them as strings sorts them chronologically for free.
 
-### Generating the `Blog` Page
+### Generating the Blog Page
 
-This is perhaps the most complicated bit. This section is mostly in reference to the [blog layout from the reference site](https://github.com/IanWold/ianwold.github.io/blob/master/src/Templates/blog.liquid). The way we will generate our `blog.html` file is that we will create an empty `html` file in the output list, tell it that `Templates\blog.liquid` is its template, and then let the templating engine generate the whole page.
-
-Our specific templating engine ([Metalsharp.FluidTemplates](https://github.com/IanWold/Metalsharp.FluidTemplate), which uses the [Fluid](https://github.com/sebastienros/fluid) library) will pass a file's metadata to the template as a set of objects. As you see in the `blog.liquid` template, it expects there to be a `posts` object, which is a list, and for each object in `posts` to have `Slug`, `Title`, `Date`, and `Description` properties. This `posts` object will need to be in the file's metadata (under the key "posts"). To be able to do this in a way that `Fluid` understands, we will need to create our own `Post` object to store the metadata from each post. Fluid will not work with anonymous objects, but it does use reflection to translate POCOs for its own understanding. For brevity, here is that object:
+Now let's build `blog.html` from the list of posts we just gathered. We'll write a small function that renders a summary for each post, and use it to build the page's content:
 
 ```c#
-class Post
+string RenderPostList(IEnumerable<MetalsharpFile> posts) =>
+    string.Join("\n", posts.Select(post => $"""
+        <article>
+            <h2><a href="Posts/{post.Name}.html">{post.Metadata["title"]}</a></h2>
+            <p>{post.Metadata["date"]} &mdash; {post.Metadata["author"]}</p>
+            <p>{post.Metadata["description"]}</p>
+        </article>
+        """));
+```
+
+Then we add `blog.html` to the output list ourselves, using `MetalsharpFile`'s metadata constructor to attach a title:
+
+```c#
+project.AddOutput(new MetalsharpFile(
+    RenderPostList(posts),
+    Path.Combine(".", "blog.html"),
+    new Dictionary<string, object> { ["title"] = "Blog" }
+));
+```
+
+> We build the path with `Path.Combine(".", "blog.html")` rather than the literal string `"blog.html"` so that the file's virtual directory is `.`, matching the rest of our root-level pages. This matters in the next step, where we compute how deep each page sits in the site.
+
+### Rendering the Layout
+
+We now have five HTML files in the output — `index`, `about`, `contact`, `blog`, and two posts — and none of them look like a real page yet; they're just fragments of body content. Let's wrap all of them in a shared layout.
+
+Two of our pages (the posts) are nested one directory deep, inside `Posts`, so their links back to the rest of the site need a `../` prefix that the root-level pages don't need. Metalsharp's `Leveller` plugin computes exactly this: it adds a `level` metadata record to every file, counting how many directories deep it sits.
+
+```c#
+project.UseLeveller();
+```
+
+Now we can write a function that wraps every HTML file's content in a shared page shell, using each file's `level` to compute the right number of `../` segments:
+
+```c#
+void RenderLayout(MetalsharpProject proj)
 {
-    public Post(MetalsharpFile file)
+    foreach (var file in proj.OutputFiles.Where(f => f.Extension == ".html"))
     {
-        Title = file.Metadata["title"] as string;
-        Date = file.Metadata["date"] as string;
-        Description = file.Metadata["description"] as string;
-        Author = file.Metadata["author"] as string;
-        Slug = file.Name;
-    }
+        var depth = (int)file.Metadata["level"];
+        var relativeRoot = string.Concat(Enumerable.Repeat("../", depth));
+        var title = file.Metadata.TryGetValue("title", out var t) ? t : "MyProject";
 
-    public string Title { get; set; }
+        var page = $"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>{title}</title>
+                <link rel="stylesheet" href="{relativeRoot}style.css">
+            </head>
+            <body>
+                <nav>
+                    <a href="{relativeRoot}index.html">Home</a>
+                    <a href="{relativeRoot}about.html">About</a>
+                    <a href="{relativeRoot}blog.html">Blog</a>
+                    <a href="{relativeRoot}contact.html">Contact</a>
+                </nav>
+                <main>
+                    {file.Text}
+                </main>
+            </body>
+            </html>
+            """;
 
-    public string Date { get; set; }
-
-    public string Description { get; set; }
-
-    public string Author { get; set; }
-
-    public string Slug { get; set; }
-}
-```
-
-Now we need to make a `blog.html` file in the output, and we need to set its metadata to have a list of these `Post` objects, as well as a link to the `blog.liquid` template. As we covered before, `MetalsharpProject` does have an `AddOutput` method, and we could *just* use that here, but this is an opportunity to demonstrate another feature. `MetalsharpProject` has another overload of the `Use` method which allows you to use a lambda function (that is, an anonymous function) as a kind of plugin. If you want to use a function, it'll have one input (the directory) and should have no output. This is what .NET calls an `Action<MetalsharpProject>`. Here's how it would look:
-
-```c#
-project.Use(proj => proj.AddOutput("", "blog.html")
-{
-    Metadata = new Dictionary<string, object>()
-    {
-        ["posts"] = proj.GetOutputFilesFromList("posts").Select(file => new Post(file)),
-        ["template"] = ".\\Templates\\blog.liquid"
-    }
-});
-```
-
-Obviously, because our `MetalsharpProject` is in the variable `project`, we don't need this complexity. The following will achieve the same for us:
-
-```c#
-project.AddOutput("", "blog.html")
-{
-    Metadata = new Dictionary<string, object>()
-    {
-        ["posts"] = project.GetOutputFilesFromList("posts").Select(file => new Post(file)),
-        ["template"] = ".\\Templates\\blog.liquid"
-    }
-});
-```
-
-Where the former option is desirable is where you are using `MetalsharpProject`'s fluent interface. That is, if you are chaining together all of your plugin invocations rather than creating a new `MetalsharpProject` variable, you will need to use the former option to access the current `MetalsharpProject` object.
-
-### Using the Templates
-
-Now we've got our templates generating our `blog.html` page, but we need to actually make the call to `Metalsharp.FluidTemplate` to add the templates to our HTML files. Before this, though, we have a slight problem. All of our blog post pages are sitting in a `Posts` directory. The trouble with this is that our templates will need to accommodate for that in the hyperlinks - if our user is on a post page and wants to get home, we need to generate a `../` prefix for each link going back one directory. Now, it would be simple enough for us to take those post pages and raise them one directory, but there are times where that may not be desirable. So, here is the solution.
-
-At the top of our `layout.liquid` template, we'll put the following code:
-
-```liquid
-{% assign directoryPrefix = "" %}
-{% for i in (1..level) %}
-    {% assign directoryPrefix = directoryPrefix + "../" %}
-{% endfor %}
-```
-
-This expects that our template will be given a `level` object (an int), which will tell the template how many directory levels we are from the root directory. It will then create a `directoryPrefix` variable in the template with the appropriate number of `../` to get us back to the root directory. A hyperlink in the layout will then look like:
-
-```liquid
-<a href="{{ directoryPrefix }}index.html">MyProject</a>
-```
-
-When we're at the root directory, `directoryPrefix` will be empty, so the link will take us right to `index.html`. However, when we're in a post, `directoryPrefix` will be `../`, which will take us back up one directory to get to `index.html`.
-
-Now we just need to generate this `level` variable in our Metalsharp code, and give every page a new metadata record keyed "level" with the appropriate integer. It should be relatively easy to write a function that goes over every file in both the inputs and outputs in the `MetalsharpProject` and assigns an appropriate metadata record, but for brevity here is that function:
-
-```c#
-static void LeveledFiles(MetalsharpProject project)
-{
-    foreach (var file in project.InputFiles.Concat(project.OutputFiles))
-    {
-        // Get the directories from the path of the file as an array
-        var dirLevels = file.Directory.Split(Path.DirectorySeparatorChar);
-        // If one of the directories in the file is ".", omit that one
-        // Because Windows will ignore the "." directory
-        var dirLevelCount = dirLevels.Count() - (dirLevels[0] == "." ? 1 : 0);
-        // Add the count to the metadata of the file
-        file.Metadata.Add("level", dirLevelCount);
+        file.Contents = Encoding.UTF8.GetBytes(page);
     }
 }
 ```
 
-Now we have our method to achieve this, we just need to plug it in to our Metalsharp project. Recall from above where we used `MetalsharpProject.Use` to invoke a function on the project - we can do exactly the same here with this method. Becuase the method has the same inputs and outputs as an `Action<MetalsharpProject>`, we can use it as a delegate here:
+`MetalsharpFile.Text` is a read-only view over `MetalsharpFile.Contents`, so to replace a file's content we assign new bytes back to `Contents` — here, the UTF-8 bytes of our rendered page.
+
+This `RenderLayout` function has exactly the shape `MetalsharpProject.Use` expects — a method taking a single `MetalsharpProject` and returning nothing — so we can invoke it as a plugin without writing a class at all:
 
 ```c#
-project.Use(LeveledFiles);
+project.Use(RenderLayout);
 ```
 
-And now, we are ready to hook up our templates. Again, it bears mentioning that this tutorial is covering specifics for the `Metalsharp.FluidTemplate` library, and you may have a slightly different experience if you're using a different system for your templates.
-
-If you've been reading closely, you'll notice that only four of our files have a metadata record keyed "template": each of the three posts, which specify `article.liquid`, and the blog page, which specifies `blog.liquid`. The other three pages - index, about, and contact, do not need one. This is because there is a slight distinction between a *template* and a *layout*. A *template* is specified in the metadata of the file, while a *layout* is specified in our Metalsharp code when we invoke the `FluidTemplate` plugin. If a file specifies a template, then the template is applied first. After the templates are applied and if a layout is specified, then the layout is applied to every file.
-
-Thus, we only need the following addition to our Metalsharp code:
-
-```c#
-project.UseFluidTemplate(".\\Templates\\layout.liquid");
-```
+> This tutorial keeps templating deliberately simple so the whole project stays self-contained in one file. If you want a more capable templating story — layout inheritance, partials, and so on — nothing stops you from pulling in a templating library of your choice and calling it from a `Use` function exactly like this one.
 
 ### Building the Site
 
-Now we're done doing the processing we need to with Metalsharp, we can build the site! But we have a couple requirements: we want to build the site to a `build` directory, and every time we build the site we want to remove all the files in that directory before we write any files there. The `BuildOptions` class handles these options for us, and we can provide an instance of this class, with these options configured, to the `MetalsharpProject.Build` method.
+We've already configured our output directory and clear-on-build behavior back when we constructed `project`, so all that's left is to call `Build`:
 
 ```c#
-project.Build(new BuildOptions
-{
-    OutputDirectory = "build",
-    ClearOutputDirectory = true
-});
+project.Build();
 ```
 
 ### Conclusion
 
-To reiterate, if you've been following along (and assuming you opted to use the fluent interface), your code probably looks similar to the following:
+Putting it all together, here's the complete `app.cs`:
 
 ```c#
-namespace MyProject
+#:package Metalsharp@1.0.0
+
+using Metalsharp;
+using System.Text;
+
+var project = new MetalsharpProject(clearOutputDirectory: true, outputDirectory: "build")
+    .AddInput("Site", ".")
+    .AddOutput("Static", ".")
+    .UseFrontmatter()
+    .UseMarkdown()
+    .UseCollections("posts", file => file.IsChildOf("Posts"));
+
+var posts = project.GetOutputFilesFromCollection("posts")
+    .OrderByDescending(file => (string)file.Metadata["date"])
+    .ToList();
+
+project.AddOutput(new MetalsharpFile(
+    RenderPostList(posts),
+    Path.Combine(".", "blog.html"),
+    new Dictionary<string, object> { ["title"] = "Blog" }
+));
+
+project
+    .UseLeveller()
+    .Use(RenderLayout)
+    .Build();
+
+string RenderPostList(IEnumerable<MetalsharpFile> posts) =>
+    string.Join("\n", posts.Select(post => $"""
+        <article>
+            <h2><a href="Posts/{post.Name}.html">{post.Metadata["title"]}</a></h2>
+            <p>{post.Metadata["date"]} &mdash; {post.Metadata["author"]}</p>
+            <p>{post.Metadata["description"]}</p>
+        </article>
+        """));
+
+void RenderLayout(MetalsharpProject proj)
 {
-    using Metalsharp;
-    using System.Linq;
-    using Metalsharp.FluidTemplate;
-    using System.IO;
-    using System.Collections.Generic;
-    using System;
-
-    class Program
+    foreach (var file in proj.OutputFiles.Where(f => f.Extension == ".html"))
     {
-        static void Main(string[] args) =>
-            new MetalsharpProject("Site", ".")
-                .AddInput("Templates")
-                .AddOutput("Static", ".")
-                .UseFrontmatter()
-                .UseMarkdown()
-                .UseCollections("posts", file => file.IsChildOf("Posts"))
-                .Use(dir =>
-                    dir.GetOutputFilesFromCollection("posts-collection").ToList()
-                    .ForEach(file => file.Metadata.Add("template", ".\\Templates\\article.liquid")))
-                .Use(dir => dir.AddOutput("", "blog.html")
-                {
-                    Metadata = new Dictionary<string, object>()
-                    {
-                        ["posts"] = dir.GetOutputFilesFromList("posts").Select(file => new Post(file)),
-                        ["template"] = ".\\Templates\\blog.liquid"
-                    }
-                })
-                .Use(LeveledFiles)
-                .UseFluidTemplate(".\\Templates\\layout.liquid")
-                .Build(new BuildOptions
-                {
-                    OutputDirectory = "build",
-                    ClearOutputDirectory = true
-                });
+        var depth = (int)file.Metadata["level"];
+        var relativeRoot = string.Concat(Enumerable.Repeat("../", depth));
+        var title = file.Metadata.TryGetValue("title", out var t) ? t : "MyProject";
 
-        static void LeveledFiles(MetalsharpProject project)
-        {
-            foreach (var file in project.InputFiles.Concat(project.OutputFiles))
-            {
-                var dirLevels = file.Directory.Split(Path.DirectorySeparatorChar);
-                var dirLevelCount = dirLevels.Count() - (dirLevels[0] == "." ? 1 : 0);
-                file.Metadata.Add("level", dirLevelCount);
-            }
-        }
-    }
+        var page = $"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>{title}</title>
+                <link rel="stylesheet" href="{relativeRoot}style.css">
+            </head>
+            <body>
+                <nav>
+                    <a href="{relativeRoot}index.html">Home</a>
+                    <a href="{relativeRoot}about.html">About</a>
+                    <a href="{relativeRoot}blog.html">Blog</a>
+                    <a href="{relativeRoot}contact.html">Contact</a>
+                </nav>
+                <main>
+                    {file.Text}
+                </main>
+            </body>
+            </html>
+            """;
 
-    class Post
-    {
-        public Post(MetalsharpFile file)
-        {
-            Title = file.Metadata["title"] as string;
-            Date = file.Metadata["date"] as string;
-            Description = file.Metadata["description"] as string;
-            Author = file.Metadata["author"] as string;
-            Slug = file.Name;
-        }
-
-        public string Title { get; set; }
-
-        public string Date { get; set; }
-
-        public string Description { get; set; }
-
-        public string Author { get; set; }
-
-        public string Slug { get; set; }
+        file.Contents = Encoding.UTF8.GetBytes(page);
     }
 }
 ```
 
+Run it from the `MyProject` directory with:
+
+```plaintext
+dotnet run app.cs
+```
+
+And your site will be generated in `build`.
+
 ---
 
-Now you're all set - your site is up and running! Congrats!
+Now you're all set — your site is up and running! Congrats!
 
-Did you write a plugin to help you generate your site? If you did, you may want to consider releasing it. [This tutorial](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) explains how to develop and release your own plugin.
+Did you write something you think could be a useful plugin for others? Consider publishing it — [Create a Plugin for Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) explains how to develop and release one of your own.
 
-Did you notice something odd with this tutorial - a typo, old information, or just something that could make it a bit better? [Editing this tutorial](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/tutorial-website.md) and submitting a PR would be a great way to contribute to Metalsharp!
+Did you notice something odd with this tutorial — a typo, outdated information, or something that could be explained better? [Editing this page](https://github.com/IanWold/Metalsharp/edit/master/Metalsharp.Documentation/tutorial-website.md) and submitting a PR would be a great way to contribute to Metalsharp!
