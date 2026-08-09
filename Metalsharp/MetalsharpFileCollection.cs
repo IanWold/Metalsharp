@@ -128,15 +128,15 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 public static class IEnumerableExtensions
 {
 	/// <summary>
-	///     Mimic <c>IEnumerable.ToList</c>, allowing the easy conversion of an enumerable of files to an <c>IMetalsharpFileCollection</c>
+	///     Mimic <c>IEnumerable.ToList</c>, allowing the easy conversion of an enumerable of files to a <c>MetalsharpFileCollection</c>.
 	/// </summary>
 	///
 	/// <param name="list">
-	///     The <c>IEnumerable</c> of <c>IMetalsharpFile</c>s to convert to an IMetalsharpFileCollection.
+	///     The <c>IEnumerable</c> of <c>MetalsharpFile</c>s to convert to a <c>MetalsharpFileCollection</c>.
 	/// </param>
-	/// 
+	///
 	/// <returns>
-	///     An <c>IMetalsharpFileCollection</c> containing the files in the given list.
+	///     A <c>MetalsharpFileCollection</c> containing the files in the given list.
 	/// </returns>
 	public static MetalsharpFileCollection ToMetalsharpFileCollection(this IEnumerable<MetalsharpFile> list) =>
 		new(list);
