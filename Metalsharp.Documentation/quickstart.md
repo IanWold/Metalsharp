@@ -37,11 +37,11 @@ MyProject
 │   └── The content files of your website (e.g. index.md).
 ├── Static
 │   └── Files that are copied directly to the output directory (e.g. style.css).
-├── Templates
-│   └── Files used by your project but not included in the output, such as templates.
 ├── (Any files and folders irrelevant to your website can live at the top level.)
 └── Your C# Metalsharp program executes at this level.
 ```
+
+None of these directory names is special to Metalsharp — `AddInput` and `AddOutput` will read whatever directory you point them at. If your project needs files that are neither content nor pass-through output — layout templates for a templating library you've brought in yourself, for instance — a directory like `Templates` works fine too; just read it in with `AddInput` like anything else and decide what to do with those files in your own code. Metalsharp doesn't have an opinion on templating (see [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) for one straightforward approach that needs no template files at all).
 
 ## Using Metalsharp
 

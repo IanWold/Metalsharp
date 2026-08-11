@@ -77,19 +77,25 @@ Let's walk through the example above. The [quickstart](https://github.com/IanWol
     .Use<Frontmatter>()
     ```
 
-4. Most of the plugins that ship with Metalsharp also provide an extension method for convenience. `Markdown` converts Markdown files in the input into HTML files in the output:
+4. Most of the plugins that ship with Metalsharp — `Frontmatter` included — also provide an extension method that does the same thing, for convenience:
+
+    ```c#
+    .UseFrontmatter()
+    ```
+
+5. `Markdown` works the same way; it converts Markdown files in the input into HTML files in the output:
 
     ```c#
     .UseMarkdown()
     ```
 
-5. Add any files that should be copied straight through to the output, such as static assets:
+6. Add any files that should be copied straight through to the output, such as static assets:
 
     ```c#
     .AddOutput("Static")
     ```
 
-6. Finally, call `Build` to write the output files to disk:
+7. Finally, call `Build` to write the output files to disk:
 
     ```c#
     .Build();

@@ -46,7 +46,7 @@ This will match all the files in the input and output whose names contain the wo
 This can be a bit confusing and messy to sort through, so there are extra extension methods supporting retrieving these collections. The following will go through each of the post html files in the output and add some custom metadata to them:
 
 ```c#
-project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
+project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata["author"] = "Mickey Mouse");
 ```
 
 ### Constructors
@@ -95,7 +95,7 @@ This will match all the files in the input and output whose names contain the wo
 This can be a bit confusing and messy to sort through, so there are extra extension methods supporting retrieving these collections. The following will go through each of the post html files in the output and add some custom metadata to them:
 
 ```c#
-project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
+project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata["author"] = "Mickey Mouse");
 ```
 
 ### `Collections(String, Predicate<MetalsharpFile>)`

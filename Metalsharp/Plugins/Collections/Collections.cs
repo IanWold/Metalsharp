@@ -43,7 +43,7 @@
 ///     This can be a bit confusing and messy to sort through, so there are extra extension methods supporting retrieving these collections. The following will go through each of the post html files in the output and add some custom metadata to them:
 ///     
 ///     <code>
-///         project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata.Add("author", "Mickey Mouse"));
+///         project.GetOutputFilesFromCollection("posts").ToList().ForEach(post => post.Metadata["author"] = "Mickey Mouse");
 ///     </code>
 /// </example>
 /// <param name="definitions">
