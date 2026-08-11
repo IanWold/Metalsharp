@@ -123,7 +123,7 @@ Extensions for the Collections plugin.
 
 Given the name of a collection, returns that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection.
 
 ```c#
@@ -144,7 +144,7 @@ A `Dictionary` containing the input and output lists of file paths in the collec
 
 Given the name of a collection, returns the input and output files in that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection.
 
 ```c#
@@ -162,7 +162,7 @@ An enumerable of `MetalsharpFile`s from the input and output lists of the collec
 
 Given the name of a collection, returns the input file paths in that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection.
 
 ```c#
@@ -180,7 +180,7 @@ An array containing the list of input file paths in the collection.
 
 Given the name of a collection, returns the input files in that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection to return the input files from.
 
 ```c#
@@ -198,7 +198,7 @@ An enumerable containing the files from the input list in the collection.
 
 Given the name of a collection, returns the output file paths in that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection.
 
 ```c#
@@ -216,7 +216,7 @@ An array containing the list of output file paths in the collection.
 
 Given the name of a collection, returns the output files in that collection from the metadata of the `MetalsharpProject`.
 
-- `project`: The directory holding the collection.
+- `project`: The `MetalsharpProject` holding the collection.
 - `name`: The name of the collection to return the output files from.
 
 ```c#
@@ -502,16 +502,16 @@ Adds "level" metadata to each file specifying how many directories deep the file
 The following will add a file at a directory, use leveller, and demonstrate the resulting metadata in the file:
 
 ```c#
-var file = new MetalsharpFile("Hello, World!", "dir1\dir2\file");
+var file = new MetalsharpFile("Hello, World!", Path.Combine("dir1", "dir2", "file.txt"));
 new MetalsharpProject().AddInput(file).UseLeveller();
 
-foreach (var metadata in file.Metadata)
+foreach (var (key, value) in file.Metadata)
 {
-    Console.WriteLine($"{metadata.Key}: {metadata.Value});
+    Console.WriteLine($"{key}: {value}");
 }
 ```
 
-The output of the run will be "level: 3", since `file` is at the third directory from root.
+The output of the run will be "level: 2", since `file` is two directories deep from the root.
 
 ### Constructors
 
@@ -702,7 +702,7 @@ Instantiate a new MetalsharpFile with the specified metadata.
 
 ### Methods
 
-### `IsChildOf(String, StringComparison)`
+### `IsChildOf(String, StringComparison = OrdinalIgnoreCase)`
 
 Checks whether a directory is the immediate parent of the file, i.e. whether `directory`'s
 path segments exactly match the trailing segments of the file's own directory.
@@ -716,7 +716,7 @@ path segments exactly match the trailing segments of the file's own directory.
 
 `true` if the file is a child of the directory, `false` otherwise.
 
-### `IsDescendantOf(String, StringComparison)`
+### `IsDescendantOf(String, StringComparison = OrdinalIgnoreCase)`
 
 Checks whether a directory is an ancestor of the file, i.e. whether `directory`'s path
 segments appear as a contiguous, aligned run anywhere in the file's path.
@@ -780,7 +780,7 @@ Instantiate a collection with an existing one.
 
 ### `Add(MetalsharpFile)`
 
-### `ChildrenOf(String, StringComparison)`
+### `ChildrenOf(String, StringComparison = OrdinalIgnoreCase)`
 
 Gets the files in the collection which are children to the given virtual directory.
 
@@ -797,11 +797,11 @@ All of the files which are children of the given directory.
 
 ### `Contains(MetalsharpFile)`
 
-### `ContainsDirectory(String, StringComparison)`
+### `ContainsDirectory(String, StringComparison = OrdinalIgnoreCase)`
 
 ### `CopyTo(MetalsharpFile[], Int32)`
 
-### `DescendantsOf(String, StringComparison)`
+### `DescendantsOf(String, StringComparison = OrdinalIgnoreCase)`
 
 Gets the files in the collection which descend from the given virtual directory.
 
@@ -859,7 +859,7 @@ This overload exists because `CommandLineParser` constructs instances via reflec
 a constructor whose parameters merely all have default values does not qualify. Without this,
 `FromArgs` throws `MissingMethodException`.
 
-### `MetalsharpOptions(Boolean, String, LogLevel)`
+### `MetalsharpOptions(Boolean = false, String = ".\", LogLevel = Error)`
 
 Represents the configuration options for a Metalsharp project.
 
@@ -936,7 +936,7 @@ Instantiate a `MetalsharpProject` with the specified configuration options.
 
 - `options`: The configuration options for the project.
 
-### `MetalsharpProject(Boolean, String, LogLevel)`
+### `MetalsharpProject(Boolean = false, String = ".\", LogLevel = Error)`
 
 Instantiate a `MetalsharpProject` with the specified configuration options.
 
@@ -1305,7 +1305,7 @@ After this, our virtual directory structure will be:
 
 The current `MetalsharpProject`, allowing it to be fluent.
 
-### `MoveInput(Predicate<MetalsharpFile>, String, String)`
+### `MoveInput(Predicate<MetalsharpFile>, String, String = null)`
 
 Moves files in the input matching a predicate from one directory to another.
 
@@ -1395,7 +1395,7 @@ After this, our virtual directory structure will be:
 
 The current `MetalsharpProject`, allowing it to be fluent.
 
-### `MoveOutput(Predicate<MetalsharpFile>, String, String)`
+### `MoveOutput(Predicate<MetalsharpFile>, String, String = null)`
 
 Moves files in the output matching a predicate from one directory to another.
 
@@ -1521,7 +1521,7 @@ new MetalsharpProject()
 
 The current `MetalsharpProject`, allowing it to be fluent.
 
-### `RemoveInput(Predicate<MetalsharpFile>, String)`
+### `RemoveInput(Predicate<MetalsharpFile>, String = null)`
 
 Remove all the files matching a predicate from the input.
 
@@ -1582,7 +1582,7 @@ new MetalsharpProject()
 
 The current `MetalsharpProject`, allowing it to be fluent.
 
-### `RemoveOutput(Predicate<MetalsharpFile>, String)`
+### `RemoveOutput(Predicate<MetalsharpFile>, String = null)`
 
 Remove all the files matching a predicate from the output.
 
@@ -1625,7 +1625,7 @@ Our virtual directory structure will then look like the following:
 
 The current `MetalsharpProject`, allowing it to be fluent.
 
-### `Use(Action<MetalsharpProject>, String)`
+### `Use(Action<MetalsharpProject>, String = null)`
 
 Invokes a function as a plugin.
 

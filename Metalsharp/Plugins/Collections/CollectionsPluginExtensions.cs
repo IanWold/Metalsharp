@@ -77,7 +77,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection.
@@ -107,7 +107,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection.
@@ -133,7 +133,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection.
@@ -163,7 +163,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection to return the input files from.
@@ -191,7 +191,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection.
@@ -221,7 +221,7 @@ public static class CollectionsPluginExtensions
 	/// </example>
 	/// 
 	/// <param name="project">
-	///     The directory holding the collection.
+	///     The <c>MetalsharpProject</c> holding the collection.
 	/// </param>
 	/// <param name="name">
 	///     The name of the collection to return the output files from.

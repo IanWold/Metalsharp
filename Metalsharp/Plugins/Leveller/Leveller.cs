@@ -8,18 +8,18 @@
 /// 
 /// <example>
 /// The following will add a file at a directory, use leveller, and demonstrate the resulting metadata in the file:
-/// 
+///
 /// <code>
-///     var file = new MetalsharpFile("Hello, World!", "dir1\dir2\file");
+///     var file = new MetalsharpFile("Hello, World!", Path.Combine("dir1", "dir2", "file.txt"));
 ///     new MetalsharpProject().AddInput(file).UseLeveller();
-///     
-///     foreach (var metadata in file.Metadata)
+///
+///     foreach (var (key, value) in file.Metadata)
 ///     {
-///         Console.WriteLine($"{metadata.Key}: {metadata.Value});
+///         Console.WriteLine($"{key}: {value}");
 ///     }
 /// </code>
-/// 
-/// The output of the run will be "level: 3", since <c>file</c> is at the third directory from root.
+///
+/// The output of the run will be "level: 2", since <c>file</c> is two directories deep from the root.
 /// </example>
 public class Leveller : IMetalsharpPlugin
 {
