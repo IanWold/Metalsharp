@@ -117,7 +117,7 @@ public class Markdown : IMetalsharpPlugin
 
 [Metalsharp.Documentation](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md) contains generated API reference documentation and hand-written tutorials.
 
-The source is fully documented with XML comments. [`Metalsharp.Documentation/api.md`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md) is generated from those comments by [`generate-api-docs.cs`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/generate-api-docs.cs).
+The source is fully documented with XML comments. [`Metalsharp.Documentation/api.md`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md) is generated from those comments by [`GenerateApiDoc.cs`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/GenerateApiDoc.cs).
 
 For questions or help using Metalsharp, please use the [Metalsharp Discord](https://discord.gg/KwBtSan) rather than opening an issue.
 

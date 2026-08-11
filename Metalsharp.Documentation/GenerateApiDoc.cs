@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -272,7 +271,28 @@ string XmlDocTypeName(Type type)
 }
 
 string ParamList(ParameterInfo[] parameters) =>
-    string.Join(", ", parameters.Select(p => FriendlyTypeName(p.ParameterType)));
+    string.Join(", ", parameters.Select(ParamSignature));
+
+string ParamSignature(ParameterInfo p)
+{
+    var typeName = FriendlyTypeName(p.ParameterType);
+
+    if (!p.HasDefaultValue)
+    {
+        return typeName;
+    }
+
+    var defaultText = p.DefaultValue switch
+    {
+        null => "null",
+        bool b => b ? "true" : "false",
+        string s => $"\"{s}\"",
+        Enum e => e.ToString(),
+        var v => v.ToString()
+    };
+
+    return $"{typeName} = {defaultText}";
+}
 
 string FriendlyTypeName(Type type)
 {
@@ -342,7 +362,7 @@ string NodeToString(XNode node) => node switch
     _ => string.Empty
 };
 
-string ElementToString(ElementInit element)
+string ElementToString(XElement element)
 {
     var inner = string.Concat(element.Nodes().Select(NodeToString));
     return element.Name.LocalName switch
