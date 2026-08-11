@@ -2,8 +2,7 @@
     
 # <img src="https://raw.githubusercontent.com/IanWold/Metalsharp/refs/heads/master/Icon.png" height="23"> Metalsharp
 
-[![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=flat-square)](https://www.nuget.org/packages/Metalsharp/)
-[![Build](https://img.shields.io/github/actions/workflow/status/IanWold/Metalsharp/build.yml?branch=master&logo=github&logoColor=white&style=flat-square)](https://github.com/IanWold/Metalsharp/actions/workflows/build.yml)
+[![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=for-the-badge)](https://www.nuget.org/packages/Metalsharp/)
 
 A **small**, **simple**, and **extendable** C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/)
 
