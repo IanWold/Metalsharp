@@ -137,7 +137,15 @@ public class Frontmatter : IMetalsharpPlugin
 		frontmatter = null;
 		remainder = null;
 
-		var closingIndex = document.IndexOf("---", 3, StringComparison.Ordinal);
+		var openingIndex = document.IndexOf("---", StringComparison.Ordinal);
+		if (openingIndex < 0)
+		{
+			return false;
+		}
+
+		var contentStart = openingIndex + 3;
+
+		var closingIndex = document.IndexOf("---", contentStart, StringComparison.Ordinal);
 		if (closingIndex < 0)
 		{
 			return false;
@@ -145,7 +153,7 @@ public class Frontmatter : IMetalsharpPlugin
 
 		try
 		{
-			var yamlText = document[3..closingIndex].Trim();
+			var yamlText = document[contentStart..closingIndex].Trim();
 			var yamlFrontmatter = new YamlDotNet.Serialization.Deserializer().Deserialize<Dictionary<string, object>>(new StringReader("---\r\n" + yamlText + "\r\n..."));
 
 			frontmatter = yamlFrontmatter;
@@ -181,7 +189,15 @@ public class Frontmatter : IMetalsharpPlugin
 		frontmatter = null;
 		remainder = null;
 
-		var closingIndex = document.IndexOf(";;;", 3, StringComparison.Ordinal);
+		var openingIndex = document.IndexOf(";;;", StringComparison.Ordinal);
+		if (openingIndex < 0)
+		{
+			return false;
+		}
+
+		var contentStart = openingIndex + 3;
+		
+		var closingIndex = document.IndexOf(";;;", contentStart, StringComparison.Ordinal);
 		if (closingIndex < 0)
 		{
 			return false;
@@ -189,7 +205,7 @@ public class Frontmatter : IMetalsharpPlugin
 
 		try
 		{
-			var jsonText = document[3..closingIndex].Trim();
+			var jsonText = document[contentStart..closingIndex].Trim();
 			var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonText, s_jsonOptions);
 
 			if (jsonFrontmatter is null)

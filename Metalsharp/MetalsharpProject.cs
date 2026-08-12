@@ -197,7 +197,12 @@ public class MetalsharpProject
 
 			foreach (var subdirectory in directory.EnumerateDirectories())
 			{
-				AddFromFileSystem(Path.Combine(diskPath, subdirectory.Name), Path.Combine(virtualPath, subdirectory.Name), add, list, recurse + 1);
+				var childVirtualPath =
+					virtualPath.Length == 0
+					? Path.DirectorySeparatorChar + subdirectory.Name
+					: Path.Combine(virtualPath, subdirectory.Name);
+
+				AddFromFileSystem(Path.Combine(diskPath, subdirectory.Name), childVirtualPath, add, list, recurse + 1);
 			}
 
 			log($"Finished adding files from file system at {diskPath}");
@@ -418,8 +423,6 @@ public class MetalsharpProject
 
 			if (file.UnmodifiedSourcePath is { } sourcePath)
 			{
-				// Never read or replaced since being added - copy it directly rather than
-				// loading it into memory just to write the same bytes back out.
 				LogDebug($"Copying file {sourcePath} to {path}");
 				File.Copy(sourcePath, path, overwrite: true);
 			}
