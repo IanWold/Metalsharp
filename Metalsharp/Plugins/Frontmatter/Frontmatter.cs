@@ -134,29 +134,26 @@ public class Frontmatter : IMetalsharpPlugin
 	/// </returns>
 	private static bool TryGetYamlFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split("---", StringSplitOptions.None);
-
 		frontmatter = null;
 		remainder = null;
 
-		if (split.Length >= 3)
+		var closingIndex = document.IndexOf("---", 3, StringComparison.Ordinal);
+		if (closingIndex < 0)
 		{
-			try
-			{
-				var yamlFrontmatter = new YamlDotNet.Serialization.Deserializer().Deserialize<Dictionary<string, object>>(new StringReader("---\r\n" + split[1].Trim() + "\r\n..."));
-				var arrayRemainder = string.Join("---", split.Skip(2));
-
-				frontmatter = yamlFrontmatter;
-				remainder = arrayRemainder;
-
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
+			return false;
 		}
-		else
+
+		try
+		{
+			var yamlText = document[3..closingIndex].Trim();
+			var yamlFrontmatter = new YamlDotNet.Serialization.Deserializer().Deserialize<Dictionary<string, object>>(new StringReader("---\r\n" + yamlText + "\r\n..."));
+
+			frontmatter = yamlFrontmatter;
+			remainder = document[(closingIndex + 3)..];
+
+			return true;
+		}
+		catch
 		{
 			return false;
 		}
@@ -181,33 +178,31 @@ public class Frontmatter : IMetalsharpPlugin
 	/// </returns>
 	private static bool TryGetJsonFrontmatter(string document, [NotNullWhen(true)] out Dictionary<string, object>? frontmatter, [NotNullWhen(true)] out string? remainder)
 	{
-		var split = document.Split(";;;", StringSplitOptions.None);
-
 		frontmatter = null;
 		remainder = null;
 
-		if (split.Length >= 3)
+		var closingIndex = document.IndexOf(";;;", 3, StringComparison.Ordinal);
+		if (closingIndex < 0)
 		{
-			try
-			{
-				var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(split[1].Trim(), s_jsonOptions);
+			return false;
+		}
 
-				if (jsonFrontmatter is null)
-				{
-					return false;
-				}
+		try
+		{
+			var jsonText = document[3..closingIndex].Trim();
+			var jsonFrontmatter = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonText, s_jsonOptions);
 
-				frontmatter = jsonFrontmatter;
-				remainder = string.Join(";;;", split.Skip(2));
-
-				return true;
-			}
-			catch
+			if (jsonFrontmatter is null)
 			{
 				return false;
 			}
+
+			frontmatter = jsonFrontmatter;
+			remainder = document[(closingIndex + 3)..];
+
+			return true;
 		}
-		else
+		catch
 		{
 			return false;
 		}
