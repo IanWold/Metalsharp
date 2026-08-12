@@ -33,6 +33,28 @@
         }
 
         [Fact]
+        public void AddInputAddsNestedDirectoryFilesWithVirtualPathRelativeToRemappedRoot()
+        {
+            var diskPath = Path.Combine("Scenario", "Directory2");
+            var nestedDiskPath = Path.Combine(diskPath, "SubDirectory1", "file11.md");
+
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None }).AddInput(diskPath, "Dir");
+            var nestedFile = Assert.Single(project.InputFiles, f => f.Name == "file11");
+
+            Assert.Equal(Path.Combine("Dir", "SubDirectory1", "file11.md"), nestedFile.FilePath);
+            Assert.True(File.Exists(nestedDiskPath));
+        }
+
+        [Fact]
+        public void AddInputSingleFileDoesNotDuplicateFileNameInVirtualPath()
+        {
+            var diskPath = Path.Combine("Scenario", "Directory1", "file1.md");
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None }).AddInput(diskPath);
+
+            Assert.Equal(diskPath, project.InputFiles[0].FilePath);
+        }
+
+        [Fact]
         public void AddInputThrowsGivenNonexistantPath()
         {
             var nonexistentPath = "\\Does\\Not\\Exist";
@@ -77,6 +99,15 @@
 
                 Assert.True(File.Exists(newPath));
             }
+        }
+
+        [Fact]
+        public void AddOutputSingleFileDoesNotDuplicateFileNameInVirtualPath()
+        {
+            var diskPath = Path.Combine("Scenario", "Directory1", "file1.md");
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None }).AddOutput(diskPath);
+
+            Assert.Equal(diskPath, project.OutputFiles[0].FilePath);
         }
 
         [Fact]
@@ -180,6 +211,65 @@
         }
 
         [Fact]
+        public void AddOutputDoesNotEagerlyReadFileContentsFromDisk()
+        {
+            var sourceDirectory = "EagerReadSourceDir";
+            var sourcePath = Path.Combine(sourceDirectory, "Source.txt");
+
+            Directory.CreateDirectory(sourceDirectory);
+            File.WriteAllText(sourcePath, "original content");
+
+            var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None })
+                .AddOutput(sourcePath, ".");
+
+            File.Delete(sourcePath);
+
+            Assert.ThrowsAny<Exception>(() => project.Build());
+        }
+
+        [Fact]
+        public void BuildCopiesUnmodifiedOutputFileContentsCorrectly()
+        {
+            var sourceDirectory = "CopySourceDir";
+            var sourcePath = Path.Combine(sourceDirectory, "Source.txt");
+
+            Directory.CreateDirectory(sourceDirectory);
+            File.WriteAllText(sourcePath, "unmodified content");
+
+            var outputDirectory = "CopyOutputDir";
+
+            new MetalsharpProject(outputDirectory: outputDirectory, verbosity: LogLevel.None)
+                .AddOutput(sourcePath, ".")
+                .Build();
+
+            var writtenPath = Path.Combine(outputDirectory, "Source.txt");
+
+            Assert.Equal("unmodified content", File.ReadAllText(writtenPath));
+        }
+
+        [Fact]
+        public void BuildWritesModifiedContentsInsteadOfStaleSourceFile()
+        {
+            var sourceDirectory = "ModifiedSourceDir";
+            var sourcePath = Path.Combine(sourceDirectory, "Source.txt");
+
+            Directory.CreateDirectory(sourceDirectory);
+            File.WriteAllText(sourcePath, "original content");
+
+            var outputDirectory = "ModifiedOutputDir";
+
+            var project = new MetalsharpProject(outputDirectory: outputDirectory, verbosity: LogLevel.None)
+                .AddOutput(sourcePath, ".");
+
+            project.OutputFiles[0].Contents = "modified content"u8.ToArray();
+            project.Build();
+
+            var writtenPath = Path.Combine(outputDirectory, "Source.txt");
+
+            Assert.Equal("modified content", File.ReadAllText(writtenPath));
+        }
+
+        [Fact]
         public void BuildInvokesBeforeBuildEvent()
         {
             var wasInvoked = false;
@@ -251,14 +341,14 @@
             Assert.True(project.Metadata.ContainsKey("key1"));
             Assert.True(project.Metadata.ContainsKey("key2"));
             Assert.True(project.Metadata.ContainsKey("key3"));
-            Assert.True(project.Metadata["key1"].ToString() == "value1");
-            Assert.True(project.Metadata["key2"].ToString() == "value1");
-            Assert.True(project.Metadata["key3"].ToString() == "value1");
+            Assert.Equal("value1", project.Metadata["key1"].ToString());
+            Assert.Equal("value1", project.Metadata["key2"].ToString());
+            Assert.Equal("value1", project.Metadata["key3"].ToString());
 
             project.Meta(("key1", "value2"), ("key2", "value2"), ("key3", "value2"));
-            Assert.True(project.Metadata["key1"].ToString() == "value2");
-            Assert.True(project.Metadata["key2"].ToString() == "value2");
-            Assert.True(project.Metadata["key3"].ToString() == "value2");
+            Assert.Equal("value2", project.Metadata["key1"].ToString());
+            Assert.Equal("value2", project.Metadata["key2"].ToString());
+            Assert.Equal("value2", project.Metadata["key3"].ToString());
         }
 
         #endregion
@@ -275,8 +365,8 @@
                 .AddOutput(file)
                 .MoveFiles("dir1", "dir2");
 
-            Assert.True(project.InputFiles[0].Directory == "dir2");
-            Assert.True(project.OutputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.InputFiles[0].Directory);
+            Assert.Equal("dir2", project.OutputFiles[0].Directory);
         }
 
         [Fact]
@@ -289,8 +379,8 @@
                 .AddOutput(file)
                 .MoveFiles(f => f.Text == "text", "dir2");
 
-            Assert.True(project.InputFiles[0].Directory == "dir2");
-            Assert.True(project.OutputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.InputFiles[0].Directory);
+            Assert.Equal("dir2", project.OutputFiles[0].Directory);
         }
 
         [Fact]
@@ -302,7 +392,7 @@
                 .AddInput(file)
                 .MoveInput("dir1", "dir2");
 
-            Assert.True(project.InputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.InputFiles[0].Directory);
         }
 
         [Fact]
@@ -314,7 +404,7 @@
                 .AddInput(file)
                 .MoveInput(f => f.Text == "text", "dir2");
 
-            Assert.True(project.InputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.InputFiles[0].Directory);
         }
 
         [Fact]
@@ -326,7 +416,7 @@
                 .AddOutput(file)
                 .MoveOutput("dir1", "dir2");
 
-            Assert.True(project.OutputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.OutputFiles[0].Directory);
         }
 
         [Fact]
@@ -338,7 +428,7 @@
                 .AddOutput(file)
                 .MoveOutput(f => f.Text == "text", "dir2");
 
-            Assert.True(project.OutputFiles[0].Directory == "dir2");
+            Assert.Equal("dir2", project.OutputFiles[0].Directory);
         }
 
         #endregion

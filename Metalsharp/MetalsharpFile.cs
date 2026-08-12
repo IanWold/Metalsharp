@@ -75,17 +75,56 @@ public class MetalsharpFile
 	/// </param>
 	public MetalsharpFile(byte[] contents, string filePath, Dictionary<string, object> metadata)
 	{
-		Contents = contents;
+		_contents = contents;
 		Metadata = metadata;
+		FilePath = filePath;
+	}
+
+	/// <summary>
+	///     Instantiate a new MetalsharpFile whose contents are read from disk lazily, on first access,
+	///     rather than immediately. Used internally by <see cref="MetalsharpProject.AddInput(string)"/>
+	///     and <see cref="MetalsharpProject.AddOutput(string)"/> so that files copied straight through
+	///     without ever being inspected or modified by a plugin never need to be loaded into memory at all.
+	/// </summary>
+	///
+	/// <param name="diskFile">
+	///     The FileInfo representing the file on disk.
+	/// </param>
+	/// <param name="filePath">
+	///     The virtual path of the file.
+	/// </param>
+	internal MetalsharpFile(FileInfo diskFile, string filePath)
+	{
+		_sourcePath = diskFile.FullName;
 		FilePath = filePath;
 	}
 
 	#region Properties
 
+	private byte[]? _contents;
+	private string? _sourcePath;
+	private string? _text;
+
+	/// <summary>
+	///     Whether this file's contents are still guaranteed identical to the file at <see cref="_sourcePath"/> on disk.
+	/// </summary>
+	internal string? UnmodifiedSourcePath =>
+		_sourcePath;
+
 	/// <summary>
 	///     The contents of the file.
 	/// </summary>
-	public byte[] Contents { get; set; }
+	public byte[] Contents
+	{
+		get =>
+			_contents ??= File.ReadAllBytes(_sourcePath!);
+		set
+		{
+			_contents = value;
+			_sourcePath = null;
+			_text = null;
+		}
+	}
 
 	/// <summary>
 	///     The virtual directory the file sits in.
@@ -127,7 +166,8 @@ public class MetalsharpFile
 	/// <summary>
 	///     The contents of the file as a string.
 	/// </summary>
-	public string Text => Encoding.Default.GetString(Contents);
+	public string Text =>
+		_text ??= Encoding.Default.GetString(Contents);
 
 	#endregion
 
