@@ -35,7 +35,7 @@ Metalsharp targets .NET 10 and is available on [NuGet](https://www.nuget.org/pac
 dotnet add package Metalsharp
 ```
 
-Prefer to try it without setting up a project? Metalsharp works great with [.NET file-based apps](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview) — see the [Create a Website](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) tutorial for a walkthrough that builds a complete site with nothing but a single `.cs` file.
+Prefer to try it without setting up a project? Metalsharp works great with [.NET file-based apps](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview) — see the [Create a Website](https://github.com/IanWold/Metalsharp/wiki/Tutorial:-Create-a-Website) tutorial for a walkthrough that builds a complete site with nothing but a single `.cs` file.
 
 ### Project Structure
 
@@ -55,7 +55,7 @@ Here, `ProjectFolder` is the root of the project. Anything unrelated to the gene
 
 ### Using Metalsharp
 
-Let's walk through the example above. The [quickstart](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/quickstart.md) covers the basics in more depth, and [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-website.md) walks through a complete, practical project.
+Let's walk through the example above. The [quickstart](https://github.com/IanWold/Metalsharp/wiki/Quickstart) covers the basics in more depth, and [Create a Website with Metalsharp](https://github.com/IanWold/Metalsharp/wiki/Tutorial:-Create-a-Website) walks through a complete, practical project.
 
 1. Instantiate a `MetalsharpProject` and read in the files you want to work with:
 
@@ -102,7 +102,7 @@ Let's walk through the example above. The [quickstart](https://github.com/IanWol
 
 ## Creating a Custom Plugin
 
-Creating a Metalsharp plugin is straightforward — see [Create a Plugin for Metalsharp](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/tutorial-plugin.md) for a full walkthrough. At its core, a plugin only needs to implement [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/IMetalsharpPlugin.cs), which has a single method, `Execute`. Here's the `Markdown` plugin that ships with Metalsharp:
+Creating a Metalsharp plugin is straightforward — see [Create a Plugin for Metalsharp](https://github.com/IanWold/Metalsharp/wiki/Tutorial:-Create-a-Plugin) for a full walkthrough. At its core, a plugin only needs to implement [`IMetalsharpPlugin`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp/IMetalsharpPlugin.cs), which has a single method, `Execute`. Here's the `Markdown` plugin that ships with Metalsharp:
 
 ```c#
 public class Markdown : IMetalsharpPlugin
@@ -127,9 +127,9 @@ public class Markdown : IMetalsharpPlugin
 
 ## Docs
 
-[Metalsharp.Documentation](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/README.md) contains generated API reference documentation and hand-written tutorials.
+[The wiki](https://github.com/IanWold/Metalsharp/wiki) contains generated API reference documentation and hand-written tutorials.
 
-The source is fully documented with XML comments. [`Metalsharp.Documentation/api.md`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md) is generated from those comments by [`GenerateApiDoc.cs`](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/GenerateApiDoc.cs).
+The source is fully documented with XML comments. [The API docs on the wiki](https://github.com/IanWold/Metalsharp/wiki/API-Documentation) are generated from those comments by [`GenerateApiDoc.cs`](https://github.com/IanWold/Metalsharp/blob/master/GenerateApiDoc.cs).
 
 For questions or help using Metalsharp, please use the [Metalsharp Discord](https://discord.gg/KwBtSan) rather than opening an issue.
 
