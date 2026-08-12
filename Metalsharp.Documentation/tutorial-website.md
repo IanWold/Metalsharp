@@ -114,7 +114,7 @@ A [file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/o
 To pull in Metalsharp, add a `#:package` directive at the top of `app.cs`:
 
 ```c#
-#:package Metalsharp@1.0.0
+#:package Metalsharp@1.0.1
 ```
 
 This tutorial will build up `app.cs` piece by piece. Each step of the way, this tutorial will explain a bit more of the Metalsharp API — the full generated API reference is [available here](https://github.com/IanWold/Metalsharp/blob/master/Metalsharp.Documentation/api.md).
@@ -124,7 +124,7 @@ This tutorial will build up `app.cs` piece by piece. Each step of the way, this 
 Let's start with the package directive and the `using` statements we'll need throughout:
 
 ```c#
-#:package Metalsharp@1.0.0
+#:package Metalsharp@1.0.1
 
 using Metalsharp;
 using System.Text;
@@ -338,7 +338,7 @@ project.Build();
 Putting it all together, here's the complete `app.cs`:
 
 ```c#
-#:package Metalsharp@1.0.0
+#:package Metalsharp@1.0.1
 
 using Metalsharp;
 using System.Text;
