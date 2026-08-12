@@ -125,4 +125,15 @@ public class FrontmatterTests
 
 		Assert.Empty(project.InputFiles[0].Metadata);
 	}
+
+	[Fact]
+	public void FrontmatterPreservesDelimiterCharactersInBodyText()
+	{
+		var file = new MetalsharpFile("---\nkey: value\n---\nFirst paragraph.\n\n---\n\nSecond paragraph with a ;;; in it.", "file.md");
+		var project = new MetalsharpProject(new MetalsharpOptions() { Verbosity = LogLevel.None }).AddInput(file).UseFrontmatter();
+		var text = project.InputFiles[0].Text;
+
+		Assert.Equal("value", project.InputFiles[0].Metadata["key"]);
+		Assert.Equal("\nFirst paragraph.\n\n---\n\nSecond paragraph with a ;;; in it.", text);
+	}
 }

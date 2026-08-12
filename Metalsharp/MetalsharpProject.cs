@@ -134,11 +134,27 @@ public class MetalsharpProject
 	#region Add Files
 
 	/// <summary>
+	///     Computes the virtual path to pass to <c>AddFromFileSystem</c> so that a path added through the
+	///     single-argument <c>AddInput(string)</c>/<c>AddOutput(string)</c> overloads keeps the same virtual
+	///     location it has on disk.
+	/// </summary>
+	///
+	/// <param name="diskPath">
+	///     The path to the on-disk file or directory.
+	/// </param>
+	///
+	/// <returns>
+	///     The virtual path representing the same location as <paramref name="diskPath"/>.
+	/// </returns>
+	static string GetSameLocationVirtualPath(string diskPath) =>
+		Directory.Exists(diskPath) ? diskPath : Path.GetDirectoryName(diskPath) ?? ".";
+
+	/// <summary>
 	///     Adds an existing directory or file to the input or output and place the files in a specific virtual path.
-	///     
+	///
 	///     This method is called internally by <c>AddInput</c> and <c>AddOutput</c>.
 	/// </summary>
-	/// 
+	///
 	/// <param name="diskPath">
 	///     The path to the on-disk file or directory.
 	/// </param>
@@ -154,16 +170,16 @@ public class MetalsharpProject
 	/// <param name="recurse">
 	///     The level of recursion; used by the logger.
 	/// </param>
-	/// 
+	///
 	/// <returns>
 	///     Returns <c>this</c> - the current <c>MetalsharpProject</c>. This value is passed through <c>AddInput</c> and <c>AddOutput</c> and allows them to be fluent.
 	/// </returns>
 	MetalsharpProject AddFromFileSystem(string diskPath, string virtualPath, Action<MetalsharpFile> add, string list, int recurse = 0)
 	{
-		static MetalsharpFile GetFileWithNormalizedDirectory(string dPath, string vPath) =>
-			new(File.ReadAllBytes(dPath), Path.Combine(vPath, Path.GetFileName(dPath)));
+		static MetalsharpFile GetFileWithNormalizedDirectory(FileInfo file, string vPath) =>
+			new(file, Path.Combine(vPath, file.Name));
 
-		if (Directory.Exists(diskPath))
+		if (new DirectoryInfo(diskPath) is { Exists: true } directory)
 		{
 			Action<string> log =
 				recurse > 0
@@ -172,25 +188,30 @@ public class MetalsharpProject
 
 			log($"Adding all files from file system at {diskPath} to {list}");
 
-			foreach (var file in Directory.GetFiles(diskPath))
+			foreach (var file in directory.EnumerateFiles())
 			{
-				LogDebug($"Adding file from file system: {Path.GetFileName(file)} to {list}");
+				LogDebug($"Adding file from file system: {file.Name} to {list}");
 				add(GetFileWithNormalizedDirectory(file, virtualPath));
 				LogDebug($"    Added to virtual directory {virtualPath}");
 			}
 
-			foreach (var directory in Directory.GetDirectories(diskPath))
+			foreach (var subdirectory in directory.EnumerateDirectories())
 			{
-				AddFromFileSystem(directory, directory.Replace(diskPath, virtualPath), add, list, recurse + 1);
+				var childVirtualPath =
+					virtualPath.Length == 0
+					? Path.DirectorySeparatorChar + subdirectory.Name
+					: Path.Combine(virtualPath, subdirectory.Name);
+
+				AddFromFileSystem(Path.Combine(diskPath, subdirectory.Name), childVirtualPath, add, list, recurse + 1);
 			}
 
 			log($"Finished adding files from file system at {diskPath}");
 			return this;
 		}
-		else if (File.Exists(diskPath))
+		else if (new FileInfo(diskPath) is FileInfo file && file.Exists)
 		{
 			LogInfo($"Adding file from file system to {list}: {diskPath}");
-			add(GetFileWithNormalizedDirectory(diskPath, virtualPath));
+			add(GetFileWithNormalizedDirectory(file, virtualPath));
 			LogDebug($"    Added to virtual directory {virtualPath}");
 
 			return this;
@@ -224,7 +245,7 @@ public class MetalsharpProject
 	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddInput(string path) =>
-		AddInput(path, path);
+		AddInput(path, GetSameLocationVirtualPath(path));
 
 	/// <summary>
 	///     Add a file or directory to the input and place the files in a specific virtual path.
@@ -298,7 +319,7 @@ public class MetalsharpProject
 	///     The current <c>MetalsharpProject</c>, allowing it to be fluent.
 	/// </returns>
 	public MetalsharpProject AddOutput(string path) =>
-		AddOutput(path, path);
+		AddOutput(path, GetSameLocationVirtualPath(path));
 
 	/// <summary>
 	///     Add a file or directory to the output and place the files in a specific virtual path.
@@ -398,14 +419,18 @@ public class MetalsharpProject
 			var path = Path.Combine(Options.OutputDirectory, file.FilePath);
 			var directoryPath = Path.GetDirectoryName(path)!;
 
-			if (!Directory.Exists(directoryPath))
-			{
-				LogDebug($"Creating directory {directoryPath}");
-				Directory.CreateDirectory(directoryPath);
-			}
+			Directory.CreateDirectory(directoryPath);
 
-			LogDebug($"Wrting file {path}");
-			File.WriteAllBytes(path, file.Contents);
+			if (file.UnmodifiedSourcePath is { } sourcePath)
+			{
+				LogDebug($"Copying file {sourcePath} to {path}");
+				File.Copy(sourcePath, path, overwrite: true);
+			}
+			else
+			{
+				LogDebug($"Writing file {path}");
+				File.WriteAllBytes(path, file.Contents);
+			}
 		}
 
 		LogInfo("\nFinalizing Build");
