@@ -19,7 +19,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/IanWold/Metalsharp/master/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/IanWold/Metalsharp</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>metalsharp metalsmith static-site-generator static-site dotnet-standard</PackageTags>
+    <PackageTags>metalsharp metalsmith static-site static-site-generator dotnet-standard dotnet-core</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>A tiny and extendable C# library for generating static sites, inspired by Metalsmith.</Description>
   </PropertyGroup>
