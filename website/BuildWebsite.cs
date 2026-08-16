@@ -28,14 +28,14 @@ new MetalsharpProject(new MetalsharpOptions()
 {
     ["template"] = "docs",
     ["heading"] = "Documentation",
-    ["Subheading"] = "Guides for getting started, and a full reference for everything Metalsharp exposes.",
+    ["subheading"] = "Guides for getting started, and a full reference for everything Metalsharp exposes.",
     ["docs"] = docs
 }))
 .AddOutput(new MetalsharpFile(string.Empty, "plugins.html", new Dictionary<string, object>()
 {
     ["template"] = "plugins",
     ["heading"] = "Plugins",
-    ["Subheading"] = "Published by the community, installed from NuGet.",
+    ["subheading"] = "Published by the community, installed from NuGet.",
     ["plugins"] = plugins
 }))
 .UseLiquidTemplates("templates")
