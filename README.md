@@ -4,7 +4,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=for-the-badge)](https://www.nuget.org/packages/Metalsharp/)
 
-A **small**, **simple**, and **extendable** C# library for generating static sites, inspired by [Metalsmith](http://www.metalsmith.io/)
+A **tiny** and **extendable** static site generator for C#, inspired by [Metalsmith](http://www.metalsmith.io/)
 
 </div>
 
