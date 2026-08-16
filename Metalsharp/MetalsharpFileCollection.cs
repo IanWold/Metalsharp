@@ -10,7 +10,7 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 	/// <summary>
 	///     The Metalsharp files in the collection.
 	/// </summary>
-	readonly List<MetalsharpFile> _items = new();
+	readonly List<MetalsharpFile> _items = [];
 
 	/// <summary>
 	///     Instantiate an empty collection.
@@ -25,7 +25,7 @@ public class MetalsharpFileCollection : IList<MetalsharpFile>
 	///     The list of files to add to the collection.
 	/// </param>
 	public MetalsharpFileCollection(IEnumerable<MetalsharpFile> files) =>
-		_items = files.ToList();
+		_items = [.. files];
 
 	/// <summary>
 	///     Gets the files in the collection which descend from the given virtual directory.
@@ -139,5 +139,5 @@ public static class IEnumerableExtensions
 	///     A <c>MetalsharpFileCollection</c> containing the files in the given list.
 	/// </returns>
 	public static MetalsharpFileCollection ToMetalsharpFileCollection(this IEnumerable<MetalsharpFile> list) =>
-		new(list);
+        [.. list];
 }

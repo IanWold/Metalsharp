@@ -1,0 +1,17 @@
+[
+    {
+        "Title": "Quickstart",
+        "Description": "Install the package and build your first project in a single file.",
+        "Url": "https://github.com/IanWold/Metalsharp/wiki/Quickstart"
+    },
+    {
+        "Title": "Build a Website",
+        "Description": "A complete walkthrough: markdown content, frontmatter, layouts, and a build script.",
+        "Url": "https://github.com/IanWold/Metalsharp/wiki/Tutorial:-Create-a-Website"
+    },
+    {
+        "Title": "Create a Plugin",
+        "Description": "The plugin interface is one method. Learn it by building a real one.",
+        "Url": "https://github.com/IanWold/Metalsharp/wiki/Tutorial:-Create-a-Plugin"
+    }
+]
