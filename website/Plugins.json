@@ -1,0 +1,12 @@
+[
+    {
+        "Nuget": "Metalsharp.LiquidTemplates",
+        "Github": "IanWold/Metalsharp.LiquidTemplates",
+        "Description": "Render pages with Liquid templates."
+    },
+    {
+        "Nuget": "Metalsharp.SimpleBlog",
+        "Github": "IanWold/Metalsharp.SimpleBlog",
+        "Description": "Blog scaffolding: posts, tags, and pagination."
+    }
+]
