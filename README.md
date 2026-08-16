@@ -2,9 +2,11 @@
     
 # <img src="https://raw.githubusercontent.com/IanWold/Metalsharp/refs/heads/master/Icon.png" height="23"> Metalsharp
 
-[![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=for-the-badge)](https://www.nuget.org/packages/Metalsharp/)
+[![NuGet](https://img.shields.io/nuget/v/Metalsharp.svg?logo=nuget&logoColor=white&style=for-the-badge)](https://www.nuget.org/packages/Metalsharp/)![NuGet Downloads](https://img.shields.io/nuget/dt/Metalsharp?style=for-the-badge&label=%20)
 
 A **tiny** and **extendable** static site generator for C#, inspired by [Metalsmith](http://www.metalsmith.io/)
+
+[Quickstart](https://github.com/IanWold/Metalsharp/wiki/Quickstart) · [API Reference](https://github.com/IanWold/Metalsharp/wiki/API-Documentation)
 
 </div>
 
