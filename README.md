@@ -131,8 +131,6 @@ public class Markdown : IMetalsharpPlugin
 
 The source is fully documented with XML comments. [The API docs on the wiki](https://github.com/IanWold/Metalsharp/wiki/API-Documentation) are generated from those comments by [`GenerateApiDoc.cs`](https://github.com/IanWold/Metalsharp/blob/master/GenerateApiDoc.cs).
 
-For questions or help using Metalsharp, please use the [Metalsharp Discord](https://discord.gg/KwBtSan) rather than opening an issue.
-
 ## Contributing
 
 Contributions are welcome in whatever form suits you — bug reports, documentation fixes, new plugins, or pull requests against the core library.
