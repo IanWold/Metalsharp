@@ -1,25 +1,23 @@
-<section>
-    <menu>
-    {% for plugin in plugins %}
-        <li>
-        <article>
-            <header>
-                <span>{{ plugin.Nuget }}</span>
-                <div>
-                    <a href="https://www.nuget.org/packages/{{ plugin.Nuget }}"><img alt="NuGet Version" src="https://img.shields.io/nuget/v/{{ plugin.Nuget }}?style=flat-square&logo=nuget&label=%20&labelColor=585757"><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/{{ plugin.Nuget }}?style=flat-square&label=%20"></a>
-                    <a href="https://github.com/{{ plugin.GithubUsername }}/{{ plugin.GithubRepo }}"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/{{ plugin.GithubUsername }}/{{ plugin.GithubRepo }}?style=flat-square&logo=github&label=%20&labelColor=585757"></a>
-                </div>
-            </header>
+<menu>
+{% for plugin in plugins %}
+    <li>
+    <article>
+        <header>
+            <span>{{ plugin.Nuget }}</span>
+            <div>
+                <a href="https://www.nuget.org/packages/{{ plugin.Nuget }}"><img alt="NuGet Version" src="https://img.shields.io/nuget/v/{{ plugin.Nuget }}?style=flat-square&logo=nuget&label=%20&labelColor=585757"><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/{{ plugin.Nuget }}?style=flat-square&label=%20"></a>
+                <a href="https://github.com/{{ plugin.GithubUsername }}/{{ plugin.GithubRepo }}"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/{{ plugin.GithubUsername }}/{{ plugin.GithubRepo }}?style=flat-square&logo=github&label=%20&labelColor=585757"></a>
+            </div>
+        </header>
 
-            <p>{{ plugin.Description }}</p>
-        </article>
-        </li>
-    {% endfor %}
-    </menu>
+        <p>{{ plugin.Description }}</p>
+    </article>
+    </li>
+{% endfor %}
+</menu>
 
-    <aside>
-        <p>Building a plugin?</p>
-        <a role="button" href="https://github.com/IanWold/Metalsharp/edit/master/Plugins.json">Plugin Tutorial</a>
-        <a role="button" href="https://github.com/IanWold/Metalsharp/edit/master/Plugins.json">Add it to the list</a>
-    </aside>
-</section>
+<aside>
+    <p>Building a plugin?</p>
+    <a role="button" href="https://github.com/IanWold/Metalsharp/edit/master/Plugins.json">Plugin Tutorial</a>
+    <a role="button" href="https://github.com/IanWold/Metalsharp/edit/master/Plugins.json">Add it to the list</a>
+</aside>

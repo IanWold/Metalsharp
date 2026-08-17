@@ -1,16 +1,14 @@
-<section>
-    <menu>
-    {% for doc in docs %}
-        <li>
-        <article>
-            <a href="docs/{{ doc.Slug }}.html">
-                <header>
-                    <span>{{ doc.Title }}</span>
-                </header>
-                <p>{{ doc.Description }}</p>
-            </a>
-        </article>
-        </li>
-    {% endfor %}
-    </menu>
-</section>
+<menu>
+{% for doc in docs %}
+    <li>
+    <article>
+        <a href="docs/{{ doc.Slug }}.html">
+            <header>
+                <span>{{ doc.Title }}</span>
+            </header>
+            <p>{{ doc.Description }}</p>
+        </a>
+    </article>
+    </li>
+{% endfor %}
+</menu>
