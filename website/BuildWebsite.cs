@@ -2,7 +2,6 @@
 #:package Metalsharp@1.0.1
 #:package Metalsharp.LiquidTemplates@1.0.0
 
-using System.Net.Http;
 using System.Text.Json;
 using Metalsharp;
 using Metalsharp.LiquidTemplates;
@@ -41,13 +40,13 @@ new MetalsharpProject(new MetalsharpOptions()
     Verbosity = LogLevel.Debug,
 	ClearOutputDirectory = true
 })
-.AddInput("site", ".")
+.AddInput("site", "./")
 .UseFrontmatter()
 .Use(project =>
 {
     foreach (var doc in docs)
     {
-        project.AddInput(new MetalsharpFile(doc.Content, $"docs/{doc.Slug}.md", new Dictionary<string, object>()
+        project.AddInput(new MetalsharpFile(doc.Content, $"./docs/{doc.Slug}.md", new Dictionary<string, object>()
         {
             ["heading"] = doc.Title,
             ["subheading"] = doc.Description
@@ -55,14 +54,14 @@ new MetalsharpProject(new MetalsharpOptions()
     }
 })
 .UseMarkdown()
-.AddOutput(new MetalsharpFile(string.Empty, "docs.html", new Dictionary<string, object>()
+.AddOutput(new MetalsharpFile(string.Empty, "./docs.html", new Dictionary<string, object>()
 {
     ["template"] = "docs",
     ["heading"] = "Documentation",
     ["subheading"] = "Guides for getting started, and a full reference for everything Metalsharp exposes.",
     ["docs"] = docs
 }))
-.AddOutput(new MetalsharpFile(string.Empty, "plugins.html", new Dictionary<string, object>()
+.AddOutput(new MetalsharpFile(string.Empty, "./plugins.html", new Dictionary<string, object>()
 {
     ["template"] = "plugins",
     ["heading"] = "Plugins",
