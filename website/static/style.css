@@ -137,8 +137,6 @@ hr {
 
 main {
     header {
-        margin-bottom: 3.75rem;
-
         h1 {
             font-size: 2rem;
             font-weight: 800;
@@ -151,6 +149,10 @@ main {
             color: var(--muted);
         }
     }
+}
+
+main > header {
+    margin-bottom: 3.75rem;
 }
 
 pre {
