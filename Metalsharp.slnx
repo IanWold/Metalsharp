@@ -1,10 +1,4 @@
 <Solution>
-  <Folder Name="/Metalsharp.Documentation/">
-    <File Path="Metalsharp.Documentation/quickstart.md" />
-    <File Path="Metalsharp.Documentation/README.md" />
-    <File Path="Metalsharp.Documentation/tutorial-plugin.md" />
-    <File Path="Metalsharp.Documentation/tutorial-website.md" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
@@ -13,6 +7,6 @@
     <File Path="Metalsharp.png" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="Metalsharp.Tests/Metalsharp.Tests.csproj" />
-  <Project Path="Metalsharp/Metalsharp.csproj" />
+  <Project Path="src/Metalsharp.Tests/Metalsharp.Tests.csproj" />
+  <Project Path="src/Metalsharp/Metalsharp.csproj" />
 </Solution>
