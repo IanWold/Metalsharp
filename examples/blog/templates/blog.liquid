@@ -1,0 +1,6 @@
+<h1>My Blog</h1>
+<ul>
+{% for post in posts %}
+    <li><a href="posts/{{ post.fileName }}.html">{{ post.title }}</a> &mdash; {{ post.date }}</li>
+{% endfor %}
+</ul>

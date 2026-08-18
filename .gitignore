@@ -264,3 +264,4 @@ __pycache__/
 
 website/output
 website/*.html
+examples/*/output
