@@ -136,7 +136,3 @@ The source is fully documented with XML comments. [The API docs on the wiki](htt
 ## Contributing
 
 Contributions are welcome in whatever form suits you — bug reports, documentation fixes, new plugins, or pull requests against the core library.
-
-## License
-
-Metalsharp is licensed under the [MIT License](LICENSE).
