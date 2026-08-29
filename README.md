@@ -6,7 +6,7 @@
 
 A **tiny** and **extendable** static site generator for C#, inspired by [Metalsmith](http://www.metalsmith.io/).
 
-[Quickstart](https://metalsharp.net/docs/Quickstart.html) • [Plugins](https://metalsharp.net/plugins.html) • [Examples](https://github.com/IanWold/Metalsharp/tree/master/website)
+[Quickstart](https://metalsharp.net/docs/Quickstart.html) • [Plugins](https://metalsharp.net/plugins.html) • [Examples](https://github.com/IanWold/Metalsharp/tree/master/examples)
 
 </div>
 

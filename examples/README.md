@@ -1,6 +1,6 @@
 # Examples
 
-These examples demonstrate runnable Metalsharp projects, each a single [.NET file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview) — no `.csproj`. Each pulls in the packages it needs via `#:package` directives at the top of its `app.cs`.
+These examples demonstrate runnable Metalsharp projects, each a single [.NET file-based app](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview).
 
 ## `simple-website/`
 
