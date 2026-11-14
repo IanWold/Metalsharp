@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <RootNamespace>Metalsharp</RootNamespace>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -36,12 +36,12 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Markdig" Version="1.6.0" />
     <PackageReference Include="YamlDotNet" Version="18.1.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.403" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="11.0.100" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\Icon.png" Pack="true" PackagePath="" />
-    <None Include="..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\Icon.png" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
